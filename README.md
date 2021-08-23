@@ -9,7 +9,7 @@ Happyn2n Windows Client 最初代码来源于[n2nedgegui项目](https://sourceforge.net/p
 
 ## License: 
 
-(COPYRIGHT.GPL3)[COPYRIGHT.GPL3]
+[COPYRIGHT.GPL3](LICENSE)
 
 ## Powed by:
 
