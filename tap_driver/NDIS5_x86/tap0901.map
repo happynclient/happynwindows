@@ -1,0 +1,207 @@
+ tap0901
+
+ Timestamp is 51150f64 (Fri Feb 08 06:44:52 2013)
+
+ Preferred load address is 00010000
+
+ Start         Length     Name                   Class
+ 0001:00000000 00004becH .text                   CODE
+ 0001:00004bf0 000001bbH .text$s                 CODE
+ 0002:00000000 000000b0H .idata$5                DATA
+ 0002:000000b0 00000168H .rdata                  DATA
+ 0002:00000218 00000050H .rdata$debug            DATA
+ 0002:00000270 00000008H .rdata$sxdata           DATA
+ 0002:00000278 000000d0H .xdata$x                DATA
+ 0003:00000000 0000005cH .data                   DATA
+ 0003:00000060 0000001cH .bss                    DATA
+ 0004:00000000 0000016fH INIT                    CODE
+ 0004:00000170 0000003cH .idata$2                CODE
+ 0004:000001ac 00000014H .idata$3                CODE
+ 0004:000001c0 000000b0H .idata$4                CODE
+ 0004:00000270 000003beH .idata$6                CODE
+ 0005:00000000 00000058H .rsrc$01                DATA
+ 0005:00000060 00000360H .rsrc$02                DATA
+
+  Address         Publics by Value              Rva+Base       Lib:Object
+
+ 0000:00000002       ___safe_se_handler_count   00000002     <absolute>
+ 0001:00000010       _RtlStringCchPrintfExA     00010490 f i tapdrvr.obj
+ 0001:00000140       _MemAlloc@8                000105c0 f   tapdrvr.obj
+ 0001:00000220       _MemFree@8                 000106a0 f   tapdrvr.obj
+ 0001:000002a0       _QueueInit@4               00010720 f   tapdrvr.obj
+ 0001:000002e0       _QueuePush@8               00010760 f   tapdrvr.obj
+ 0001:00000330       _QueuePop@4                000107b0 f   tapdrvr.obj
+ 0001:00000380       _QueueExtract@8            00010800 f   tapdrvr.obj
+ 0001:000003e0       _ParseMAC@8                00010860 f   tapdrvr.obj
+ 0001:000004c0       _GenerateRandomMac@8       00010940 f   tapdrvr.obj
+ 0001:000005a0       _SetDHCPOpt@12             00010a20 f   tapdrvr.obj
+ 0001:000005f0       _SetDHCPOpt8@12            00010a70 f   tapdrvr.obj
+ 0001:00000650       _SetDHCPOpt32@12           00010ad0 f   tapdrvr.obj
+ 0001:000006b0       _ip_checksum@8             00010b30 f   tapdrvr.obj
+ 0001:00000760       _udp_checksum@16           00010be0 f   tapdrvr.obj
+ 0001:00000830       _SetChecksumDHCPMsg@4      00010cb0 f   tapdrvr.obj
+ 0001:00000880       _GetDHCPMessageType@8      00010d00 f   tapdrvr.obj
+ 0001:000008f0       _DHCPMessageOurs@20        00010d70 f   tapdrvr.obj
+ 0001:00000a00       _BuildDHCPPre@32           00010e80 f   tapdrvr.obj
+ 0001:00000b70       _InitInstanceList@0        00010ff0 f   tapdrvr.obj
+ 0001:00000bb0       _AddAdapterToInstanceList@4 00011030 f   tapdrvr.obj
+ 0001:00000c60       _RemoveAdapterFromInstanceList@4 000110e0 f   tapdrvr.obj
+ 0001:00000d40       _LookupAdapterInInstanceList@4 000111c0 f   tapdrvr.obj
+ 0001:00000e10       _TapDriverUnload@4         00011290 f   tapdrvr.obj
+ 0001:00000e40       _TapDeviceFreeResources@4  000112c0 f   tapdrvr.obj
+ 0001:00000ee0       _AdapterReset@8            00011360 f   tapdrvr.obj
+ 0001:00000ef0       _AdapterReceive@24         00011370 f   tapdrvr.obj
+ 0001:00000f00       _AdapterQuery@24           00011380 f   tapdrvr.obj
+ 0001:000012a0       _AdapterModify@24          00011720 f   tapdrvr.obj
+ 0001:000014e0       _icmpv6_checksum@16        00011960 f   tapdrvr.obj
+ 0001:000015b0       _CompleteIRP@12            00011a30 f   tapdrvr.obj
+ 0001:00001710       _CancelIRP@12              00011b90 f   tapdrvr.obj
+ 0001:000017a0       _FlushQueues@4             00011c20 f   tapdrvr.obj
+ 0001:00001900       _SetMediaStatus@8          00011d80 f   tapdrvr.obj
+ 0001:00001960       _CheckIfDhcpAndTunMode@4   00011de0 f   tapdrvr.obj
+ 0001:000019b0       _InjectPacketDeferred@12   00011e30 f   tapdrvr.obj
+ 0001:00001a90       _InjectPacketNow@12        00011f10 f   tapdrvr.obj
+ 0001:00001b50       _ResetTapAdapterState@4    00011fd0 f   tapdrvr.obj
+ 0001:00001bd0       _AllowNonAdmin@4           00012050 f   tapdrvr.obj
+ 0001:00001d10       _SendDHCPMsg@24            00012190 f   tapdrvr.obj
+ 0001:00001e10       _ProcessDHCP@24            00012290 f   tapdrvr.obj
+ 0001:00001fc0       _HandleIPv6NeighborDiscovery@8 00012440 f   tapdrvr.obj
+ 0001:000021a0       _CancelIRPCallback@8       00012620 f   tapdrvr.obj
+ 0001:000021e0       _ProcessARP@24             00012660 f   tapdrvr.obj
+ 0001:000023b0       _InjectPacketDpc@16        00012830 f   tapdrvr.obj
+ 0001:00002450       _AdapterHalt@4             000128d0 f   tapdrvr.obj
+ 0001:000024f0       _AdapterTransmit@12        00012970 f   tapdrvr.obj
+ 0001:00002960       _TapDeviceHook@8           00012de0 f   tapdrvr.obj
+ 0001:00003450       _CreateTapDevice@8         000138d0 f   tapdrvr.obj
+ 0001:000036a0       _AdapterCreate@24          00013b20 f   tapdrvr.obj
+ 0001:00003ad1       @__security_check_cookie@4 00013f51 f   BufferOverflowK:secchk.obj
+ 0001:00003ae6       ___report_gsfailure        00013f66 f   BufferOverflowK:gs_report.obj
+ 0001:00003b12       _memset                    00013f92 f   ntoskrnl:ntoskrnl.exe
+ 0001:00003b1e       _memcpy                    00013f9e f   ntoskrnl:ntoskrnl.exe
+ 0001:00003b2a       _RtlStringExValidateSrcA@16 00013faa f   ntstrsafe:ntstrsafe.obj
+ 0001:00003b6c       _RtlStringValidateDestA@12 00013fec f   ntstrsafe:ntstrsafe.obj
+ 0001:00003b8e       _RtlStringExValidateDestA@16 0001400e f   ntstrsafe:ntstrsafe.obj
+ 0001:00003bce       _RtlStringVPrintfWorkerA@20 0001404e f   ntstrsafe:ntstrsafe.obj
+ 0001:00003c20       _RtlStringExHandleFillBehindNullA@12 000140a0 f   ntstrsafe:ntstrsafe.obj
+ 0001:00003c50       _RtlStringExHandleOtherFlagsA@24 000140d0 f   ntstrsafe:ntstrsafe.obj
+ 0001:00003cf0       __except_handler4          00014170 f   ntstrsafe:chandler4.obj
+ 0001:00003e49       __vsnprintf_l              000142c9 f   ntstrsafe:vsnprint.obj
+ 0001:00003ee8       __vsnprintf                00014368 f   ntstrsafe:vsnprint.obj
+ 0001:00003f0c       __local_unwind4            0001438c f   ntstrsafe:exsup4.obj
+ 0001:00003fe2       __seh_longjmp_unwind4@4    00014462 f   ntstrsafe:exsup4.obj
+ 0001:00003ffe       @_EH4_CallFilterFunc@8     0001447e f   ntstrsafe:exsup4.obj
+ 0001:00004015       @_EH4_TransferToHandler@8  00014495 f   ntstrsafe:exsup4.obj
+ 0001:0000402e       @_EH4_GlobalUnwind@4       000144ae f   ntstrsafe:exsup4.obj
+ 0001:00004048       @_EH4_LocalUnwind@16       000144c8 f   ntstrsafe:exsup4.obj
+ 0001:00004064       __flsbuf                   000144e4 f   ntstrsafe:_flsbuf.obj
+ 0001:0000412e       __output_l                 000145ae f   ntstrsafe:output.obj
+ 0001:00004a3b       __invalid_parameter        00014ebb f   ntstrsafe:invargk.obj
+ 0001:00004a44       __NLG_Notify1              00014ec4 f   ntstrsafe:_nlgsupp.obj
+ 0001:00004a4d       __NLG_Notify               00014ecd f   ntstrsafe:_nlgsupp.obj
+ 0001:00004a64       __NLG_Dispatch             00014ee4     ntstrsafe:_nlgsupp.obj
+ 0001:00004a64       __NLG_Dispatch2            00014ee4     ntstrsafe:_nlgsupp.obj
+ 0001:00004a6c       __NLG_Call                 00014eec f   ntstrsafe:_nlgsupp.obj
+ 0001:00004a6e       __NLG_Return2              00014eee     ntstrsafe:_nlgsupp.obj
+ 0001:00004a74       __get_printf_count_output  00014ef4 f   ntstrsafe:printfcount.obj
+ 0001:00004a8f       __wctomb_s_l               00014f0f f   ntstrsafe:_wctomb.obj
+ 0001:00004b1b       _wctomb_s                  00014f9b f   ntstrsafe:_wctomb.obj
+ 0001:00004b40       __aulldvrm                 00014fc0 f   ntstrsafe:ulldvrm.obj
+ 0001:00004bda       _RtlUnwind@16              0001505a f   ntoskrnl:ntoskrnl.exe
+ 0001:00004be6       _RtlUnicodeToMultiByteN@20 00015066 f   ntoskrnl:ntoskrnl.exe
+ 0001:00004bf0       ??_C@_0BH@DIGKNCEH@TAP?9Windows?5Adapter?5V9?$AA@FNODOBFM@ 00015070     tapdrvr.obj
+ 0001:00004c10       ??_C@_0DB@OKCDKKLN@c?3?2users?2samuli?2tap?9windows?9gith@FNODOBFM@ 00015090     tapdrvr.obj
+ 0001:00004c50       ??_C@_0GB@BOPJCIOJ@State?$DN?$CFs?5Err?$DN?$FL?$CFs?1?$CFd?$FN?5?$CDO?$DN?$CFd?5Tx?$DN?$FL?$CF@FNODOBFM@ 000150d0     tapdrvr.obj
+ 0001:00004cc0       ??_C@_0BE@DCPFOPDJ@?2DosDevices?2Global?2?$AA@FNODOBFM@ 00015140     tapdrvr.obj
+ 0001:00004ce0       ??_C@_06DIJPEION@?$CFs?$CFs?$CFs?$AA@FNODOBFM@ 00015160     tapdrvr.obj
+ 0001:00004cf0       ??_C@_08MBBBEOPI@?2Device?2?$AA@FNODOBFM@ 00015170     tapdrvr.obj
+ 0001:00004d00       ??_C@_04MFFLHGKN@?4tap?$AA@FNODOBFM@ 00015180     tapdrvr.obj
+ 0001:00004d10       ??_C@_17GFOANJLA@?$AAM?$AAA?$AAC?$AA?$AA@FNODOBFM@ 00015190     tapdrvr.obj
+ 0001:00004d20       ??_C@_1BM@GLFAMKNK@?$AAA?$AAl?$AAl?$AAo?$AAw?$AAN?$AAo?$AAn?$AAA?$AAd?$AAm?$AAi?$AAn?$AA?$AA@FNODOBFM@ 000151a0     tapdrvr.obj
+ 0001:00004d40       ??_C@_1BI@OIOAKOGO@?$AAM?$AAe?$AAd?$AAi?$AAa?$AAS?$AAt?$AAa?$AAt?$AAu?$AAs?$AA?$AA@FNODOBFM@ 000151c0     tapdrvr.obj
+ 0001:00004d60       ??_C@_17EDIJECNL@?$AAM?$AAT?$AAU?$AA?$AA@FNODOBFM@ 000151e0     tapdrvr.obj
+ 0001:00004d70       ??_C@_1BI@FJLCDAFI@?$AAN?$AAd?$AAi?$AAs?$AAV?$AAe?$AAr?$AAs?$AAi?$AAo?$AAn?$AA?$AA@FNODOBFM@ 000151f0     tapdrvr.obj
+ 0001:00004d90       ??_C@_1BK@KPLOIJDF@?$AAM?$AAi?$AAn?$AAi?$AAp?$AAo?$AAr?$AAt?$AAN?$AAa?$AAm?$AAe?$AA?$AA@FNODOBFM@ 00015210     tapdrvr.obj
+ 0001:00004daa       ??_C@_00CNPNBAHC@?$AA@FNODOBFM@ 0001522a     ntstrsafe:ntstrsafe.obj
+ 0002:00000000       __imp_@KfAcquireSpinLock@4 00015280     hal:HAL.dll
+ 0002:00000004       __imp_@KfReleaseSpinLock@8 00015284     hal:HAL.dll
+ 0002:00000008       __imp__KeGetCurrentIrql@0  00015288     hal:HAL.dll
+ 0002:0000000c       \177HAL_NULL_THUNK_DATA    0001528c     hal:HAL.dll
+ 0002:00000010       __imp__NdisMRegisterMiniport@12 00015290     ndis:NDIS.SYS
+ 0002:00000014       __imp__NdisTerminateWrapper@8 00015294     ndis:NDIS.SYS
+ 0002:00000018       __imp__NdisMRegisterUnloadHandler@8 00015298     ndis:NDIS.SYS
+ 0002:0000001c       __imp__NdisMSetAttributesEx@20 0001529c     ndis:NDIS.SYS
+ 0002:00000020       __imp__NdisMRegisterAdapterShutdownHandler@12 000152a0     ndis:NDIS.SYS
+ 0002:00000024       __imp__NdisOpenConfiguration@12 000152a4     ndis:NDIS.SYS
+ 0002:00000028       __imp__NdisReadConfiguration@20 000152a8     ndis:NDIS.SYS
+ 0002:0000002c       __imp__NdisCloseConfiguration@4 000152ac     ndis:NDIS.SYS
+ 0002:00000030       __imp__NdisMRegisterDevice@24 000152b0     ndis:NDIS.SYS
+ 0002:00000034       __imp__NdisMIndicateStatus@16 000152b4     ndis:NDIS.SYS
+ 0002:00000038       __imp__NdisMIndicateStatusComplete@4 000152b8     ndis:NDIS.SYS
+ 0002:0000003c       __imp__NdisMDeregisterDevice@4 000152bc     ndis:NDIS.SYS
+ 0002:00000040       __imp__NdisMDeregisterAdapterShutdownHandler@4 000152c0     ndis:NDIS.SYS
+ 0002:00000044       __imp__NdisMSleep@4        000152c4     ndis:NDIS.SYS
+ 0002:00000048       __imp__NdisFreeMemory@12   000152c8     ndis:NDIS.SYS
+ 0002:0000004c       __imp__NdisAllocateMemoryWithTag@12 000152cc     ndis:NDIS.SYS
+ 0002:00000050       __imp__NdisInitializeWrapper@16 000152d0     ndis:NDIS.SYS
+ 0002:00000054       \177NDIS_NULL_THUNK_DATA   000152d4     ndis:NDIS.SYS
+ 0002:00000058       __imp__RtlFreeAnsiString@4 000152d8     ntoskrnl:ntoskrnl.exe
+ 0002:0000005c       __imp__memcpy              000152dc     ntoskrnl:ntoskrnl.exe
+ 0002:00000060       __imp__KeRemoveQueueDpc@4  000152e0     ntoskrnl:ntoskrnl.exe
+ 0002:00000064       __imp__KeBugCheckEx@20     000152e4     ntoskrnl:ntoskrnl.exe
+ 0002:00000068       __imp__KeTickCount         000152e8     ntoskrnl:ntoskrnl.exe
+ 0002:00000068       _KeTickCount               000152e8     ntoskrnl:ntoskrnl.exe
+ 0002:0000006c       __imp__RtlUnicodeStringToAnsiString@12 000152ec     ntoskrnl:ntoskrnl.exe
+ 0002:00000070       __imp__RtlAnsiStringToUnicodeString@12 000152f0     ntoskrnl:ntoskrnl.exe
+ 0002:00000074       __imp__KeInitializeDpc@12  000152f4     ntoskrnl:ntoskrnl.exe
+ 0002:00000078       __imp__MmMapLockedPagesSpecifyCache@24 000152f8     ntoskrnl:ntoskrnl.exe
+ 0002:0000007c       __imp__MmMapLockedPages@8  000152fc     ntoskrnl:ntoskrnl.exe
+ 0002:00000080       __imp__RtlCreateSecurityDescriptor@8 00015300     ntoskrnl:ntoskrnl.exe
+ 0002:00000084       __imp__ZwOpenFile@24       00015304     ntoskrnl:ntoskrnl.exe
+ 0002:00000088       __imp__ZwSetSecurityObject@12 00015308     ntoskrnl:ntoskrnl.exe
+ 0002:0000008c       __imp__ZwClose@4           0001530c     ntoskrnl:ntoskrnl.exe
+ 0002:00000090       __imp__KeInsertQueueDpc@12 00015310     ntoskrnl:ntoskrnl.exe
+ 0002:00000094       __imp__IoReleaseCancelSpinLock@4 00015314     ntoskrnl:ntoskrnl.exe
+ 0002:00000098       __imp_@IofCompleteRequest@8 00015318     ntoskrnl:ntoskrnl.exe
+ 0002:0000009c       __imp__memset              0001531c     ntoskrnl:ntoskrnl.exe
+ 0002:000000a0       __imp__RtlFreeUnicodeString@4 00015320     ntoskrnl:ntoskrnl.exe
+ 0002:000000a4       __imp__RtlUnwind@16        00015324     ntoskrnl:ntoskrnl.exe
+ 0002:000000a8       __imp__RtlUnicodeToMultiByteN@20 00015328     ntoskrnl:ntoskrnl.exe
+ 0002:000000ac       \177ntoskrnl_NULL_THUNK_DATA 0001532c     ntoskrnl:ntoskrnl.exe
+ 0002:000000d0       _g_SupportedOIDList        00015350     tapdrvr.obj
+ 0002:00000158       ??_C@_1O@CEDCILHN@?$AA?$CI?$AAn?$AAu?$AAl?$AAl?$AA?$CJ?$AA?$AA@ 000153d8     ntstrsafe:output.obj
+ 0002:00000168       ??_C@_06OJHGLDPL@?$CInull?$CJ?$AA@ 000153e8     ntstrsafe:output.obj
+ 0002:00000170       ___lookuptable             000153f0     ntstrsafe:output.obj
+ 0002:000001d0       __load_config_used         00015450     ntoskrnl:loadcfg.obj
+ 0002:00000270       ___safe_se_handler_table   000154f0     <linker-defined>
+ 0003:00000020       ___security_cookie         00015620     BufferOverflowK:gs_support.obj
+ 0003:00000024       ___security_cookie_complement 00015624     BufferOverflowK:gs_support.obj
+ 0003:00000028       ___nullstring              00015628     ntstrsafe:output.obj
+ 0003:0000002c       ___wnullstring             0001562c     ntstrsafe:output.obj
+ 0003:00000030       __NLG_Destination          00015630     ntstrsafe:_nlgsupp.obj
+ 0003:00000040       __fltused                  00015640     ntstrsafe:stubs.obj
+ 0003:00000044       __ldused                   00015644     ntstrsafe:stubs.obj
+ 0003:00000050       ___mb_cur_max              00015650     ntstrsafe:nlsdata1.obj
+ 0003:00000054       ___decimal_point           00015654     ntstrsafe:nlsdata1.obj
+ 0003:00000058       ___decimal_point_length    00015658     ntstrsafe:nlsdata1.obj
+ 0003:00000060       _g_InstanceHash            00015660     tapdrvr.obj
+ 0003:00000064       ___fastflag                00015664     ntstrsafe:stubs.obj
+ 0003:0000006c       _g_NdisWrapperHandle       0001566c     <common>
+ 0003:00000070       _g_LastErrorLineNumber     00015670     <common>
+ 0003:00000074       _g_LastErrorFilename       00015674     <common>
+ 0003:00000078       _errno                     00015678     <common>
+ 0004:00000010       _DriverEntry@8             00015690 f   tapdrvr.obj
+ 0004:00000126       ___security_init_cookie    000157a6 f   BufferOverflowK:gs_support.obj
+ 0004:0000015f       _GsDriverEntry@8           000157df f   BufferOverflowK:gs_support.obj
+ 0004:00000170       __IMPORT_DESCRIPTOR_ntoskrnl 000157f0     ntoskrnl:ntoskrnl.exe
+ 0004:00000184       __IMPORT_DESCRIPTOR_HAL    00015804     hal:HAL.dll
+ 0004:00000198       __IMPORT_DESCRIPTOR_NDIS   00015818     ndis:NDIS.SYS
+ 0004:000001ac       __NULL_IMPORT_DESCRIPTOR   0001582c     ntoskrnl:ntoskrnl.exe
+
+ entry point at        0004:0000015f
+
+ Static symbols
+
+ 0001:00003f9c       __unwind_handler4          0001441c f   ntstrsafe:exsup4.obj
+ 0001:0000407a       _write_char                000144fa f   ntstrsafe:output.obj
+ 0001:000040b2       _write_multi_char          00014532 f   ntstrsafe:output.obj
+ 0001:000040dd       _write_string              0001455d f   ntstrsafe:output.obj
