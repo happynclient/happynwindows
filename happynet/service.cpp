@@ -96,7 +96,7 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
 
 	// Open registry key
 	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happyn2n\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
 	{
 		log_event(L"%s:%d (%s) - Error opening registry key.\n", __FILEW__, __LINE__, __FUNCTIONW__);
 		return 0;

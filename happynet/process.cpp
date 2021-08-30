@@ -114,7 +114,7 @@ void grace_stop_service_process(void)
 	DWORD dword_edge_manager_port = 0;
 
 	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happyn2n\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
 	{
 		dword_edge_manager_port = 0;
 	} else {

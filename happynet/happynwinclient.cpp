@@ -212,7 +212,7 @@ void read_options(HWND hwndDlg)
 	DWORD buf_len = 256;
 	DWORD dword_buf;
 	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happyn2n\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
 	{
 		MessageBox(hwndDlg, L"The registry key could not be opened.", L"Error", MB_OK | MB_ICONSTOP);
 		return;
@@ -300,7 +300,7 @@ void save_options(HWND hwndDlg)
 	WCHAR tmp_buf[256];
 	DWORD buf_len = 256;
 	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happyn2n\\Parameters", NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
 	{
 		MessageBox(hwndDlg, L"The registry key could not be opened.", L"Error", MB_OK | MB_ICONSTOP);
 		return;
