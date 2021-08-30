@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Happyn2n", "Happyn2n\happyn2n.vcxproj", "{C01A3DD3-F5E3-4DA0-BB76-B5B36C17D955}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "happynet", "happynet\happynet.vcxproj", "{C01A3DD3-F5E3-4DA0-BB76-B5B36C17D955}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

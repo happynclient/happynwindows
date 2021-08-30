@@ -14,7 +14,7 @@
     <ProjectGuid>{C01A3DD3-F5E3-4DA0-BB76-B5B36C17D955}</ProjectGuid>
     <RootNamespace>N2NEdgeGUI</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>Happyn2n</ProjectName>
+    <ProjectName>happynet</ProjectName>
     <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -67,7 +67,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)happyn2n.exe</OutputFile>
+      <OutputFile>$(OutDir)happynet.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -91,7 +91,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <OutputFile>$(OutDir)happyn2n.exe</OutputFile>
+      <OutputFile>$(OutDir)happynet.exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

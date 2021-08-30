@@ -208,10 +208,10 @@ void set_auto_start_service()
 		DWORD nLength = MAX_PATH;
 		
 		//already exist
-		if (!reg_get_string(hkey, L"Happyn2n", ret_val, 512) || _tcscmp(str_exe_fulldir, str_dir) != 0)
+		if (!reg_get_string(hkey, L"happynet", ret_val, 512) || _tcscmp(str_exe_fulldir, str_dir) != 0)
 		{
-			//append child Key and set value:"Happyn2n" is exe name
-			RegSetValueEx(hkey, _T("Happyn2n"), 0, REG_SZ, (LPBYTE)str_exe_fulldir, (lstrlen(str_exe_fulldir) + 1)*sizeof(TCHAR));
+			//append child Key and set value:"happynet" is exe name
+			RegSetValueEx(hkey, _T("happynet"), 0, REG_SZ, (LPBYTE)str_exe_fulldir, (lstrlen(str_exe_fulldir) + 1)*sizeof(TCHAR));
 
 			//close regedit
 			RegCloseKey(hkey);
@@ -228,7 +228,7 @@ void cancel_auto_start_service()
 
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), 0, KEY_ALL_ACCESS, &hkey) == ERROR_SUCCESS)
 	{
-		RegDeleteValue(hkey, _T("Happyn2n"));
+		RegDeleteValue(hkey, _T("happynet"));
 		RegCloseKey(hkey);
 	}
 }

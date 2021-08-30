@@ -15,7 +15,7 @@
 
 #define is_item_checked(x,y) (SendDlgItemMessage(x, y, BM_GETCHECK, 0, 0) == BST_CHECKED)
 
-WCHAR szClassName[] = L"Happyn2nClient";
+WCHAR szClassName[] = L"HappynetClient";
 HICON h_icon;
 HICON h_icon_sm;
 HANDLE h_update_main_status_thread;
@@ -483,7 +483,7 @@ void setup_system_menu(HWND hwndDlg)
 {
 	HMENU sys_menu = GetSystemMenu(hwndDlg, FALSE);
 	AppendMenu(sys_menu, MF_SEPARATOR, NULL, NULL);
-	AppendMenu(sys_menu, MF_STRING, IDM_ABOUT, L"About Happyn2nClient..");
+	AppendMenu(sys_menu, MF_STRING, IDM_ABOUT, L"About HappynetClient..");
 }
 
 INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -536,7 +536,7 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			if (wParam == IDM_ABOUT)
 			{
-				MessageBox(hwndDlg, L"Happyn2n Version 0.1", L"About Happyn2nClient", MB_OK | MB_ICONINFORMATION);
+				MessageBox(hwndDlg, L"Happynet Version 0.2", L"About HappynetClient", MB_OK | MB_ICONINFORMATION);
 				break;
 			}
 			return FALSE;

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Happyn2n"
+	Name="happynet"
 	ProjectGUID="{C01A3DD3-F5E3-4DA0-BB76-B5B36C17D955}"
-	RootNamespace="Happyn2n"
+	RootNamespace="happynet"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
