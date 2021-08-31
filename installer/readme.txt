@@ -1,4 +1,4 @@
-Happyn2n Windows Client
+Happynet Windows Client
 
 Powered by happyn.net
 
