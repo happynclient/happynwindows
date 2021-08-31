@@ -1,0 +1,36 @@
+# auto pack release tag .zip package
+
+name: pack
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    tags:
+      - '*'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - run: make zip tagname=${GITHUB_REF#refs/*/}
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1.5.0
+        with:
+          artifacts: "happynet-win-x86-x64-all-*.zip"
+          release_name: happynet linux ${{ github.ref }} Release
+          token: ${{ secrets.RElEASE_TOKEN }}
+          body: |
+              build by happyn.cc
