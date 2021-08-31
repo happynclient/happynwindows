@@ -144,7 +144,7 @@ void terminal_service_process(void)
 		//HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, m_dwprocess_id);
 		if(TerminateProcess(m_hprocess, PROCESS_EXIT_CODE)) {
 			// 500 ms timeout; use INFINITE for no timeout
-			const DWORD result = WaitForSingleObject(m_hprocess, 500);
+			const DWORD result = WaitForSingleObject(m_hprocess, INFINITE);
 			if (result == WAIT_OBJECT_0) {
 				// Success
 				CloseHandle(m_hprocess);
@@ -160,7 +160,7 @@ void terminal_service_process(void)
 				log_event(L"%s:%d (%s) - Failed to WatiForSingleObject.\n", __FILEW__, __LINE__, __FUNCTIONW__);
 			}
 		} else {
-			log_event(L"%s:%d (%s) - Failed to stop or had been stopped.\n", __FILEW__, __LINE__, __FUNCTIONW__);
+			log_event(L"%s:%d (%s) - Process had been stopped.\n", __FILEW__, __LINE__, __FUNCTIONW__);
 		}
 	}
 }
