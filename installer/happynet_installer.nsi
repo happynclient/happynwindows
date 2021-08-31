@@ -17,7 +17,7 @@ BrandingText "Happynet Installer"
 !define PRODUCT_PUBLISHER "happyn.cc"
 
 InstallDir "$PROGRAMFILES\happynet"
-InstallDirRegKey HKLM "Software\happynet" "Path"
+InstallDirRegKey HKLM "Software\Happynet" "Path"
 
 !define MUI_FINISHPAGE_RUN "$INSTDIR\happynet.exe"
 !define MUI_FINISHPAGE_RUN_TEXT "Launch happynet"
@@ -55,14 +55,14 @@ Section "happynet"
   File "..\happynet\happyn.ico"
 
   WriteUninstaller "happynet_uninst.exe"
-  WriteRegStr HKLM "SOFTWARE\happynet" "Path" '$INSTDIR'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\happynet" "DisplayName" "happynet"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\happynet" "UninstallString" '"$INSTDIR\happynet_uninst.exe"'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\happynet" "QuietUninstallString" '"$INSTDIR\happynet_uninst.exe" /S'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\happynet" "InstallLocation" '"$INSTDIR"'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\happynet" "DisplayIcon" '"$INSTDIR\happyn.ico"'
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\happynet" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\happynet" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr HKLM "SOFTWARE\Happynet" "Path" '$INSTDIR'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "DisplayName" "happynet"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "UninstallString" '"$INSTDIR\happynet_uninst.exe"'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "QuietUninstallString" '"$INSTDIR\happynet_uninst.exe" /S'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "InstallLocation" '"$INSTDIR"'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "DisplayIcon" '"$INSTDIR\happyn.ico"'
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "Publisher" "${PRODUCT_PUBLISHER}"
   
   
 ; --------------------------------------------------------
@@ -153,41 +153,41 @@ Section "happynet"
   EnumRegKey $0 HKLM "SOFTWARE\happynet" 0
   ${If} ${Errors}
     DetailPrint  "Value not found"
-    WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "community" "community"
-    WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "enckey" "enckey"
-    WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "ip_address" ""
-    WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "keyfile" ""
-    WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "local_port" 0x00000000
-    WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "mac_address" ""
-    WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "mtu" 0x00000000
-    WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "multicast" 0x00000000
-    WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "packet_forwarding" 0x00000001
-    WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "header_encry" 0x00000000
-    WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "subnet_mask" "255.255.255.0"
-    WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
-    WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "supernode_port" 0x00007530
-    WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "custom_param" "-l rvip.happyn.cc:30000"
-    WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "auto_start" 0x00000000
-    WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "auto_tray" 0x00000000
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "community" "community"
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "enckey" "enckey"
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "ip_address" ""
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "keyfile" ""
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "local_port" 0x00000000
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "mac_address" ""
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "mtu" 0x00000000
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "multicast" 0x00000000
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000001
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "header_encry" 0x00000000
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" "-l rvip.happyn.cc:30000"
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
   ${Else}
     ${IF} $0 == ""
           DetailPrint   "NUL exists and it's empty"
-          WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "community" "community"
-          WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "enckey" "enckey"
-          WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "ip_address" ""
-          WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "keyfile" ""
-          WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "local_port" 0x00000000
-          WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "mac_address" ""
-          WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "mtu" 0x00000000
-          WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "multicast" 0x00000000
-          WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "packet_forwarding" 0x00000001
-          WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "header_encry" 0x00000000
-          WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "subnet_mask" "255.255.255.0"
-          WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
-          WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "supernode_port" 0x00007530
-          WriteRegStr HKLM "SOFTWARE\happynet\Parameters" "custom_param" "-l rvip.happyn.cc:30000"
-          WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "auto_start" 0x00000000
-          WriteRegDWORD HKLM "SOFTWARE\happynet\Parameters" "auto_tray" 0x00000000
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "community" "community"
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "enckey" "enckey"
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "ip_address" ""
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "keyfile" ""
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "local_port" 0x00000000
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "mac_address" ""
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "mtu" 0x00000000
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "multicast" 0x00000000
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000001
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "header_encry" 0x00000000
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" "-l rvip.happyn.cc:30000"
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
       ${ELSE}
           DetailPrint   "Value isn't empty"
       ${ENDIF}
@@ -223,6 +223,18 @@ Section "Uninstall"
   RMDir "$SMPROGRAMS\happynet"
   RMDir "$INSTDIR\drv"
   RMDir "$INSTDIR"
-  DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\happynet"
-  DeleteRegKey HKLM "SOFTWARE\happynet"
+  DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet"
+  DeleteRegKey HKLM "SOFTWARE\Happynet"
+  DeleteRegValue HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "Happynet"
+  
+  ; MAKE SURE DELETE ALL REGITEMS INSTALLED BY OTHER USER
+  ;IntOp $0 0 + 0
+  ;EnumStart:
+  ;  EnumRegKey $R1 HKEY_USERS "" $0
+  ;  IntOp $0 $0 + 1
+  ;  StrCmp $R1 ".DEFAULT" EnumStart
+  ;  StrCmp $R1 "" EnumEnd
+  ;  DeleteRegValue HKU "$R1\Software\Microsoft\Windows\CurrentVersion\Run" "Happynet"
+  ;  Goto EnumStart
+  ;EnumEnd:
 SectionEnd

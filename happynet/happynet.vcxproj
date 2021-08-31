@@ -126,7 +126,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
-    <None Include="n2n.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="happyn.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -51,7 +51,11 @@ Thumbs.db
 *.suo
 *.sdf
 *.pdb
-Happyn2n/Release
-Happyn2nService/Release
-ipch
+*.obj
+Release
 Debug
+happynet/Release
+happynet/Debug
+happynetService/Release
+happynetService/Debug
+ipch
