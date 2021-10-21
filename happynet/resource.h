@@ -68,5 +68,6 @@
 #define IDC_EDT_CUSTOM_PARAM            1032
 #define IDC_CHK_AUTO_START              1033
 #define IDC_CHK_AUTO_TRAY               1034
+#define IDC_SYSLINK_SUPPORT             1035
 
 #endif
