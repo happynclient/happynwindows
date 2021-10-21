@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C01A3DD3-F5E3-4DA0-BB76-B5B36C17D955}</ProjectGuid>
-    <RootNamespace>N2NEdgeGUI</RootNamespace>
+    <RootNamespace>Happyn</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>happynet</ProjectName>
     <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
