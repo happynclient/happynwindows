@@ -60,7 +60,7 @@ BEGIN
     CONTROL         "最小化自动隐藏到托盘",IDC_CHK_AUTO_TRAY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,239,163,10
     GROUPBOX        "程序设置",IDC_STATIC,214,198,168,102
     PUSHBUTTON      "保存当前设置",IDC_BTN_SAVE,222,268,60,14
-    CONTROL         "Powered By: <a href=""https://www.happyn.cn"">happyn.cn</a>              Contact: support@happyn.cn",IDC_SYSLINK_SUPPORT,
+    CONTROL         "Powered By: <a href=""https://www.happyn.net"">happyn.net</a>              Contact: support@happyn.net",IDC_SYSLINK_SUPPORT,
                     "SysLink",LWS_USEVISUALSTYLE | LWS_USECUSTOMTEXT | WS_TABSTOP,15,492,272,14
 END
 
