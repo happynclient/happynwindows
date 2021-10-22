@@ -66,16 +66,16 @@ Section "happynet"
   
   
 ; --------------------------------------------------------
-; edge.exe
+; happynedge.exe
 ; --------------------------------------------------------  
   SetOutPath $INSTDIR
   ${If} ${RunningX64}
-    File "n2n_release\x64\edge.exe"
+    File "n2n_release\x64\happynedge.exe"
   ${Else}
     ${If} ${IsWinXP}
-      File "n2n_release\winxp\edge.exe"
+      File "n2n_release\winxp\happynedge.exe"
     ${Else}  
-      File "n2n_release\x86\edge.exe"
+      File "n2n_release\x86\happynedge.exe"
     ${EndIf}
   ${EndIf}
   
