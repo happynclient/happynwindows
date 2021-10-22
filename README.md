@@ -3,15 +3,13 @@
 
 ## Happynet
 
-Happynet Windows Client 是针对N2N客户端包装的GUI程序，为N2N的用户提供简单易用的界面控制；
+Happynet Windows Client is a GUI program for N2N Client packaging, for N2N users to provide easy to use interface control;
 
-Happynet Windows Client 最初代码来源于[n2nedgegui项目](https://sourceforge.net/projects/n2nedgegui/)，采用GPLV3授权，本项目同样采用GPLV3;
+The original code of Happynet Windows Client comes from [n2NedgeGUI](https://sourceforge.net/projects/n2nedgegui/)，project and adopts GPLV3 authorization. This project also adopts GPLV3.
 
 ## User Guide
 
-使用教程请参考:
-
-https://happyn.cc/helpcenter/windows
+https://windows.happyn.cn
 
 ## License:
 
@@ -19,5 +17,5 @@ https://happyn.cc/helpcenter/windows
 
 ## Powed by:
 
-https://happyn.cc
+https://happyn.cn
 
