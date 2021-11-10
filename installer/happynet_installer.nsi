@@ -13,14 +13,23 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "0.2.0.0"
-!define PRODUCT_PUBLISHER "happyn.cc"
+!define PRODUCT_VERSION "0.4.0.0"
+!define PRODUCT_PUBLISHER "happyn.cn"
 
 InstallDir "$PROGRAMFILES\happynet"
 InstallDirRegKey HKLM "Software\Happynet" "Path"
 
+Function finishpageaction
+CreateShortcut "$DESKTOP\happynet.lnk" "$INSTDIR\happynet.exe"
+FunctionEnd
+
+!define MUI_FINISHPAGE_SHOWREADME ""
+!define MUI_FINISHPAGE_SHOWREADME_CHECKED
+!define MUI_FINISHPAGE_SHOWREADME_TEXT "创建桌面图标"
+!define MUI_FINISHPAGE_SHOWREADME_FUNCTION finishpageaction
+
 !define MUI_FINISHPAGE_RUN "$INSTDIR\happynet.exe"
-!define MUI_FINISHPAGE_RUN_TEXT "Launch happynet"
+!define MUI_FINISHPAGE_RUN_TEXT "现在运行happynet"
 !insertmacro MUI_PAGE_LICENSE "../COPYING"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
@@ -166,7 +175,7 @@ Section "happynet"
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
-    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" "-l rvip.happyn.cc:30000"
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" ""
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
   ${Else}
@@ -185,7 +194,7 @@ Section "happynet"
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
-          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" "-l rvip.happyn.cc:30000"
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" ""
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
       ${ELSE}
