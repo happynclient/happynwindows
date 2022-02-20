@@ -1,21 +1,55 @@
 # README
 
 
-## Happynet
+## Happyn是什么
 
-Happynet Windows Client is a GUI program for N2N Client packaging, for N2N users to provide easy to use interface control;
+Happyn是一个网络互联的平台，我们通过整合优秀的开源软件组网工具，希望通过HAPPYN的服务，让您在世界上任何地方，使用任何联网设备都能建立虚拟网络；
 
-The original code of Happynet Windows Client comes from [n2NedgeGUI](https://sourceforge.net/projects/n2nedgegui/) project and adopts GPLV3 authorization. This project also adopts GPLV3.
+## Happyn现在可以为您提供什么服务
 
-## User Guide
+Happyn现在整合了N2N的服务，可以让您的不同设备、不同系统(Windows、Linux、Android、MacOS)在任何地方都能组建您的个人虚拟局域网
+
+未来我们计划整合更多优秀的开源软件，为您提供更多的网络互联服务
+
+## Happyn的使用场景
+
+* 远程办公
+* 局域网游戏互联
+* 不同设备间资源共享
+* 家用NAS设备资源分享
+* 远程监控
+* 智慧家电互联互通
+* 更多场景等待您的发掘
+
+## 用户帮助
 
 https://windows.happyn.cn
 
-## License:
+## FAQ:
 
-[COPYRIGHT.GPL3](LICENSE)
+#### 客户端支持哪些平台?
 
-## Powed by:
+目前支持Vista，Win7，Win10的32位及64位系统；Winxp的支持可能有兼容性问题，我们正尽力开发中
 
-https://happyn.cn
+#### 我所有设备上的程序已经显示运行成功，但是我Ping不通对方，为什么？
+
+首先请检查是否参数都正确配置了，特别要保证 "服务ID+服务密钥" 是否在所有客户端都一致，有很多时候是我们太粗心;
+
+其次请检查自己的机器是否开启了防火墙，可以先用机器的原有IP Ping一下，看看通不通；大部分情况下都是防火墙阻止了通讯，如何配置防火墙请参考这里
+
+最后请仔细检查Happynet的输出Log，看是否有"[OK]"的连接成功输出，如果没有，最大的可能是您短时间内多次连接，被系统判断为恶意扫描禁止了；此时您先点击“停止”，然后等待2分钟，再次重连即可
+
+另外，在极少数情况下，Windows系统从休眠中唤醒后，服务会因为长时间没有连接导致服务端Block客户端，此时需要 停止服务->退出程序->重新启动客户端->启动服务
+
+#### 怎样才能最小化隐藏到托盘呢？
+
+"程序设置"界面有此项设定，请勾选复选框，然后点击"保存当前设置"生效
+
+#### 怎样才能开机自动启动服务呢？
+
+"程序设置"界面有此项设定，请勾选复选框，然后点击"保存当前设置"生效
+
+#### 还有其它问题？
+
+没关系，请到我们的[交流论坛](https://forum.happyn.cn/t/windows)向我们反馈问题，谢谢您的包容和支持！
 
