@@ -271,6 +271,9 @@ void read_options(HWND hwndDlg)
 	reg_get_dword(hkey, L"header_encry", &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_HEADER_ENCRY, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
+	reg_get_dword(hkey, L"data_compress", &dword_buf);
+	SendDlgItemMessage(hwndDlg, IDC_CHK_DATA_COMPRESS, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
+
 	// Supernode address
 	reg_get_string(hkey, L"supernode_addr", tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_SUPERNODEADDR, tmp_buf);
@@ -384,6 +387,9 @@ void save_options(HWND hwndDlg)
 
 	// header encry
 	reg_set_dword(hkey, L"header_encry", (is_item_checked(hwndDlg, IDC_HEADER_ENCRY) ? 1 : 0));
+
+	// data compress
+	reg_set_dword(hkey, L"data_compress", (is_item_checked(hwndDlg, IDC_CHK_DATA_COMPRESS) ? 1 : 0));
 
 	// Supernode address
 	GetDlgItemText(hwndDlg, IDC_EDT_SUPERNODEADDR, tmp_buf, buf_len);
@@ -536,7 +542,7 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			if (wParam == IDM_ABOUT)
 			{
-				MessageBox(hwndDlg, L"Happynet Version 0.4", L"About HappynetClient", MB_OK | MB_ICONINFORMATION);
+				MessageBox(hwndDlg, L"Happynet Version 0.5", L"About HappynetClient", MB_OK | MB_ICONINFORMATION);
 				break;
 			}
 			return FALSE;
