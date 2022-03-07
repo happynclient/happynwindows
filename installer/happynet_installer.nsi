@@ -237,6 +237,7 @@ Section "Uninstall"
   DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet"
   DeleteRegKey HKLM "SOFTWARE\Happynet"
   DeleteRegValue HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "Happynet"
+  Delete "$DESKTOP\happynet.lnk"
   
   ; MAKE SURE DELETE ALL REGITEMS INSTALLED BY OTHER USER
   ;IntOp $0 0 + 0
