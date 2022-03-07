@@ -170,7 +170,7 @@ Section "happynet"
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "mac_address" ""
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "mtu" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "multicast" 0x00000000
-    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000001
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "header_encry" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "data_compress" 0x00000001
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
@@ -190,7 +190,7 @@ Section "happynet"
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "mac_address" ""
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "mtu" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "multicast" 0x00000000
-          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000001
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "header_encry" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "data_compress" 0x00000001
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
