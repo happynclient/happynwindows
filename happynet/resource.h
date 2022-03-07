@@ -69,5 +69,6 @@
 #define IDC_CHK_AUTO_START              1033
 #define IDC_CHK_AUTO_TRAY               1034
 #define IDC_SYSLINK_SUPPORT             1035
+#define IDC_CHK_DATA_COMPRESS           1036
 
 #endif
