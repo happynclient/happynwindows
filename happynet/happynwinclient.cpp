@@ -443,6 +443,7 @@ void handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	case IDC_BTN_SAVE:
 		save_options(hwndDlg);
+		MessageBox(NULL, TEXT("已成功保存"), TEXT("保存当前设置"), MB_OK| MB_ICONINFORMATION);
 		break;
 
 	case IDC_BTN_EXIT:

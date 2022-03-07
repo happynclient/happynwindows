@@ -71,4 +71,10 @@
 #define IDC_SYSLINK_SUPPORT             1035
 #define IDC_CHK_DATA_COMPRESS           1036
 
+#define IDC_STATIC_BASIC                1040
+#define IDC_STATIC_ADVANCED             1041
+#define IDC_STATIC_SERVICE              1042
+#define IDC_STATIC_CONFIG               1043
+#define IDC_STATIC_LOG                  1044
+
 #endif
