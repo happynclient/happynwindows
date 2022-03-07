@@ -13,7 +13,7 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "0.4.0.0"
+!define PRODUCT_VERSION "0.5.0.0"
 !define PRODUCT_PUBLISHER "happyn.cn"
 
 InstallDir "$PROGRAMFILES\happynet"
@@ -172,6 +172,7 @@ Section "happynet"
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "multicast" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000001
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "header_encry" 0x00000000
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "data_compress" 0x00000001
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
@@ -191,6 +192,7 @@ Section "happynet"
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "multicast" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000001
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "header_encry" 0x00000000
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "data_compress" 0x00000001
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
