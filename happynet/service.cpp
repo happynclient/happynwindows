@@ -115,13 +115,15 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
 
 	// IP address
 	if (!reg_get_string(hkey, L"ip_address", ret_val, 512)) return 0;
-	if (wcslen(ret_val) != 0)
+	if (!reg_get_dword(hkey, L"packet_forwarding", &ret_dword)) return 0;
+	if (wcslen(ret_val) != 0 && ret_dword == 0)
 	{
 		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -a %s", ret_val);
 	}
-	else
+	
+	if (wcslen(ret_val) == 0 && ret_dword == 0)
 	{
-		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -a dhcp:0.0.0.0");
+		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -r -a dhcp:0.0.0.0");
 	}
 
 	// Encryption key file
@@ -192,7 +194,6 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
 	//custom param
 	if (!reg_get_string(hkey, L"custom_param", ret_val, 512)) return 0;
 	ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" %s", ret_val);
-
 	return 1;
 }
 
