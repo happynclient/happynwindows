@@ -69,7 +69,7 @@ void start_service()
 void stop_service()
 {
 	grace_stop_service_process();
-	Sleep(1000);
+	Sleep(1500);
 	terminal_service_process();
 }
 
