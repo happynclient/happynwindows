@@ -454,7 +454,7 @@ void handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			bool checked = is_item_checked(hwndDlg, IDC_CHK_IPADDRESS);
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), checked);
-			SendDlgItemMessage(hwndDlg, IDC_CHK_PKTFORWARD, BM_SETCHECK, (checked ? BST_UNCHECKED : BST_CHECKED), 0);
+			// SendDlgItemMessage(hwndDlg, IDC_CHK_PKTFORWARD, BM_SETCHECK, (checked ? BST_UNCHECKED : BST_CHECKED), 0);
 			break;
 		}
 	case IDC_CHK_ENCKEY:
