@@ -167,6 +167,7 @@ void update_service_status(HWND hwndDlg)
 
 	HWND btn_start = GetDlgItem(hwndDlg, IDC_BTN_START);
 	HWND btn_stop = GetDlgItem(hwndDlg, IDC_BTN_STOP);
+	HWND btn_ad_settings = GetDlgItem(hwndDlg, IDC_BTN_AD_SETTINGS);
 	WCHAR read_buf[BUFSIZE] = {'\0'};
 	DWORD service_status = get_service_status();
 	switch (service_status)
@@ -428,8 +429,17 @@ void save_options(HWND hwndDlg)
 void handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (HIWORD(wParam != BN_CLICKED)) return;
+	static HINSTANCE hInstance;
 	switch (LOWORD(wParam))
 	{
+	case WM_CREATE:
+		hInstance = ((LPCREATESTRUCT)lParam)->hInstance;
+		break;
+
+	case IDC_BTN_AD_SETTINGS:
+		//DialogBox(hInstance, TEXT("Adwanced Settings"), hwndDlg, ad_settings_dialog_proc);
+		DialogBox(hInstance, MAKEINTRESOURCE(IDD_AD_SETTINGS), hwndDlg, ad_settings_dialog_proc);
+		break;
 	case IDC_BTN_START:
 		save_options(hwndDlg);
 		start_service();
@@ -593,6 +603,35 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 	}
 	return TRUE;
 }
+
+INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_INITDIALOG:
+	{		
+		return FALSE;
+	}
+
+	case WM_COMMAND:
+	{
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+		case IDCANCEL:
+			EndDialog(hwndDlg, 0);
+			return TRUE;
+		}
+		break;
+	}
+
+	default:
+		return FALSE;
+	}
+	return TRUE;
+}
+
+
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
