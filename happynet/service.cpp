@@ -191,6 +191,15 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
 	if (!reg_get_dword(hkey, L"supernode_port", &ret_dword)) return 0;
 	ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L":%d", ret_dword);
 
+	// device name
+	const int info_buf_size = 32767;
+	TCHAR  info_buf[info_buf_size];
+	DWORD  buf_char_count = info_buf_size;
+
+	// Get and display the name of the computer.
+	if (GetComputerName(info_buf, &buf_char_count))
+		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I %s", info_buf);
+
 	//custom param
 	if (!reg_get_string(hkey, L"custom_param", ret_val, 512)) return 0;
 	ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" %s", ret_val);

@@ -631,7 +631,7 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			if (wParam == IDM_ABOUT)
 			{
-				MessageBox(hwndDlg, L"Happynet Version 0.7", L"About HappynetClient", MB_OK | MB_ICONINFORMATION);
+				MessageBox(hwndDlg, L"Happynet Version 0.8", L"About HappynetClient", MB_OK | MB_ICONINFORMATION);
 				break;
 			}
 			return FALSE;
