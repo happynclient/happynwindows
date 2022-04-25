@@ -314,7 +314,7 @@ void read_ad_options(HWND hwndDlg)
 	reg_get_dword(hkey, L"local_port", &dword_buf);
 	SetDlgItemInt(hwndDlg, IDC_EDT_LOCALPORT, dword_buf, FALSE);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_LOCALPORT, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
-	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT), !string_empty(tmp_buf));
+	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT), dword_buf != 0);
 
 	// Key file
 	reg_get_string(hkey, L"keyfile", tmp_buf, buf_len);
