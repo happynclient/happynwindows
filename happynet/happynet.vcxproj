@@ -111,6 +111,7 @@
     <ClCompile Include="process.cpp" />
     <ClCompile Include="registry.cpp" />
     <ClCompile Include="service.cpp" />
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="maingui.h" />
@@ -120,6 +121,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="service.h" />
     <ClInclude Include="tray.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="res.rc" />
