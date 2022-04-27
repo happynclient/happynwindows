@@ -6,6 +6,7 @@
 #include "service.h"
 #include "registry.h"
 #include "process.h"
+#include "utils.h"
 
 HANDLE pid;
 WCHAR exe_path[MAX_PATH];
@@ -197,20 +198,25 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
 	DWORD  buf_char_count = info_buf_size;
 
 	// Get and display the name of the computer.
+	// TODO: support No-ASCII hostname
 	if (GetComputerName(hostname, &buf_char_count))
 	{
 		HKEY hkey_hostname;
-		WCHAR reg_hostname[512] = {'\0'};
+		WCHAR reg_hostname[info_buf_size] = {'\0'};
 		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters", NULL, KEY_READ, &hkey_hostname) == ERROR_SUCCESS && \
 			(reg_get_string(hkey_hostname, L"hostname", reg_hostname, 512)))
 		{
-			
-			ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I %s", reg_hostname);
+			lstrcpynW(hostname, reg_hostname, lstrlenW(reg_hostname) + 1);
 		}
-		else
-		{
-			ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I %s", hostname);
-		}
+	}
+
+	if (is_valid_ascii_string(hostname) || (!is_valid_ascii_string(hostname) && strip_no_ascii_string(hostname)))
+	{
+		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I %s", hostname);
+	}
+	else
+	{
+		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I unknown");
 	}
 
 	//custom param

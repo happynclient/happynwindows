@@ -214,8 +214,6 @@ void update_service_status(HWND hwndDlg)
 
 BOOL is_auto_start()
 {
-	WCHAR tmp_buf[256];
-	DWORD buf_len = 256;
 	DWORD dword_buf;
 	HKEY hkey;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
@@ -231,8 +229,6 @@ BOOL is_auto_start()
 
 BOOL is_auto_tray()
 {
-	WCHAR tmp_buf[256];
-	DWORD buf_len = 256;
 	DWORD dword_buf;
 	HKEY hkey;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
