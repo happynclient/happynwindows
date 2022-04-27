@@ -13,7 +13,7 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "0.6.0.0"
+!define PRODUCT_VERSION "0.9.0.0"
 !define PRODUCT_PUBLISHER "happyn.cn"
 
 InstallDir "$PROGRAMFILES\happynet"
@@ -163,7 +163,7 @@ Section "happynet"
   ${If} ${Errors}
     DetailPrint  "Value not found"
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "community" "community"
-    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "enckey" "enckey"
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "enckey" "happyn"
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "ip_address" ""
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "keyfile" ""
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "local_port" 0x00000000
@@ -183,7 +183,7 @@ Section "happynet"
     ${IF} $0 == ""
           DetailPrint   "NUL exists and it's empty"
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "community" "community"
-          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "enckey" "enckey"
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "enckey" "happyn"
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "ip_address" ""
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "keyfile" ""
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "local_port" 0x00000000
