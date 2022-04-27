@@ -193,12 +193,25 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
 
 	// device name
 	const int info_buf_size = 32767;
-	TCHAR  info_buf[info_buf_size];
+	TCHAR  hostname[info_buf_size];
 	DWORD  buf_char_count = info_buf_size;
 
 	// Get and display the name of the computer.
-	if (GetComputerName(info_buf, &buf_char_count))
-		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I %s", info_buf);
+	if (GetComputerName(hostname, &buf_char_count))
+	{
+		HKEY hkey_hostname;
+		WCHAR reg_hostname[512] = {'\0'};
+		if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters", NULL, KEY_READ, &hkey_hostname) == ERROR_SUCCESS && \
+			(reg_get_string(hkey_hostname, L"hostname", reg_hostname, 512)))
+		{
+			
+			ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I %s", reg_hostname);
+		}
+		else
+		{
+			ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I %s", hostname);
+		}
+	}
 
 	//custom param
 	if (!reg_get_string(hkey, L"custom_param", ret_val, 512)) return 0;
