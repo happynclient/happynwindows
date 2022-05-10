@@ -14,7 +14,7 @@ RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
 !define PRODUCT_VERSION "1.0.0.0"
-!define PRODUCT_PUBLISHER "happyn.cn"
+!define PRODUCT_PUBLISHER "happyn.net"
 
 InstallDir "$PROGRAMFILES\happynet"
 InstallDirRegKey HKLM "Software\Happynet" "Path"
@@ -25,19 +25,19 @@ FunctionEnd
 
 !define MUI_FINISHPAGE_SHOWREADME ""
 !define MUI_FINISHPAGE_SHOWREADME_CHECKED
-!define MUI_FINISHPAGE_SHOWREADME_TEXT "创建桌面图标"
+!define MUI_FINISHPAGE_SHOWREADME_TEXT "Creating desktop ICON"
 !define MUI_FINISHPAGE_SHOWREADME_FUNCTION finishpageaction
 
 !define MUI_FINISHPAGE_RUN "$INSTDIR\happynet.exe"
-!define MUI_FINISHPAGE_RUN_TEXT "现在运行happynet"
-!insertmacro MUI_PAGE_LICENSE "../COPYING"
+!define MUI_FINISHPAGE_RUN_TEXT "Run happynet Now"
+!insertmacro MUI_PAGE_LICENSE "../COPYRIGHT"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
 
-!insertmacro MUI_LANGUAGE "simpchinese"
+!insertmacro MUI_LANGUAGE "english"
 ;--------------------------------
 ;Version Information
 VIProductVersion ${PRODUCT_VERSION}
