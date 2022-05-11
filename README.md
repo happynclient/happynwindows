@@ -17,7 +17,7 @@ Happynet Client is compatible with [N2N3.0](https://github.com/ntop/n2n/releases
 3. start service
 
 
-The configuration is compatible with [n2n edge params](https://github.com/ntop/n2n/blob/dev/doc/)
+The configuration is compatible with [n2n edge params](https://github.com/ntop/n2n/blob/dev/doc/ConfigurationFiles.md)
 
 
 ## Download
