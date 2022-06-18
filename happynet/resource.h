@@ -1220,6 +1220,7 @@
 #define psh13                           0x040c
 #define IDC_CHK_DATA_COMPRESS           1036
 #define psh14                           0x040d
+#define IDC_CHK_SELECT_RTT              1037
 #define psh15                           0x040e
 #define psh16                           0x040f
 #define _WIN32_WINDOWS                  0x0410
@@ -1558,7 +1559,7 @@
 #define UNICODE_NOCHAR                  0xFFFF
 //#define PWR_FAIL                        -1
 //#define HTTRANSPARENT                   -1
-#define IDC_STATIC                      -1
+#define IDC_STATIC                        -1
 
 // Next default values for new objects
 // 

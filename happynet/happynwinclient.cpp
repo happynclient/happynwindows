@@ -347,6 +347,9 @@ void read_ad_options(HWND hwndDlg)
 	reg_get_dword(hkey, L"data_compress", &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_DATA_COMPRESS, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
+	reg_get_dword(hkey, L"select_rtt", &dword_buf);
+	SendDlgItemMessage(hwndDlg, IDC_CHK_SELECT_RTT, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
+
 	//custom param
 	reg_get_string(hkey, L"custom_param", tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_CUSTOM_PARAM, tmp_buf);
@@ -484,6 +487,8 @@ void save_ad_options(HWND hwndDlg)
 	// data compress
 	reg_set_dword(hkey, L"data_compress", (is_item_checked(hwndDlg, IDC_CHK_DATA_COMPRESS) ? 1 : 0));
 
+	// select rtt
+	reg_set_dword(hkey, L"select_rtt", (is_item_checked(hwndDlg, IDC_CHK_SELECT_RTT) ? 1 : 0));
 
 	//custom param
 	if (is_item_checked(hwndDlg, IDC_CHK_CUSTOM_PARAM))

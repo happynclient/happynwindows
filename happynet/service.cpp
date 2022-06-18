@@ -184,6 +184,13 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
 		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -z1");
 	}
 
+	// select rtt
+	if (!reg_get_dword(hkey, L"select_rtt", &ret_dword)) return 0;
+	if (ret_dword != 0)
+	{
+		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" --select-rtt");
+	}
+
 	// Supernode address
 	if (!reg_get_string(hkey, L"supernode_addr", ret_val, 512)) return 0;
 	ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -l %s", ret_val);
