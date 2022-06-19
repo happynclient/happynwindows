@@ -203,8 +203,16 @@ Section "happynet"
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
       ${ELSE}
           DetailPrint   "Value isn't empty"
+          ;--------------------------------
+          ;add new option
+          EnumRegKey $0 HKLM "SOFTWARE\Happynet\Parameters\select_rtt" 0
+          ${If} ${Errors}
+              DetailPrint  "select_rtt not found"
+              WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "select_rtt" 0x00000001
+          ${ENDIF}
       ${ENDIF}
   ${EndIf}
+
 
 ; --------------------------------------------------------
 ; GUI TOOL
