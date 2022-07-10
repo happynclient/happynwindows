@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <stdlib.h>
+#include <windowsx.h>
 #include <tchar.h>
 
 #include "maingui.h"
@@ -10,6 +11,7 @@
 #include "registry.h"
 #include "process.h"
 #include "tray.h"
+#include "netadapter.h"
 
 #pragma comment(lib, "comctl32.lib")
 
@@ -20,6 +22,7 @@ HICON h_icon;
 HICON h_icon_sm;
 HANDLE h_update_main_status_thread;
 HANDLE h_mutex = NULL;
+CNetworkAdapter *m_pAdapters = NULL;
 
 bool string_empty(WCHAR* str)
 {
@@ -704,6 +707,50 @@ INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
 			//EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_ENCKEY), !checked);
 			break;
 		}
+
+        case IDC_CHK_ADAPTERS:
+        {
+            HWND hwndCombo = GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS);
+            bool checked = is_item_checked(hwndDlg, IDC_CHK_ADAPTERS);
+            EnableWindow(GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS), checked);
+
+            if(!checked) {
+                ComboBox_SetText(hwndCombo, _T("Auto Detect"));
+                break;
+            }
+
+            // set adapters info
+            DWORD	dwErr = 0;
+            ULONG	ulNeeded = 0;
+            UINT	m_nCount;
+
+            dwErr = EnumNetworkAdapters(m_pAdapters, 0, &ulNeeded);
+            if (dwErr == ERROR_INSUFFICIENT_BUFFER) {
+                m_nCount = ulNeeded / sizeof(CNetworkAdapter);
+                m_pAdapters = new CNetworkAdapter[ulNeeded / sizeof(CNetworkAdapter)];
+                dwErr = EnumNetworkAdapters(m_pAdapters, ulNeeded, &ulNeeded);
+                if (!m_pAdapters) {
+                    // not found adapters
+                    break;
+                }
+            }
+            else {
+                // not found adapters
+                break;
+            }
+
+            // set to IDC_COMBO_ADAPTERS            
+            SendMessage(hwndCombo, CB_RESETCONTENT, 0, 0);
+            for (int m_nDisplay = 0; m_nDisplay < m_nCount; m_nDisplay++) {
+                CNetworkAdapter* pAdapt = &m_pAdapters[m_nDisplay];
+                //sDesc = pAdapt->GetAdapterDescription().c_str();
+                TCHAR sDesc[512] = {0};
+                wcscpy_s(sDesc, sizeof(sDesc) / sizeof(TCHAR), pAdapt->GetAdapterDescription().c_str());
+                SendMessage(hwndCombo, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)sDesc);
+            }
+            SendMessage(hwndCombo, CB_SETCURSEL, (WPARAM)2, (LPARAM)0);
+            break;
+        }
 		case IDC_CHK_MTU:
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MTU), is_item_checked(hwndDlg, IDC_CHK_MTU));
 			break;
