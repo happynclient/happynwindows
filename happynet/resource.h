@@ -1178,6 +1178,8 @@
 #define IDC_CHK_IPADDRESS               1022
 #define CF_GDIOBJLAST                   0x03FF
 #define IDC_CHK_KEYFILE                 1023
+#define IDC_COMBO_ADAPTERS              1071
+#define IDC_CHK_ADAPTERS                1072
 #define _WIN32_WINNT_NT4                0x0400
 #define _WIN32_IE_IE40                  0x0400
 #define WM_USER                         0x0400
