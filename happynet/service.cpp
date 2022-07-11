@@ -1,8 +1,10 @@
+#include <comdef.h>
 #include <stdio.h>
 #include <windows.h>
 #include "atlbase.h"
 #include "atlstr.h"
 
+#include "net.h"
 #include "service.h"
 #include "registry.h"
 #include "process.h"
@@ -133,6 +135,22 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
 	{
 		ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -K %s", ret_val);
 	}
+
+    // set adapter
+    if (!reg_get_string(hkey, L"adapter", ret_val, 512)) return 0;
+    if (wcslen(ret_val) != 0)
+    {
+        CHAR *adapter_id = NULL;
+        const CHAR s[2] = "_";
+        _bstr_t b(ret_val);
+        adapter_id = strtok(b, s);
+        adapter_id = strtok(NULL, s);
+
+        TCHAR adapter_firendly_name[512] = { 0 };
+        if (get_adapter_friendly_name(adapter_id, adapter_firendly_name, 512) == NOERROR) {
+            ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -d '%s'", adapter_firendly_name);
+        }
+    }
 
 	// Local Port
 	if (!reg_get_dword(hkey, L"local_port", &ret_dword)) return 0;

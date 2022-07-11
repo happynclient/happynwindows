@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
@@ -5,6 +6,11 @@
 #include "net.h"
 
 #pragma comment(lib, "iphlpapi.lib")
+
+#define MAX_TRIES 3
+#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+const ULONG WORKING_BUFFER_SIZE = 15000;
 
 void get_mac_address(WCHAR* mac_address, WCHAR* guid)
 {
@@ -42,6 +48,52 @@ void get_mac_address(WCHAR* mac_address, WCHAR* guid)
 		HeapFree(GetProcessHeap(), 0, addresses);
 	}
 }
+
+DWORD get_adapter_friendly_name(CHAR* adapter_name, WCHAR* friendly_name, ULONG max_name_length)
+{
+    ULONG out_buf_len = WORKING_BUFFER_SIZE;
+    ULONG iterations = 0;
+    PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+    DWORD ret_value = 0;
+    do {
+        pAddresses = (IP_ADAPTER_ADDRESSES *)MALLOC(out_buf_len);
+        if (pAddresses == NULL) {
+            printf("Memory allocation failed for IP_ADAPTER_ADDRESSES struct\n");
+            return E_FAIL;
+        }
+
+        ret_value = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, pAddresses, &out_buf_len);
+
+        if (ret_value == ERROR_BUFFER_OVERFLOW) {
+            FREE(pAddresses);
+            pAddresses = NULL;
+            return E_FAIL;
+        }
+        iterations++;
+    } while ((ret_value == ERROR_BUFFER_OVERFLOW) && (iterations < MAX_TRIES));
+
+    PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
+    while (pCurrAddresses) {
+        if (!lstrcmpA(pCurrAddresses->AdapterName, adapter_name)) {
+            UINT friendly_name_length = lstrlenW(pCurrAddresses->FriendlyName);
+            if (friendly_name_length < max_name_length && friendly_name_length > 0) {
+                lstrcpynW(friendly_name, pCurrAddresses->FriendlyName, friendly_name_length + 1);
+                if (pAddresses != NULL) {
+                    FREE(pAddresses);
+                    pAddresses = NULL;
+                }
+                return NOERROR;
+            }
+        }
+        pCurrAddresses = pCurrAddresses->Next;
+    }
+    if (pAddresses != NULL) {
+        FREE(pAddresses);
+        pAddresses = NULL;
+    }
+    return E_FAIL;
+}
+
 
 void get_addresses(WCHAR* ip_address, WCHAR* mac_address)
 {
