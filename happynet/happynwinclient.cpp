@@ -322,6 +322,12 @@ void read_ad_options(HWND hwndDlg)
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE), !string_empty(tmp_buf));
 	EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_ENCKEY), string_empty(tmp_buf));
 
+    // Adapter
+    reg_get_string(hkey, L"adapter", tmp_buf, buf_len);
+    SetDlgItemText(hwndDlg, IDC_COMBO_ADAPTERS, tmp_buf);
+    SendDlgItemMessage(hwndDlg, IDC_CHK_ADAPTERS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
+    EnableWindow(GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS), !string_empty(tmp_buf));
+
 
 	// MAC address
 	reg_get_string(hkey, L"mac_address", tmp_buf, buf_len);
@@ -444,6 +450,17 @@ void save_ad_options(HWND hwndDlg)
 		reg_set_string(hkey, L"keyfile", L"");
 	}
 
+
+    // TAP Adapter
+    if (is_item_checked(hwndDlg, IDC_CHK_ADAPTERS))
+    {
+        GetDlgItemText(hwndDlg, IDC_COMBO_ADAPTERS, tmp_buf, buf_len);
+        reg_set_string(hkey, L"adapter", tmp_buf);
+    }
+    else
+    {
+        reg_set_string(hkey, L"adapter", L"");
+    }
 
 	// MAC address
 	if (is_item_checked(hwndDlg, IDC_CHK_MACADDRESS))
@@ -722,7 +739,7 @@ INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
             // set adapters info
             DWORD	dwErr = 0;
             ULONG	ulNeeded = 0;
-            UINT	m_nCount;
+            UINT	m_nCount = 0;           
 
             dwErr = EnumNetworkAdapters(m_pAdapters, 0, &ulNeeded);
             if (dwErr == ERROR_INSUFFICIENT_BUFFER) {
@@ -742,13 +759,18 @@ INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
             // set to IDC_COMBO_ADAPTERS            
             SendMessage(hwndCombo, CB_RESETCONTENT, 0, 0);
             for (int m_nDisplay = 0; m_nDisplay < m_nCount; m_nDisplay++) {
-                CNetworkAdapter* pAdapt = &m_pAdapters[m_nDisplay];
-                //sDesc = pAdapt->GetAdapterDescription().c_str();
-                TCHAR sDesc[512] = {0};
-                wcscpy_s(sDesc, sizeof(sDesc) / sizeof(TCHAR), pAdapt->GetAdapterDescription().c_str());
-                SendMessage(hwndCombo, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)sDesc);
+                CNetworkAdapter* pAdapt = &m_pAdapters[m_nDisplay];   
+
+                if (pAdapt->GetAdapterDescription().rfind(_T("TAP"), 0) != 0) {
+                    continue;
+                }
+                else {
+                    TCHAR sDesc[512] = { 0 };
+                    wcscpy_s(sDesc, sizeof(sDesc) / sizeof(TCHAR), pAdapt->GetAdapterDescription().c_str());
+                    SendMessage(hwndCombo, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)sDesc);
+                }
             }
-            SendMessage(hwndCombo, CB_SETCURSEL, (WPARAM)2, (LPARAM)0);
+            SendMessage(hwndCombo, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
             break;
         }
 		case IDC_CHK_MTU:
