@@ -765,11 +765,11 @@ INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
                     continue;
                 }
                 else {
-                    TCHAR sDesc[512] = { 0 };
-                    wcscpy_s(sDesc, sizeof(sDesc) / sizeof(TCHAR), pAdapt->GetAdapterDescription().c_str());
-                    SendMessage(hwndCombo, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)sDesc);
+                    TCHAR adapter_name[512] = { 0 };                    
+                    swprintf(adapter_name, L"%s_%s", pAdapt->GetAdapterDescription().c_str(), pAdapt->GetAdapterName().c_str());
+                    SendMessage(hwndCombo, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)adapter_name);
                 }
-            }
+            }            
             SendMessage(hwndCombo, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
             break;
         }
