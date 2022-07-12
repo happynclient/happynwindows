@@ -149,7 +149,7 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
 
         TCHAR adapter_firendly_name[512] = { 0 };
         if (get_adapter_friendly_name(adapter_id, adapter_firendly_name, 512) == NOERROR) {
-            ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -d '%s'", adapter_firendly_name);
+            ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -d \"%s\"", adapter_firendly_name);
         }
     }
 

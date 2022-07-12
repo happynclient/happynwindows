@@ -2,15 +2,118 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
+#include <objbase.h>
+#include <netcon.h>
 #include <windows.h>
 #include "netinterface.h"
 
 #pragma comment(lib, "iphlpapi.lib")
+#pragma comment(lib, "ole32.lib")
+#pragma comment(lib, "oleaut32.lib")
 
 #define MAX_TRIES 3
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 const ULONG WORKING_BUFFER_SIZE = 15000;
+#define NPCAP_LOOPBACK_INTERFACE_NAME			L"HAPPYNET"
+
+
+static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_uuid[])
+{   // add a port mapping to every firewalled or shared connection 
+    BOOL is_found = FALSE;
+    INetSharingEveryConnectionCollection * nsecc_ptr = NULL;
+    HRESULT hr = pNSM->get_EnumEveryConnection(&nsecc_ptr);
+    if (!nsecc_ptr)
+        wprintf(L"failed to get EveryConnectionCollection!\r\n");
+    else {
+
+        // enumerate connections
+        IEnumVARIANT * ev_ptr = NULL;
+        IUnknown * unk_ptr = NULL;
+        hr = nsecc_ptr->get__NewEnum(&unk_ptr);
+        if (unk_ptr) {
+            hr = unk_ptr->QueryInterface(__uuidof(IEnumVARIANT),
+                (void**)&ev_ptr);
+            unk_ptr->Release();
+        }
+        if (ev_ptr) {
+            VARIANT v;
+            VariantInit(&v);
+
+            while ((S_OK == ev_ptr->Next(1, &v, NULL)) && (is_found == FALSE)) {
+                if (V_VT(&v) == VT_UNKNOWN) {
+                    INetConnection * pNC = NULL;
+                    V_UNKNOWN(&v)->QueryInterface(__uuidof(INetConnection),
+                        (void**)&pNC);
+                    if (pNC) {
+                        NETCON_PROPERTIES *pNETCON_PROPERTIES;
+                        pNC->GetProperties(&pNETCON_PROPERTIES);
+
+                        wchar_t currentGUID[255];
+                        GUID guid = pNETCON_PROPERTIES->guidId;
+                        wsprintf(currentGUID, L"{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
+                            guid.Data1, guid.Data2, guid.Data3,
+                            guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3],
+                            guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
+
+                        if (wcscmp(currentGUID, device_uuid) == 0)
+                        {
+                            hr = pNC->Rename(NPCAP_LOOPBACK_INTERFACE_NAME);
+                            is_found = TRUE;
+                            if (hr != S_OK)
+                            {
+                                wprintf(L"failed to create rename NPCAP_LOOPBACK_INTERFACE_NAME\r\n");
+                            }
+                        }
+
+                        pNC->Release();
+                    }
+                }
+                VariantClear(&v);
+            }
+            ev_ptr->Release();
+        }
+        nsecc_ptr->Release();
+    }
+
+    return is_found;
+}
+
+BOOL set_netinterface_name_by_id(WCHAR device_uuid[])
+{
+    BOOL ret = FALSE;
+    /*	CoInitialize (NULL);*/
+
+        // init security to enum RAS connections
+    CoInitializeSecurity(NULL, -1, NULL, NULL,
+        RPC_C_AUTHN_LEVEL_PKT,
+        RPC_C_IMP_LEVEL_IMPERSONATE,
+        NULL, EOAC_NONE, NULL);
+
+    INetSharingManager * nsm_ptr = NULL;
+    HRESULT hr = ::CoCreateInstance(__uuidof(NetSharingManager),
+        NULL,
+        CLSCTX_ALL,
+        __uuidof(INetSharingManager),
+        (void**)&nsm_ptr);
+    if (!nsm_ptr)
+    {
+        wprintf(L"failed to create NetSharingManager object\r\n");
+        return ret;
+    }
+    else {
+
+        // add a port mapping to every shared or firewalled connection.
+        ret = rename_netinterface_by_id(nsm_ptr, device_uuid);
+
+        nsm_ptr->Release();
+    }
+
+    /*	CoUninitialize ();*/
+
+    return ret;
+}
+
 
 void get_mac_address(WCHAR* mac_address, WCHAR* guid)
 {

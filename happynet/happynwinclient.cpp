@@ -456,6 +456,13 @@ void save_ad_options(HWND hwndDlg)
     {
         GetDlgItemText(hwndDlg, IDC_COMBO_ADAPTERS, tmp_buf, buf_len);
         reg_set_string(hkey, L"adapter", tmp_buf);
+
+        // set adapter net interface name to HAPPYNET by uuid
+        WCHAR *strtok_buf = NULL, *adapter_id = NULL;
+        const WCHAR s[4] = L"_";
+        adapter_id = wcstok_s(tmp_buf, s, &strtok_buf);
+        adapter_id = wcstok_s(NULL, s, &strtok_buf);
+        set_netinterface_name_by_id(adapter_id);
     }
     else
     {
