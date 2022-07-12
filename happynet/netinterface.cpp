@@ -3,7 +3,7 @@
 #include <ws2tcpip.h>
 #include <iphlpapi.h>
 #include <windows.h>
-#include "net.h"
+#include "netinterface.h"
 
 #pragma comment(lib, "iphlpapi.lib")
 

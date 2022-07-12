@@ -4,7 +4,7 @@
 #include "atlbase.h"
 #include "atlstr.h"
 
-#include "net.h"
+#include "netinterface.h"
 #include "service.h"
 #include "registry.h"
 #include "process.h"
@@ -143,8 +143,9 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
         CHAR *adapter_id = NULL;
         const CHAR s[2] = "_";
         _bstr_t b(ret_val);
-        adapter_id = strtok(b, s);
-        adapter_id = strtok(NULL, s);
+        CHAR *tmpbuf = NULL;
+        adapter_id = strtok_s(b, s, &tmpbuf);
+        adapter_id = strtok_s(NULL, s, &tmpbuf);
 
         TCHAR adapter_firendly_name[512] = { 0 };
         if (get_adapter_friendly_name(adapter_id, adapter_firendly_name, 512) == NOERROR) {
