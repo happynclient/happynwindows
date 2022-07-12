@@ -7,7 +7,7 @@
 #include "maingui.h"
 #include "resource.h"
 #include "service.h"
-#include "net.h"
+#include "netinterface.h"
 #include "registry.h"
 #include "process.h"
 #include "tray.h"
@@ -758,7 +758,7 @@ INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
 
             // set to IDC_COMBO_ADAPTERS            
             SendMessage(hwndCombo, CB_RESETCONTENT, 0, 0);
-            for (int m_nDisplay = 0; m_nDisplay < m_nCount; m_nDisplay++) {
+            for (UINT m_nDisplay = 0; m_nDisplay < m_nCount; m_nDisplay++) {
                 CNetworkAdapter* pAdapt = &m_pAdapters[m_nDisplay];   
 
                 if (pAdapt->GetAdapterDescription().rfind(_T("TAP"), 0) != 0) {
@@ -766,7 +766,7 @@ INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
                 }
                 else {
                     TCHAR adapter_name[512] = { 0 };                    
-                    swprintf(adapter_name, L"%s_%s", pAdapt->GetAdapterDescription().c_str(), pAdapt->GetAdapterName().c_str());
+                    swprintf_s(adapter_name, L"%s_%s", pAdapt->GetAdapterDescription().c_str(), pAdapt->GetAdapterName().c_str());
                     SendMessage(hwndCombo, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)adapter_name);
                 }
             }            
