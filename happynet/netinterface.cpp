@@ -5,6 +5,8 @@
 #include <objbase.h>
 #include <netcon.h>
 #include <windows.h>
+
+#include "registry.h"
 #include "netinterface.h"
 
 #pragma comment(lib, "iphlpapi.lib")
@@ -216,15 +218,35 @@ void get_addresses(WCHAR* ip_address, WCHAR* mac_address)
 	wsprintf(ip_address, L"<unknown>");
 	wsprintf(mac_address, L"<unknown>");
 
+    // check if user select adapter manually by ad_option dialog
+    WCHAR tmp_buf[256] = {0};
+    DWORD buf_len = 256;  
+    WCHAR *strtok_buf = NULL, *adapter_id = NULL;
+    const WCHAR s[4] = L"_";
+    HKEY hkey_adapter_id;
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey_adapter_id) == ERROR_SUCCESS)
+    {
+        // Community
+        reg_get_string(hkey_adapter_id, L"adapter", tmp_buf, buf_len);
+        adapter_id = wcstok_s(tmp_buf, s, &strtok_buf);
+        adapter_id = wcstok_s(NULL, s, &strtok_buf);
+        RegCloseKey(hkey_adapter_id);
+    }
+
 	// First we need to find the TAP-Win32 adapter (identified by 'tap0901') and get its GUID
 	RegOpenKeyEx(HKEY_LOCAL_MACHINE, net_key, NULL, KEY_READ, &hkey_adapters);
-	while (RegEnumKeyEx(hkey_adapters, i, subkey_name, &subkey_size, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
-	{
-		RegOpenKeyEx(hkey_adapters, subkey_name, NULL, KEY_READ, &hkey_adapter);
-		RegQueryValueEx(hkey_adapter, L"ComponentId", NULL, NULL, (LPBYTE)component_id, &component_size);
-		RegQueryValueEx(hkey_adapter, L"NetCfgInstanceId", NULL, NULL, (LPBYTE)guid, &guid_size);
-		RegCloseKey(hkey_adapter);
-		if (!wcscmp(component_id, L"tap0901") || !wcscmp(component_id, L"TAP0901"))
+    while (RegEnumKeyEx(hkey_adapters, i, subkey_name, &subkey_size, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
+    {
+        RegOpenKeyEx(hkey_adapters, subkey_name, NULL, KEY_READ, &hkey_adapter);
+        RegQueryValueEx(hkey_adapter, L"ComponentId", NULL, NULL, (LPBYTE)component_id, &component_size);
+        RegQueryValueEx(hkey_adapter, L"NetCfgInstanceId", NULL, NULL, (LPBYTE)guid, &guid_size);
+        RegCloseKey(hkey_adapter);
+        if (
+            // auto select adapter
+            ((adapter_id == NULL) && (!wcscmp(component_id, L"tap0901") || !wcscmp(component_id, L"TAP0901"))) ||
+            // user select adapter manually by ad_option dialog
+            ((adapter_id != NULL) && (!wcscmp(guid, adapter_id)))
+            )
 		{
 			adapter_found = true;
 			break;
