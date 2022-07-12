@@ -177,6 +177,7 @@ Section "happynet"
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "adapter" ""
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" ""
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
@@ -198,6 +199,7 @@ Section "happynet"
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "adapter" ""
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" ""
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
@@ -210,6 +212,13 @@ Section "happynet"
               DetailPrint  "select_rtt not found"
               WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "select_rtt" 0x00000001
           ${ENDIF}
+
+          EnumRegKey $0 HKLM "SOFTWARE\Happynet\Parameters\adapter" 0
+          ${If} ${Errors}
+              DetailPrint  "adapter not found"
+              WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "adapter" ""
+          ${ENDIF}
+            
       ${ENDIF}
   ${EndIf}
 
