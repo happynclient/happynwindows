@@ -10,9 +10,11 @@
 #include "process.h"
 #include "utils.h"
 
+#define MAX_COMMAND_LINE_LEN 1024*32
+
 HANDLE pid;
 WCHAR exe_path[MAX_PATH];
-WCHAR command_line[1024];
+WCHAR command_line[MAX_COMMAND_LINE_LEN];
 
 
 void log_event(WCHAR* format, ...)
@@ -58,7 +60,7 @@ void start_service()
 	}
 	int ret = 0;
 
-	ret = build_command_line_edge(exe_path, command_line, 1024);
+	ret = build_command_line_edge(exe_path, command_line, MAX_COMMAND_LINE_LEN);
 
 	log_event(L"%s:%d (%s) - building command line: %s \n", __FILEW__, __LINE__, __FUNCTIONW__, command_line);
 
@@ -77,7 +79,7 @@ void stop_service()
 }
 
 
-int build_exe_path(WCHAR* exe_path, int buf_len)
+int build_exe_path(WCHAR* exe_path, DWORD buf_len)
 {
 	DWORD exe_buf_len = buf_len * sizeof(WCHAR);
 
@@ -87,7 +89,7 @@ int build_exe_path(WCHAR* exe_path, int buf_len)
 }
 
 
-int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, int buf_len)
+int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, DWORD buf_len)
 {
 	command_line[0] = 0;
 	WCHAR ret_val[512];
