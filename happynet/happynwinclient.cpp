@@ -36,9 +36,9 @@ bool string_empty(WCHAR* str)
 
 bool validate_options(HWND hwndDlg)
 {
-	WCHAR tmp_buf[256];
-	WCHAR err_str[256];
-	int buf_len = 256;
+	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
+	WCHAR err_str[MAX_COMMAND_LINE_LEN];
+	int buf_len = MAX_COMMAND_LINE_LEN;
 	bool ret_val = true;
 
 	// IP Address
@@ -46,7 +46,7 @@ bool validate_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_IPADDRESS) && !validate_ipv4_address(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS));
-		wcscpy_s(err_str, 256, L"Invalid IP address");
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Invalid IP address");
 		ret_val = false;
 	}
 
@@ -55,7 +55,7 @@ bool validate_options(HWND hwndDlg)
 	if (string_empty(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_COMMUNITY));
-		wcscpy_s(err_str, 256, L"Community is required");
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Community is required");
 		ret_val = false;
 	}
 
@@ -64,7 +64,7 @@ bool validate_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_ENCKEY) && string_empty(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_ENCKEY));
-		wcscpy_s(err_str, 256, L"Encryption key is required");
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Encryption key is required");
 		ret_val = false;
 	}
 
@@ -73,7 +73,7 @@ bool validate_options(HWND hwndDlg)
 	if (!validate_number_range(tmp_buf, 1, 65535))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_SUPERNODEPORT));
-		wcscpy_s(err_str, 256, L"Invalid supernode port");
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Invalid supernode port");
 		ret_val = false;
 	}
 
@@ -88,9 +88,9 @@ bool validate_options(HWND hwndDlg)
 
 bool validate_ad_options(HWND hwndDlg)
 {
-	WCHAR tmp_buf[256];
-	WCHAR err_str[256];
-	int buf_len = 256;
+	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
+	WCHAR err_str[MAX_COMMAND_LINE_LEN];
+	int buf_len = MAX_COMMAND_LINE_LEN;
 	bool ret_val = true;
 
 
@@ -99,7 +99,7 @@ bool validate_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_KEYFILE) && string_empty(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE));
-		wcscpy_s(err_str, 256, L"Key file is required");
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Key file is required");
 		ret_val = false;
 	}
 
@@ -108,7 +108,7 @@ bool validate_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_MTU) && string_empty(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_MTU));
-		wcscpy_s(err_str, 256, L"MTU is required");
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"MTU is required");
 		ret_val = false;
 	}
 
@@ -117,7 +117,7 @@ bool validate_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_LOCALPORT) && !validate_number_range(tmp_buf, 1, 65535))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT));
-		wcscpy_s(err_str, 256, L"Invalid local port");
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Invalid local port");
 		ret_val = false;
 	}
 
@@ -126,7 +126,7 @@ bool validate_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_MACADDRESS) && !validate_mac_address(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS));
-		wcscpy_s(err_str, 256, L"Invalid MAC address");
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Invalid MAC address");
 		ret_val = false;
 	}
 
@@ -261,8 +261,8 @@ DWORD CALLBACK update_main_status_thread(PVOID pvoid)
 
 void read_options(HWND hwndDlg)
 {
-	WCHAR tmp_buf[256];
-	DWORD buf_len = 256;
+	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
+	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	DWORD dword_buf;
 	HKEY hkey;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
@@ -299,8 +299,8 @@ void read_options(HWND hwndDlg)
 
 void read_ad_options(HWND hwndDlg)
 {
-	WCHAR tmp_buf[256];
-	DWORD buf_len = 256;
+	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
+	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	DWORD dword_buf;
 	HKEY hkey;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
@@ -380,8 +380,8 @@ void read_ad_options(HWND hwndDlg)
 void save_options(HWND hwndDlg)
 {
 	if (!validate_options(hwndDlg)) return;
-	WCHAR tmp_buf[256];
-	DWORD buf_len = 256;
+	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
+	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	HKEY hkey;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
 	{
@@ -430,8 +430,8 @@ void save_options(HWND hwndDlg)
 void save_ad_options(HWND hwndDlg)
 {
 	if (!validate_ad_options(hwndDlg)) return;
-	WCHAR tmp_buf[256];
-	DWORD buf_len = 256;
+	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
+	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	HKEY hkey;
 	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
 	{
@@ -784,7 +784,7 @@ INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MTU), is_item_checked(hwndDlg, IDC_CHK_MTU));
 			break;
 		case IDC_CHK_CUSTOM_PARAM:
-			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), is_item_checked(hwndDlg, IDC_CHK_CUSTOM_PARAM));
+			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), is_item_checked(hwndDlg, IDC_CHK_CUSTOM_PARAM));            
 			break;
 		case IDC_CHK_LOCALPORT:
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT), is_item_checked(hwndDlg, IDC_CHK_LOCALPORT));
