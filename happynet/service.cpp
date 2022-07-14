@@ -10,8 +10,6 @@
 #include "process.h"
 #include "utils.h"
 
-#define MAX_COMMAND_LINE_LEN 1024*32
-
 HANDLE pid;
 WCHAR exe_path[MAX_PATH];
 WCHAR command_line[MAX_COMMAND_LINE_LEN];
@@ -92,7 +90,7 @@ int build_exe_path(WCHAR* exe_path, DWORD buf_len)
 int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, DWORD buf_len)
 {
 	command_line[0] = 0;
-	WCHAR ret_val[512];
+	WCHAR ret_val[MAX_COMMAND_LINE_LEN];
 	DWORD ret_dword = 0;
 
 	// Use 'ptr' to append to the end of the command line
@@ -221,7 +219,7 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, DWORD buf_len)
 	ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L":%d", ret_dword);
 
 	// device name
-	const int info_buf_size = 32767;
+	const int info_buf_size = MAX_COMPUTERNAME_LENGTH * 16;
 	TCHAR  hostname[info_buf_size];
 	DWORD  buf_char_count = info_buf_size;
 
@@ -248,7 +246,7 @@ int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, DWORD buf_len)
 	}
 
 	//custom param
-	if (!reg_get_string(hkey, L"custom_param", ret_val, 512)) return 0;
+	if (!reg_get_string(hkey, L"custom_param", ret_val, MAX_COMMAND_LINE_LEN)) return 0;
 	ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" %s", ret_val);
 	return 1;
 }

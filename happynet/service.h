@@ -1,6 +1,8 @@
 #ifndef _H_SERVICE
 #define _H_SERVICE
 
+#define MAX_COMMAND_LINE_LEN 1024*8
+
 DWORD get_service_status();
 void start_service();
 void stop_service();

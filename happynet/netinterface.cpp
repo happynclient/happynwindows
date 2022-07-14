@@ -14,6 +14,7 @@
 #pragma comment(lib, "oleaut32.lib")
 
 #define MAX_TRIES 3
+#define MAX_ADAPTER_NAME_LEN 1024
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 const ULONG WORKING_BUFFER_SIZE = 15000;
@@ -219,8 +220,8 @@ void get_addresses(WCHAR* ip_address, WCHAR* mac_address)
 	wsprintf(mac_address, L"<unknown>");
 
     // check if user select adapter manually by ad_option dialog
-    WCHAR tmp_buf[256] = {0};
-    DWORD buf_len = 256;  
+    WCHAR tmp_buf[MAX_ADAPTER_NAME_LEN] = {0};
+    DWORD buf_len = MAX_ADAPTER_NAME_LEN;
     WCHAR *strtok_buf = NULL, *adapter_id = NULL;
     const WCHAR s[4] = L"_";
     HKEY hkey_adapter_id;
