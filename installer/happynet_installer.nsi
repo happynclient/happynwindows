@@ -13,7 +13,7 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "1.0.5.0"
+!define PRODUCT_VERSION "1.0.6.0"
 !define PRODUCT_PUBLISHER "happyn.cn"
 
 InstallDir "$PROGRAMFILES\happynet"
@@ -80,11 +80,14 @@ Section "happynet"
   SetOutPath $INSTDIR
   ${If} ${RunningX64}
     File "n2n_release\x64\happynedge.exe"
+    File "n2n_release\happynmonitor.exe"
   ${Else}
     ${If} ${IsWinXP}
       File "n2n_release\winxp\happynedge.exe"
+      File "n2n_release\happynmonitor.exe"
     ${Else}  
       File "n2n_release\x86\happynedge.exe"
+      File "n2n_release\happynmonitor.exe"
     ${EndIf}
   ${EndIf}
   
