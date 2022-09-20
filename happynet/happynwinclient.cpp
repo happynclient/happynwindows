@@ -188,6 +188,7 @@ void update_service_status(HWND hwndDlg)
 
 	HWND btn_start = GetDlgItem(hwndDlg, IDC_BTN_START);
 	HWND btn_stop = GetDlgItem(hwndDlg, IDC_BTN_STOP);
+    HWND btn_monitor = GetDlgItem(hwndDlg, IDC_BTN_MONITOR);
 	HWND btn_ad_settings = GetDlgItem(hwndDlg, IDC_BTN_AD_SETTINGS);
 	WCHAR read_buf[BUFSIZE] = {'\0'};
 	DWORD service_status = get_service_status();
@@ -197,11 +198,13 @@ void update_service_status(HWND hwndDlg)
 		SetDlgItemText(hwndDlg, IDC_STC_SRV_STATUS, L"Stopped");
 		EnableWindow(btn_start, TRUE);
 		EnableWindow(btn_stop, FALSE);
+        EnableWindow(btn_monitor, FALSE);
 		break;
 	case STILL_ACTIVE:
 		SetDlgItemText(hwndDlg, IDC_STC_SRV_STATUS, L"Started");
 		EnableWindow(btn_start, FALSE);
 		EnableWindow(btn_stop, TRUE);
+        EnableWindow(btn_monitor, TRUE);
 		get_service_process_output(read_buf);
 		sync_service_output_text(hwndDlg, read_buf);
 		break;
@@ -571,6 +574,9 @@ void handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		update_addresses(hwndDlg);
 		break;
 
+    case IDC_BTN_MONITOR:
+        WinExec("happynmonitor.exe", SW_SHOW);
+        break;
 	/*
 	case IDC_BTN_SAVE:
 		save_options(hwndDlg);
