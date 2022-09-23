@@ -1225,6 +1225,7 @@
 #define psh14                           0x040d
 #define IDC_CHK_SELECT_RTT              1037
 #define psh15                           0x040e
+#define IDC_CHK_SYSTEM_SERVICE          1038
 #define psh16                           0x040f
 #define _WIN32_WINDOWS                  0x0410
 #define chx1                            0x0410
