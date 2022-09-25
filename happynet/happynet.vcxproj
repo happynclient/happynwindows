@@ -107,6 +107,7 @@
   <ItemGroup>
     <ClCompile Include="happynwinclient.cpp" />
     <ClCompile Include="netadapter.cpp" />
+    <ClCompile Include="systemsrv.cpp" />
     <ClCompile Include="tray.cpp" />
     <ClCompile Include="netinterface.cpp" />
     <ClCompile Include="process.cpp" />
@@ -122,6 +123,7 @@
     <ClInclude Include="registry.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="service.h" />
+    <ClInclude Include="systemsrv.h" />
     <ClInclude Include="tray.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="winerr.h" />
