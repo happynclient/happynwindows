@@ -217,6 +217,20 @@ void update_service_status(HWND hwndDlg)
 	ReleaseMutex(h_mutex);
 }
 
+BOOL is_system_service()
+{
+    DWORD dword_buf;
+    HKEY hkey;
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+    {
+        return FALSE;
+    }
+    // system_service
+    reg_get_dword(hkey, L"system_service", &dword_buf);
+    RegCloseKey(hkey);
+
+    return dword_buf != 0;
+}
 
 BOOL is_auto_start()
 {
@@ -367,6 +381,10 @@ void read_ad_options(HWND hwndDlg)
 	SetDlgItemText(hwndDlg, IDC_EDT_CUSTOM_PARAM, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_CUSTOM_PARAM, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), !string_empty(tmp_buf));
+
+    // system_service
+    reg_get_dword(hkey, L"system_service", &dword_buf);
+    SendDlgItemMessage(hwndDlg, IDC_CHK_SYSTEM_SERVICE, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	// auto_start
 	reg_get_dword(hkey, L"auto_start", &dword_buf);
@@ -530,6 +548,9 @@ void save_ad_options(HWND hwndDlg)
 	{
 		reg_set_string(hkey, L"custom_param", L"");
 	}
+
+    // set system service
+    reg_set_dword(hkey, L"system_service", (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
 
 	// auto start
 	reg_set_dword(hkey, L"auto_start", (is_item_checked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
