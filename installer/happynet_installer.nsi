@@ -182,6 +182,7 @@ Section "happynet"
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "adapter" ""
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" ""
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "system_service" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
   ${Else}
@@ -204,6 +205,7 @@ Section "happynet"
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "adapter" ""
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" ""
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "system_service" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
       ${ELSE}
