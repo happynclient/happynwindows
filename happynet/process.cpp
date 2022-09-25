@@ -6,6 +6,7 @@
 #include "registry.h"
 #include "process.h"
 #include "service.h"
+#include "utils.h"
 
 #pragma comment(lib, "ws2_32.lib")
 

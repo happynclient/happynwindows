@@ -5,13 +5,14 @@
 #include <tchar.h>
 
 #include "maingui.h"
-#include "resource.h"
-#include "service.h"
+#include "netadapter.h"
 #include "netinterface.h"
 #include "registry.h"
 #include "process.h"
+#include "resource.h"
+#include "service.h"
 #include "tray.h"
-#include "netadapter.h"
+#include "utils.h"
 
 #pragma comment(lib, "comctl32.lib")
 
