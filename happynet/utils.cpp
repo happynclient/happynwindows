@@ -62,7 +62,10 @@ int build_exe_path(WCHAR* exe_path, DWORD buf_len)
     DWORD exe_dir_buf_len = buf_len * sizeof(WCHAR);
     
     // get happyn exe dir path
-    GetModuleFileName(NULL, exe_dir_buf, MAX_PATH);
+    if (!GetModuleFileName(NULL, exe_dir_buf, MAX_PATH))
+    {
+        return 0;
+    }
     PathRemoveFileSpec(exe_dir_buf);
     swprintf_s(exe_path, buf_len, exe_dir_buf);
     return 1;
