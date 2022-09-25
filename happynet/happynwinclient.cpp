@@ -217,51 +217,6 @@ void update_service_status(HWND hwndDlg)
 	ReleaseMutex(h_mutex);
 }
 
-BOOL is_system_service()
-{
-    DWORD dword_buf;
-    HKEY hkey;
-    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
-    {
-        return FALSE;
-    }
-    // system_service
-    reg_get_dword(hkey, L"system_service", &dword_buf);
-    RegCloseKey(hkey);
-
-    return dword_buf != 0;
-}
-
-BOOL is_auto_start()
-{
-	DWORD dword_buf;
-	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
-	{
-		return FALSE;
-	}
-	// auto_start
-	reg_get_dword(hkey, L"auto_start", &dword_buf);
-	RegCloseKey(hkey);
-
-	return dword_buf != 0;
-}
-
-BOOL is_auto_tray()
-{
-	DWORD dword_buf;
-	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
-	{
-		return FALSE;
-	}
-	// auto_tray
-	reg_get_dword(hkey, L"auto_tray", &dword_buf);
-	RegCloseKey(hkey);
-
-	return dword_buf != 0;
-}
-
 
 DWORD CALLBACK update_main_status_thread(PVOID pvoid)
 {
