@@ -11,6 +11,7 @@
 #include "process.h"
 #include "resource.h"
 #include "service.h"
+#include "systemsrv.h"
 #include "tray.h"
 #include "utils.h"
 
@@ -507,6 +508,12 @@ void save_ad_options(HWND hwndDlg)
 
     // set system service
     reg_set_dword(hkey, L"system_service", (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
+    if (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
+        reg_service_system();
+    }
+    else {
+        unreg_service_system();
+    }
 
 	// auto start
 	reg_set_dword(hkey, L"auto_start", (is_item_checked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));

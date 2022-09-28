@@ -1,3 +1,4 @@
+#include <atlstr.h>
 #include <comdef.h>
 #include <stdio.h>
 #include <windows.h>
@@ -33,6 +34,12 @@ BOOL strip_no_ascii_string(WCHAR *line)
 		}
 	}
 	return i;
+}
+
+UINT WinExecW(WCHAR* command_line, UINT command_show)
+{
+    USES_CONVERSION;
+    return WinExec(W2A(command_line), command_show);
 }
 
 void log_event(WCHAR* format, ...)
