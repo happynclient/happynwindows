@@ -21,21 +21,21 @@ DWORD get_service_status()
 
 void start_service()
 {
-    WCHAR exe_path[MAX_PATH];
-    WCHAR command_line[MAX_COMMAND_LINE_LEN];    
+    WCHAR dir_path[MAX_PATH] = L"0";
+    WCHAR command_line[MAX_COMMAND_LINE_LEN] = L"0";    
 	if (get_service_status() == STILL_ACTIVE) {
 		return;
 	}
 
 	// Build path and command line parameters
-	if (!build_exe_path(exe_path, MAX_PATH))
+	if (!get_install_dir_path(dir_path, MAX_PATH))
 	{
 		log_event(L"%s:%d (%s) - Error building executable path.\n", __FILEW__, __LINE__, __FUNCTIONW__);
 		return;
 	}
 	int ret = 0;
 
-	ret = build_command_line_edge(exe_path, command_line, MAX_COMMAND_LINE_LEN);
+	ret = get_command_line_edge(dir_path, command_line, MAX_COMMAND_LINE_LEN);
 
 	log_event(L"%s:%d (%s) - building command line: %s \n", __FILEW__, __LINE__, __FUNCTIONW__, command_line);
 

@@ -8,7 +8,8 @@
 void log_event(WCHAR* format, ...);
 BOOL is_valid_ascii_string(WCHAR *line);
 BOOL strip_no_ascii_string(WCHAR *line);
-int build_exe_path(WCHAR* exe_path, DWORD buf_len);
-int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, DWORD buf_len);
+int get_install_dir_path(WCHAR* exe_path, DWORD buf_len);
+int get_command_line_edge(WCHAR* exe_path, WCHAR* command_line, DWORD buf_len);
+int get_params_edge(WCHAR* edge_path, WCHAR* params_line, DWORD buf_len);
 
 #endif
