@@ -21,7 +21,7 @@ static WCHAR* get_nssm_exe_path()
             __FILEW__, __LINE__, __FUNCTIONW__);
         return NULL;
     }
-    swprintf_s(nssm_path, MAX_PATH, L"\"%s\\nssm.exe\"", install_path);
+    swprintf_s(nssm_path, MAX_PATH, L"\"%s\\happynssm.exe\"", install_path);
     return nssm_path;
 }
 
