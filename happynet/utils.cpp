@@ -56,9 +56,9 @@ void log_event(WCHAR* format, ...)
     delete[] message;
 }
 
-int build_exe_path(WCHAR* exe_path, DWORD buf_len)
+int get_install_dir_path(WCHAR* dir_path, DWORD buf_len)
 {
-    WCHAR exe_dir_buf[MAX_PATH];
+    WCHAR exe_dir_buf[MAX_PATH] = L"0";
     DWORD exe_dir_buf_len = buf_len * sizeof(WCHAR);
     
     // get happyn exe dir path
@@ -67,20 +67,27 @@ int build_exe_path(WCHAR* exe_path, DWORD buf_len)
         return 0;
     }
     PathRemoveFileSpec(exe_dir_buf);
-    swprintf_s(exe_path, buf_len, exe_dir_buf);
+    swprintf_s(dir_path, buf_len, exe_dir_buf);
     return 1;
 }
 
 
-int build_command_line_edge(WCHAR* exe_path, WCHAR* command_line, DWORD buf_len)
+int get_command_line_edge(WCHAR* dir_path, WCHAR* command_line, DWORD buf_len)
 {
-    command_line[0] = 0;
+    WCHAR edge_path[MAX_PATH] = L"0";
+    swprintf_s(edge_path, MAX_PATH, L"\"%s\\happynedge.exe\"", dir_path);
+    return get_params_edge(edge_path, command_line, buf_len);
+}
+
+
+int get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
+{
     WCHAR ret_val[MAX_COMMAND_LINE_LEN];
     DWORD ret_dword = 0;
 
     // Use 'ptr' to append to the end of the command line
     WCHAR* ptr = command_line;
-    ptr += swprintf_s(command_line, buf_len, L"\"%s\\happynedge.exe\"", exe_path);
+    ptr += swprintf_s(command_line, buf_len, L"%s ", edge_path);
 
     // Open registry key
     HKEY hkey;
