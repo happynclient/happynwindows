@@ -226,7 +226,7 @@ DWORD CALLBACK update_main_status_thread(PVOID pvoid)
 	while (1) {
 		update_service_status(hwndDlg);
 		update_addresses(hwndDlg);
-		Sleep(500);
+		Sleep(1000);
 	}
 	log_event(L"thread end here\n");
 	return 0;
