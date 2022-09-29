@@ -8,7 +8,7 @@
 #include "systemsrv.h"
 #include "utils.h"
 
-#define SYSTEMSRV_NAME L"HAPPYNET"
+#define SYSTEMSRV_NAME L"Happynet"
 
 static WCHAR* get_nssm_exe_path()
 {
@@ -70,7 +70,7 @@ void reg_service_system()
 // nssm remove <servicename>
 void unreg_service_system()
 {
-    WCHAR nssm_path[MAX_PATH] = L"0";
+    WCHAR nssm_path[MAX_PATH] = { '\0' };
     WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { '\0' };
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
                 L"%s remove %s confirm", get_nssm_exe_path(), SYSTEMSRV_NAME);
