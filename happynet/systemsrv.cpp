@@ -26,7 +26,7 @@ static WCHAR* get_nssm_exe_path()
 }
 
 // nssm install <servicename> <program> [<arguments>]
-// nssm set <servicename> Description "Happynet a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn"
+// nssm set <servicename> Description "Happynet is a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn"
 void reg_service_system()
 {
     WCHAR install_path[MAX_PATH] = L"0";
@@ -58,7 +58,7 @@ void reg_service_system()
 
     //nssm set <servicename> Description "Happynet ..."
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-        L"%s set %s Description \"Happynet a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn\"",
+        L"%s set %s Description \"Happynet is a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn\"",
         get_nssm_exe_path(), SYSTEMSRV_NAME);
     log_event(L"%s:%d (%s) - building nssm line: %s \n",
         __FILEW__, __LINE__, __FUNCTIONW__,
