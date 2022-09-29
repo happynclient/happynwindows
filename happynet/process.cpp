@@ -194,11 +194,11 @@ void get_service_process_output(WCHAR *read_buf)
 		return;
 	}
 	DWORD dwread; 
-	CHAR chbuf[BUFSIZE] = {'\0'}; 
+	CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = {'\0'}; 
 	BOOL bsuccess = FALSE;
 	HANDLE hparent_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	bsuccess = ReadFile( m_hchild_stdout_read, chbuf, BUFSIZE, &dwread, NULL);
+	bsuccess = ReadFile( m_hchild_stdout_read, chbuf, PROCESS_STDOUT_BUFSIZE, &dwread, NULL);
 	if( ! bsuccess || dwread == 0 ) return; 
 	//Convert char* string to a wchar_t* string.
 	size_t convertedChars = 0;

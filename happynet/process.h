@@ -3,7 +3,7 @@
 
 #include <windows.h> 
 
-#define BUFSIZE 4096
+#define PROCESS_STDOUT_BUFSIZE 4096
 
 #define PROCESS_EXIT_CODE	0
 

@@ -58,7 +58,7 @@ void start_service()
 void stop_service()
 {
     if (is_system_service()) {
-        start_service_system();
+        stop_service_system();
         return;
     }
 
