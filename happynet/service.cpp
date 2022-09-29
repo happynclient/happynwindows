@@ -30,8 +30,8 @@ void start_service()
         return;
     }
 
-    WCHAR dir_path[MAX_PATH] = L"0";
-    WCHAR command_line[MAX_COMMAND_LINE_LEN] = L"0";    
+    WCHAR dir_path[MAX_PATH] = { '\0' };
+    WCHAR command_line[MAX_COMMAND_LINE_LEN] = { '\0' };    
 	if (get_service_status() == STILL_ACTIVE) {
 		return;
 	}

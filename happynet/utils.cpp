@@ -65,7 +65,7 @@ void log_event(WCHAR* format, ...)
 
 int get_install_dir_path(WCHAR* dir_path, DWORD buf_len)
 {
-    WCHAR exe_dir_buf[MAX_PATH] = L"0";
+    WCHAR exe_dir_buf[MAX_PATH] = { '\0' };
     DWORD exe_dir_buf_len = buf_len * sizeof(WCHAR);
     
     // get happyn exe dir path
@@ -79,9 +79,25 @@ int get_install_dir_path(WCHAR* dir_path, DWORD buf_len)
 }
 
 
+int get_log_path(WCHAR* log_path, DWORD buf_len)
+{
+    WCHAR exe_dir_buf[MAX_PATH] = { '\0' };
+    DWORD exe_dir_buf_len = buf_len * sizeof(WCHAR);
+
+    // get happyn exe dir path
+    if (!GetModuleFileName(NULL, exe_dir_buf, MAX_PATH))
+    {
+        return 0;
+    }
+    PathRemoveFileSpec(exe_dir_buf);
+    swprintf_s(log_path, buf_len, exe_dir_buf);
+    return 1;
+}
+
+
 int get_command_line_edge(WCHAR* dir_path, WCHAR* command_line, DWORD buf_len)
 {
-    WCHAR edge_path[MAX_PATH] = L"0";
+    WCHAR edge_path[MAX_PATH] = { '\0' };
     swprintf_s(edge_path, MAX_PATH, L"\"%s\\happynedge.exe\"", dir_path);
     return get_params_edge(edge_path, command_line, buf_len);
 }
