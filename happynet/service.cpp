@@ -8,6 +8,7 @@
 #include "service.h"
 #include "registry.h"
 #include "process.h"
+#include "systemsrv.h"
 #include "utils.h"
 
 HANDLE pid;
@@ -16,11 +17,19 @@ DWORD get_service_status()
 {
 	//if( STILL_ACTIVE == dwMark) //running
 	//if( PROCESS_EXIT_CODE == dwMark) //stopped
+    if (is_system_service()) {
+        return get_service_system_status();
+    }
 	return get_service_process_status();
 }
 
 void start_service()
 {
+    if (is_system_service()) {
+        start_service_system();
+        return;
+    }
+
     WCHAR dir_path[MAX_PATH] = L"0";
     WCHAR command_line[MAX_COMMAND_LINE_LEN] = L"0";    
 	if (get_service_status() == STILL_ACTIVE) {
@@ -48,6 +57,11 @@ void start_service()
 
 void stop_service()
 {
+    if (is_system_service()) {
+        start_service_system();
+        return;
+    }
+
 	grace_stop_service_process();
 	Sleep(1500);
 	terminal_service_process();
@@ -56,7 +70,11 @@ void stop_service()
 // auto start exe when system startup
 void set_auto_start_service()
 {
-	HKEY hkey;
+    if (is_system_service()) {
+        set_auto_start_service_system();
+    }
+    
+    HKEY hkey;
 	WCHAR ret_val[512];
 	//std::string strRegPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
 
@@ -87,7 +105,11 @@ void set_auto_start_service()
 //cancle auto start
 void cancel_auto_start_service()
 {
-	HKEY hkey;
+    if (is_system_service()) {
+        cancel_auto_start_service_system();
+    }
+    
+    HKEY hkey;
 	//std::string strRegPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
 
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"), 0, KEY_ALL_ACCESS, &hkey) == ERROR_SUCCESS)

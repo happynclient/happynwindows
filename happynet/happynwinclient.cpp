@@ -519,15 +519,9 @@ void save_ad_options(HWND hwndDlg)
 	reg_set_dword(hkey, L"auto_start", (is_item_checked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
 	if (is_item_checked(hwndDlg, IDC_CHK_AUTO_START)) {
         set_auto_start_service();
-        if (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
-            set_auto_start_service_system();
-        }
 	}
 	else {
         cancel_auto_start_service();
-        if (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
-            cancel_auto_start_service_system();
-        }
 	}
 	// auto tray
 	reg_set_dword(hkey, L"auto_tray", (is_item_checked(hwndDlg, IDC_CHK_AUTO_TRAY) ? 1 : 0));

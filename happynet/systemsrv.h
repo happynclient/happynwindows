@@ -5,7 +5,7 @@ void reg_service_system(void);
 void unreg_service_system(void);
 void set_auto_start_service_system(void);
 void cancel_auto_start_service_system(void);
-BOOL start_service_system(void);
+void start_service_system(void);
 void grace_stop_service_system(void);
 void terminal_service_system(void);
 DWORD get_service_system_status(void);
