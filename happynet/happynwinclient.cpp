@@ -192,7 +192,7 @@ void update_service_status(HWND hwndDlg)
 	HWND btn_stop = GetDlgItem(hwndDlg, IDC_BTN_STOP);
     HWND btn_monitor = GetDlgItem(hwndDlg, IDC_BTN_MONITOR);
 	HWND btn_ad_settings = GetDlgItem(hwndDlg, IDC_BTN_AD_SETTINGS);
-	WCHAR read_buf[BUFSIZE] = {'\0'};
+	WCHAR read_buf[PROCESS_STDOUT_BUFSIZE] = {'\0'};
 	DWORD service_status = get_service_status();
 	switch (service_status)
 	{
