@@ -21,11 +21,12 @@ static WCHAR* get_nssm_exe_path()
             __FILEW__, __LINE__, __FUNCTIONW__);
         return NULL;
     }
-    swprintf_s(nssm_path, MAX_PATH, L"\"%s\\nssm.exe\"", install_path);
+    swprintf_s(nssm_path, MAX_PATH, L"\"%s\\happynssm.exe\"", install_path);
     return nssm_path;
 }
 
 // nssm install <servicename> <program> [<arguments>]
+// nssm set <servicename> Description "Happynet a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn"
 void reg_service_system()
 {
     WCHAR install_path[MAX_PATH] = L"0";
@@ -55,7 +56,14 @@ void reg_service_system()
                 nssm_command_line);
     WinExecW(nssm_command_line, SW_HIDE);
 
-    //nssm set SERVICE_NAME Description "My service description."
+    //nssm set <servicename> Description "Happynet ..."
+    swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
+        L"%s set %s Description \"Happynet a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn\"",
+        get_nssm_exe_path(), SYSTEMSRV_NAME);
+    log_event(L"%s:%d (%s) - building nssm line: %s \n",
+        __FILEW__, __LINE__, __FUNCTIONW__,
+        nssm_command_line);
+    WinExecW(nssm_command_line, SW_HIDE);
 }
 
 // nssm remove <servicename>
@@ -70,9 +78,33 @@ void unreg_service_system()
     WinExecW(nssm_command_line, SW_HIDE);
 }
 
-// nssm start <servicename>
-void set_service_system_auto_start()
+// nssm set <servicename> Start SERVICE_AUTO_START
+void set_auto_start_service_system()
 {
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = L"0";
+    //nssm set <servicename> Start SERVICE_AUTO_START
+    swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
+            L"%s set %s Start SERVICE_AUTO_START",
+            get_nssm_exe_path(), SYSTEMSRV_NAME);
+    log_event(L"%s:%d (%s) - building nssm line: %s \n",
+        __FILEW__, __LINE__, __FUNCTIONW__,
+        nssm_command_line);
+    WinExecW(nssm_command_line, SW_HIDE);
+    return;
+}
+
+// nssm set <servicename> Start SERVICE_DEMAND_START
+void cancel_auto_start_service_system()
+{
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = L"0";
+    //nssm set <servicename> Start SERVICE_DEMAND_START
+    swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
+        L"%s set %s Start SERVICE_DEMAND_START",
+        get_nssm_exe_path(), SYSTEMSRV_NAME);
+    log_event(L"%s:%d (%s) - building nssm line: %s \n",
+        __FILEW__, __LINE__, __FUNCTIONW__,
+        nssm_command_line);
+    WinExecW(nssm_command_line, SW_HIDE);
     return;
 }
 
