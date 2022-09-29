@@ -3,6 +3,7 @@
 #include <stdio.h> 
 #include <strsafe.h>
 #include <Winsock.h>
+#include "process.h"
 #include "registry.h"
 #include "systemsrv.h"
 #include "utils.h"
@@ -74,7 +75,7 @@ void unreg_service_system()
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
                 L"%s remove %s confirm", get_nssm_exe_path(), SYSTEMSRV_NAME);
 
-    terminal_service_system();
+    grace_stop_service_system();
     WinExecW(nssm_command_line, SW_HIDE);
 }
 
@@ -109,15 +110,32 @@ void cancel_auto_start_service_system()
 }
 
 // nssm start <servicename>
-BOOL start_service_system()
+void start_service_system()
 {
-    return TRUE;
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = L"0";
+    //nssm set <servicename> Start SERVICE_DEMAND_START
+    swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
+        L"%s start  %s",
+        get_nssm_exe_path(), SYSTEMSRV_NAME);
+    log_event(L"%s:%d (%s) - building nssm line: %s \n",
+        __FILEW__, __LINE__, __FUNCTIONW__,
+        nssm_command_line);
+    WinExecW(nssm_command_line, SW_HIDE);
+    return;
 }
 
 // nssm stop <servicename>
 void grace_stop_service_system(void)
 {
-    
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = L"0";
+    //nssm set <servicename> Start SERVICE_DEMAND_START
+    swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
+        L"%s stop  %s",
+        get_nssm_exe_path(), SYSTEMSRV_NAME);
+    log_event(L"%s:%d (%s) - building nssm line: %s \n",
+        __FILEW__, __LINE__, __FUNCTIONW__,
+        nssm_command_line);
+    WinExecW(nssm_command_line, SW_HIDE);
     return;
 }
 
@@ -126,10 +144,15 @@ void terminal_service_system(void)
 
 }
 
-
+// nssm get <servicename> status
+// result:
+// Can't open service!
+// SERVICE_STOPPED
+// SERVICE_RUNNING
 DWORD get_service_system_status(void)
 {
-    return 0;
+    return PROCESS_EXIT_CODE;
+    //return STILL_ACTIVE;
 }
 
 
