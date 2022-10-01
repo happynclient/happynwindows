@@ -26,6 +26,20 @@ static WCHAR* get_nssm_exe_path()
     return nssm_path;
 }
 
+static WCHAR* get_nssm_log_path()
+{
+    static WCHAR nssm_log_path[MAX_PATH] = { '\0' };
+    WCHAR app_datapath[MAX_PATH] = { '\0' };
+
+    // Build path and command line parameters
+    get_app_datapath(app_datapath);
+    swprintf_s(nssm_log_path, MAX_PATH, L"%s\\happynet.log", app_datapath);
+    log_event(L"%s:%d (%s) - building log path:%s \n",
+        __FILEW__, __LINE__, __FUNCTIONW__, nssm_log_path);
+    return nssm_log_path;
+}
+
+
 // nssm install <servicename> <program> [<arguments>]
 // nssm set <servicename> Description "Happynet is a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn"
 void reg_service_system()
@@ -61,6 +75,24 @@ void reg_service_system()
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
         L"%s set %s Description \"Happynet is a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn\"",
         get_nssm_exe_path(), SYSTEMSRV_NAME);
+    log_event(L"%s:%d (%s) - building nssm line: %s \n",
+        __FILEW__, __LINE__, __FUNCTIONW__,
+        nssm_command_line);
+    WinExecW(nssm_command_line, SW_HIDE);
+
+    //nssm set <servicename> AppStdout logpath
+    swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
+        L"%s set %s AppStdout %s",
+        get_nssm_exe_path(), SYSTEMSRV_NAME, get_nssm_log_path());
+    log_event(L"%s:%d (%s) - building nssm line: %s \n",
+        __FILEW__, __LINE__, __FUNCTIONW__,
+        nssm_command_line);
+    WinExecW(nssm_command_line, SW_HIDE);
+
+    //nssm set <servicename> AppStderr logpath
+    swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
+        L"%s set %s AppStderr %s",
+        get_nssm_exe_path(), SYSTEMSRV_NAME, get_nssm_log_path());
     log_event(L"%s:%d (%s) - building nssm line: %s \n",
         __FILEW__, __LINE__, __FUNCTIONW__,
         nssm_command_line);

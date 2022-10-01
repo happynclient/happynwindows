@@ -1,7 +1,9 @@
 #include <atlstr.h>
 #include <comdef.h>
 #include <stdio.h>
+#include <ShlObj.h>
 #include <windows.h>
+#include <WinError.h>
 
 #include "atlbase.h"
 #include "atlstr.h"
@@ -79,19 +81,12 @@ int get_install_dir_path(WCHAR* dir_path, DWORD buf_len)
 }
 
 
-int get_log_path(WCHAR* log_path, DWORD buf_len)
+int get_app_datapath(WCHAR* datapath)
 {
-    WCHAR exe_dir_buf[MAX_PATH] = { '\0' };
-    DWORD exe_dir_buf_len = buf_len * sizeof(WCHAR);
-
-    // get happyn exe dir path
-    if (!GetModuleFileName(NULL, exe_dir_buf, MAX_PATH))
-    {
-        return 0;
-    }
-    PathRemoveFileSpec(exe_dir_buf);
-    swprintf_s(log_path, buf_len, exe_dir_buf);
-    return 1;
+    WCHAR default_app_datapath[MAX_PATH] = { '\0' };
+    SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, default_app_datapath);
+    swprintf_s(datapath, MAX_PATH, L"%s\\happynet", default_app_datapath);
+    return SHCreateDirectoryEx(NULL, datapath, NULL);
 }
 
 
