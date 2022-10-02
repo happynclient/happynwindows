@@ -166,7 +166,7 @@ INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
         adapter_id = strtok_s(NULL, s, &tmpbuf);
 
         TCHAR adapter_firendly_name[512] = { 0 };
-        if (get_adapter_friendly_name(adapter_id, adapter_firendly_name, 512) == NOERROR) {
+        if (GetAdapterFriendlyName(adapter_id, adapter_firendly_name, 512) == NOERROR) {
             ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -d \"%s\""), adapter_firendly_name);
         }
     }

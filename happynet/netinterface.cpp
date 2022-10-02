@@ -83,7 +83,7 @@ static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_u
     return is_found;
 }
 
-BOOL set_netinterface_name_by_id(WCHAR device_uuid[])
+BOOL SetNetinterfaceNameById(WCHAR device_uuid[])
 {
     BOOL ret = FALSE;
     /*	CoInitialize (NULL);*/
@@ -119,7 +119,7 @@ BOOL set_netinterface_name_by_id(WCHAR device_uuid[])
 }
 
 
-VOID get_mac_address(WCHAR* mac_address, WCHAR* guid)
+VOID GetMacAddress(WCHAR* mac_address, WCHAR* guid)
 {
 	PIP_ADAPTER_ADDRESSES addresses = NULL;
 	PIP_ADAPTER_ADDRESSES curr_addr;
@@ -157,7 +157,7 @@ VOID get_mac_address(WCHAR* mac_address, WCHAR* guid)
 	}
 }
 
-DWORD get_adapter_friendly_name(CHAR* adapter_name, WCHAR* friendly_name, ULONG max_name_length)
+DWORD GetAdapterFriendlyName(CHAR* adapter_name, WCHAR* friendly_name, ULONG max_name_length)
 {
     ULONG out_buf_len = WORKING_BUFFER_SIZE;
     ULONG iterations = 0;
@@ -203,7 +203,7 @@ DWORD get_adapter_friendly_name(CHAR* adapter_name, WCHAR* friendly_name, ULONG 
 }
 
 
-VOID get_addresses(WCHAR* ip_address, WCHAR* mac_address)
+VOID GetIpMacAddresses(WCHAR* ip_address, WCHAR* mac_address)
 {
 	HKEY hkey_adapters, hkey_adapter, hkey_ip, hkey_ipg;
 	DWORD i = 0;
@@ -280,11 +280,11 @@ VOID get_addresses(WCHAR* ip_address, WCHAR* mac_address)
 		RegCloseKey(hkey_ipg);
 		RegCloseKey(hkey_ip);
 
-		get_mac_address(mac_address, guid);
+		GetMacAddress(mac_address, guid);
 	}
 }
 
-BOOL validate_ipv4_address(WCHAR* ip_address)
+BOOL ValidateIpv4Address(WCHAR* ip_address)
 {
 	WCHAR c;
 	WCHAR octet_val[4];
@@ -315,7 +315,7 @@ BOOL validate_ipv4_address(WCHAR* ip_address)
 	return TRUE;
 }
 
-BOOL validate_mac_address(WCHAR* mac_address)
+BOOL ValidateMacAddress(WCHAR* mac_address)
 {
 	if (wcslen(mac_address) != 17) return FALSE;
 	WCHAR mac_addr_lower[18];

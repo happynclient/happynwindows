@@ -45,7 +45,7 @@ BOOL validate_options(HWND hwndDlg)
 
 	// IP Address
 	GetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_IPADDRESS) && !validate_ipv4_address(tmp_buf))
+	if (is_item_checked(hwndDlg, IDC_CHK_IPADDRESS) && !ValidateIpv4Address(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Invalid IP address");
@@ -125,7 +125,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 
 	// MAC address
 	GetDlgItemText(hwndDlg, IDC_EDT_MACADDRESS, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_MACADDRESS) && !validate_mac_address(tmp_buf))
+	if (is_item_checked(hwndDlg, IDC_CHK_MACADDRESS) && !ValidateMacAddress(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("Invalid MAC address"));
@@ -147,7 +147,7 @@ VOID update_addresses(HWND hwndDlg)
 	{
 		WCHAR ip_address[16];
 		WCHAR mac_address[18];
-		get_addresses(ip_address, mac_address);
+		GetIpMacAddresses(ip_address, mac_address);
 		SetDlgItemText(hwndDlg, IDC_EDT_CUR_IP, ip_address);
 		SetDlgItemText(hwndDlg, IDC_EDT_CUR_MAC, mac_address);
 	}
@@ -453,7 +453,7 @@ VOID save_ad_options(HWND hwndDlg)
         const WCHAR s[4] = TEXT("_");
         adapter_id = wcstok_s(tmp_buf, s, &strtok_buf);
         adapter_id = wcstok_s(NULL, s, &strtok_buf);
-        set_netinterface_name_by_id(adapter_id);
+        SetNetinterfaceNameById(adapter_id);
     }
     else
     {
