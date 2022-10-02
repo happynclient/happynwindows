@@ -20,7 +20,7 @@ DWORD GetServiceStatus(VOID)
     if (IsSetSystemService()) {
         return GetSystemServiceStatus();
     }
-	return get_service_process_status();
+	return GetProcessServiceStatus();
 }
 
 VOID StartService(VOID)
@@ -52,7 +52,7 @@ VOID StartService(VOID)
 	LogEvent(TEXT("\n->Start of parent execution.\n"));
 
 	// Create the child process. 
-	create_service_process(command_line); 
+	CreateProcessService(command_line); 
 }
 
 VOID StopService(VOID)
@@ -62,9 +62,9 @@ VOID StopService(VOID)
         return;
     }
 
-	grace_stop_service_process();
+	GraceStopProcessService();
 	Sleep(1500);
-	terminal_service_process();
+	TerminalProcessService();
 }
 
 // auto start exe when system startup

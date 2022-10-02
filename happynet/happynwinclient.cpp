@@ -167,7 +167,7 @@ VOID sync_service_output_text(const HWND &hwnd)
         GetSystemServiceOutput(read_buf);
     }
     else {
-        get_service_process_output(read_buf);
+        GetProcessServiceOutput(read_buf);
     }
 
 	// get edit control from dialog

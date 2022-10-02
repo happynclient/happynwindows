@@ -11,125 +11,121 @@
 #pragma comment(lib, "ws2_32.lib")
 
 
-static HANDLE m_hchild_stdout_read = NULL;
-static HANDLE m_hchild_stdout_write = NULL;
-static HANDLE m_hinput_file = NULL;
-static HANDLE m_hprocess = NULL;
-static HANDLE m_hthread = NULL;
-static DWORD m_dwprocess_id = 0;
+static HANDLE m_hChildStdoutRead = NULL;
+static HANDLE m_hChildStdoutWrite = NULL;
+static HANDLE m_hInputFile = NULL;
+static HANDLE m_hProcess = NULL;
+static HANDLE m_hThread = NULL;
+static DWORD m_dwProcessId = 0;
 
 
-static INT send_sig_stop(UINT edge_manager_port)
+static INT SendStopSig(UINT nEdgeManagerPort)
 {
-	WORD w_version_requested;
-	WSADATA wsa_data;
-	INT err; w_version_requested = MAKEWORD( 1, 1 );
-	err = WSAStartup( w_version_requested, &wsa_data );
-	if ( err != 0 ) 
-	{ 
+	WORD wVersionRequested;
+	WSADATA wsaData;
+	INT err; wVersionRequested = MAKEWORD( 1, 1 );
+	err = WSAStartup( wVersionRequested, &wsaData );
+	if (err != 0) { 
 		return -1;
 	}	
-	if ( LOBYTE( wsa_data.wVersion ) != 1 || HIBYTE( wsa_data.wVersion ) != 1 )
-	{
+	if (LOBYTE( wsaData.wVersion ) != 1 || HIBYTE( wsaData.wVersion ) != 1) {
 		WSACleanup( ); 
 		return -1; 
 	}
-	SOCKET sock_client = socket(AF_INET , SOCK_DGRAM , 0) ;
-	SOCKADDR_IN addr_srv ;
-	addr_srv.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
-	addr_srv.sin_family = AF_INET;
-	addr_srv.sin_port = htons(edge_manager_port);
+	SOCKET sockClient = socket(AF_INET , SOCK_DGRAM , 0) ;
+	SOCKADDR_IN sockServerAddr;
+	sockServerAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+	sockServerAddr.sin_family = AF_INET;
+	sockServerAddr.sin_port = htons(nEdgeManagerPort);
 	CHAR send_buf[8] = "stop";
-	INT len = sizeof(SOCKADDR);
-	sendto(sock_client, send_buf, strlen(send_buf), 0, (SOCKADDR*)&addr_srv, len);
-	closesocket(sock_client) ;
+	INT nLen = sizeof(SOCKADDR);
+	sendto(sockClient, send_buf, strlen(send_buf), 0, (SOCKADDR*)&sockServerAddr, nLen);
+	closesocket(sockClient) ;
 	WSACleanup();
 	return 0;
 }
 
 
-HANDLE create_service_process(WCHAR* command_line)
-	// Create a child process that uses the previously created pipes for STDIN and STDOUT.
+// Create a child process that uses the previously created pipes for STDIN and STDOUT.
+HANDLE CreateProcessService(WCHAR* pszCmdLine)	
 { 
-
 	// Set the bInheritHandle flag so pipe handles are inherited. 
-	SECURITY_ATTRIBUTES sa_attr;
+	SECURITY_ATTRIBUTES saAttr;
 	//ZeroMemory(&sa_attr, sizeof(STARTUPINFO));
-	sa_attr.nLength = sizeof(SECURITY_ATTRIBUTES); 
-	sa_attr.bInheritHandle = TRUE; 
-	sa_attr.lpSecurityDescriptor = NULL; 
+	saAttr.nLength = sizeof(SECURITY_ATTRIBUTES); 
+	saAttr.bInheritHandle = TRUE; 
+	saAttr.lpSecurityDescriptor = NULL; 
 
 	// Create a pipe for the child process's STDOUT. 
-	if (!CreatePipe(&m_hchild_stdout_read, &m_hchild_stdout_write, &sa_attr, 0) ) 
-		get_service_process_error(TEXT("StdoutRd CreatePipe")); 
+	if (!CreatePipe(&m_hChildStdoutRead, &m_hChildStdoutWrite, &saAttr, 0) ) 
+		GetProcessServiceError(TEXT("StdoutRd CreatePipe")); 
 
 	// Ensure the read handle to the pipe for STDOUT is not inherited.
-	if (!SetHandleInformation(m_hchild_stdout_read, HANDLE_FLAG_INHERIT, 0) )
-		get_service_process_error(TEXT("Stdout SetHandleInformation")); 
+	if (!SetHandleInformation(m_hChildStdoutRead, HANDLE_FLAG_INHERIT, 0) )
+		GetProcessServiceError(TEXT("Stdout SetHandleInformation")); 
 
-	BOOL bsuccess = FALSE; 
-	PROCESS_INFORMATION pi_process_info; 
+	BOOL bSuccess = FALSE; 
+	PROCESS_INFORMATION piProcessInfo; 
 	// Set up members of the PROCESS_INFORMATION structure. 
-	ZeroMemory( &pi_process_info, sizeof(PROCESS_INFORMATION) );		
+	ZeroMemory( &piProcessInfo, sizeof(PROCESS_INFORMATION) );		
 
 
 	// Set up members of the STARTUPINFO structure. 
-	STARTUPINFO si_start_info;
-	ZeroMemory( &si_start_info, sizeof(STARTUPINFO) );
-	si_start_info.cb = sizeof(STARTUPINFO); 
-	si_start_info.hStdError = m_hchild_stdout_write;
-	si_start_info.hStdOutput = m_hchild_stdout_write;
-	si_start_info.hStdInput = NULL;
-	si_start_info.dwFlags |= STARTF_USESTDHANDLES; 
+	STARTUPINFO siStartInfo;
+	ZeroMemory( &siStartInfo, sizeof(STARTUPINFO) );
+	siStartInfo.cb = sizeof(STARTUPINFO); 
+	siStartInfo.hStdError = m_hChildStdoutWrite;
+	siStartInfo.hStdOutput = m_hChildStdoutWrite;
+	siStartInfo.hStdInput = NULL;
+	siStartInfo.dwFlags |= STARTF_USESTDHANDLES; 
 
 	// Create the child process. 
-	bsuccess = CreateProcess(NULL, 
-		command_line,		// command line 
-		&sa_attr,			// process security attributes 
+	bSuccess = CreateProcess(NULL, 
+		pszCmdLine,		// command line 
+		&saAttr,			// process security attributes 
 		NULL,				// primary thread security attributes 
 		TRUE,				// handles are inherited 
 		//CREATE_NO_WINDOW|CREATE_DEFAULT_ERROR_MODE|CREATE_UNICODE_ENVIRONMENT|CREATE_NEW_CONSOLE,
 		CREATE_NO_WINDOW|CREATE_DEFAULT_ERROR_MODE|CREATE_UNICODE_ENVIRONMENT|CREATE_NEW_PROCESS_GROUP,
 		NULL,				// use parent's environment 
 		NULL,				// use parent's current directory 
-		&si_start_info,		// STARTUPINFO pointer 
-		&pi_process_info);	// receives PROCESS_INFORMATION 
+		&siStartInfo,		// STARTUPINFO pointer 
+		&piProcessInfo);	// receives PROCESS_INFORMATION 
 
 	// If an error occurs, exit the application. 
-	if ( ! bsuccess ) {
-		get_service_process_error(TEXT("create_service_process"));
+	if (!bSuccess) {
+		GetProcessServiceError(TEXT("create_service_process"));
 	} else {
 		// Close handles to the child process and its primary thread.
 		// Some applications might keep these handles to monitor the status
 		// of the child process, for example. 
 	}
 
-	m_hprocess = pi_process_info.hProcess;
-	m_dwprocess_id = pi_process_info.dwProcessId;
-	m_hthread = pi_process_info.hThread;
-	return pi_process_info.hProcess;
+	m_hProcess = piProcessInfo.hProcess;
+	m_dwProcessId = piProcessInfo.dwProcessId;
+	m_hThread = piProcessInfo.hThread;
+	return piProcessInfo.hProcess;
 }
 
-VOID grace_stop_service_process(VOID)
+VOID GraceStopProcessService(VOID)
 {
-	DWORD dword_edge_manager_port = 0;
+	DWORD dwEdgeManagerPort = 0;
 
 	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
-	{
-		dword_edge_manager_port = 0;
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"),
+                        NULL, KEY_READ, &hkey) != ERROR_SUCCESS) {
+		dwEdgeManagerPort = 0;
 	} else {
-		GetRegDword(hkey, L"local_port", &dword_edge_manager_port);
+		GetRegDword(hkey, L"local_port", &dwEdgeManagerPort);
 	}
 
-	if(dword_edge_manager_port == 0) {
-		dword_edge_manager_port = 5644;
+	if(dwEdgeManagerPort == 0) {
+		dwEdgeManagerPort = 5644;
 	}
-	if (m_hprocess != NULL && m_dwprocess_id)
-	{
-		u_short edge_manager_port = (u_short)(dword_edge_manager_port);
+	if (m_hProcess != NULL && m_dwProcessId) {
+		u_short edge_manager_port = (u_short)(dwEdgeManagerPort);
 		//CreateThread(NULL, 0, send_sig_stop, &edge_manager_port, 0, NULL);
-		if (send_sig_stop(edge_manager_port) != 0) {
+		if (SendStopSig(edge_manager_port) != 0) {
 			LogEvent(L"%s:%d (%s) - send sig to stop edge socket error.\n", __FILEW__, __LINE__, __FUNCTIONW__);
 		}
 	} else {
@@ -138,23 +134,22 @@ VOID grace_stop_service_process(VOID)
 	return;
 }
 
-VOID terminal_service_process(VOID)
+VOID TerminalProcessService(VOID)
 {
-	if (m_hprocess != NULL && m_dwprocess_id)
-	{
+	if (m_hProcess != NULL && m_dwProcessId) {
 		//HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, m_dwprocess_id);
-		if(TerminateProcess(m_hprocess, PROCESS_EXIT_CODE)) {
+		if(TerminateProcess(m_hProcess, PROCESS_EXIT_CODE)) {
 			// 500 ms timeout; use INFINITE for no timeout
-			const DWORD result = WaitForSingleObject(m_hprocess, INFINITE);
+			const DWORD result = WaitForSingleObject(m_hProcess, INFINITE);
 			if (result == WAIT_OBJECT_0) {
 				// Success
-				CloseHandle(m_hprocess);
-				CloseHandle(m_hthread);
-				m_hthread = NULL;
-				m_hprocess = NULL;
-				m_dwprocess_id = 0;
-				m_hchild_stdout_read = NULL;
-				m_hchild_stdout_write = NULL;
+				CloseHandle(m_hProcess);
+				CloseHandle(m_hThread);
+				m_hThread = NULL;
+				m_hProcess = NULL;
+				m_dwProcessId = 0;
+				m_hChildStdoutRead = NULL;
+				m_hChildStdoutWrite = NULL;
 			}
 			else {
 				// Timed out or an error occurred
@@ -167,52 +162,52 @@ VOID terminal_service_process(VOID)
 }
 
 
-DWORD get_service_process_status(VOID)
+DWORD GetProcessServiceStatus(VOID)
 {
-	//if( STILL_ACTIVE == dwmark) //running
-	//if( PROCESS_EXIT_CODE == dwmark) //stopped
+	//if( STILL_ACTIVE == dwMark) //running
+	//if( PROCESS_EXIT_CODE == dwMark) //stopped
 
-	DWORD dwmark = PROCESS_EXIT_CODE;
-	if (m_hprocess != NULL) {
+	DWORD dwMark = PROCESS_EXIT_CODE;
+	if (m_hProcess != NULL) {
 		//HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, m_dwprocess_id);
-		GetExitCodeProcess(m_hprocess, &dwmark);
+		GetExitCodeProcess(m_hProcess, &dwMark);
 	} 
 
-	if (dwmark > PROCESS_EXIT_CODE && dwmark != STILL_ACTIVE){
-		dwmark = PROCESS_EXIT_CODE;
+	if (dwMark > PROCESS_EXIT_CODE && dwMark != STILL_ACTIVE){
+		dwMark = PROCESS_EXIT_CODE;
 	}
-	return dwmark;
+	return dwMark;
 }
 
 
 // Read output from the child process's pipe for STDOUT
 // and write to the parent process's pipe for STDOUT. 
 // Stop when there is no more data. 
-void get_service_process_output(WCHAR *read_buf) 
+void GetProcessServiceOutput(WCHAR *pszReadBuf) 
 { 
-	if (!m_hchild_stdout_read) {
+	if (!m_hChildStdoutRead) {
 		return;
 	}
-	DWORD dwread; 
+	DWORD dwRead; 
 	CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { 0 }; 
 	BOOL bsuccess = FALSE;
 	HANDLE hparent_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	bsuccess = ReadFile( m_hchild_stdout_read, chbuf, PROCESS_STDOUT_BUFSIZE-1, &dwread, NULL);
-	if( ! bsuccess || dwread == 0 ) return; 
+	bsuccess = ReadFile( m_hChildStdoutRead, chbuf, PROCESS_STDOUT_BUFSIZE-1, &dwRead, NULL);
+	if( ! bsuccess || dwRead == 0 ) return; 
 	//Convert char* string to a wchar_t* string.
 	UINT convertedChars = 0;
 	UINT newsize = strlen(chbuf) + 1;
     if (newsize > PROCESS_STDOUT_BUFSIZE) {
         newsize = PROCESS_STDOUT_BUFSIZE;
     }
-	mbstowcs_s(&convertedChars, read_buf, newsize, chbuf, _TRUNCATE);
+	mbstowcs_s(&convertedChars, pszReadBuf, newsize, chbuf, _TRUNCATE);
 	//Display the result and indicate the type of string that it is.
-	LogEvent(TEXT("%s\n"), read_buf); 
+	LogEvent(TEXT("%s\n"), pszReadBuf); 
 } 
 
 
-VOID get_service_process_error(PTSTR lpszFunction) 
+VOID GetProcessServiceError(PTSTR lpszFunction) 
 
 	// Format a readable error message, display a message box, 
 	// and exit from the application.
