@@ -8,6 +8,7 @@
 
 #include "registry.h"
 #include "netinterface.h"
+#include "utils.h"
 
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "ole32.lib")
@@ -18,7 +19,7 @@
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 const ULONG WORKING_BUFFER_SIZE = 15000;
-#define NPCAP_LOOPBACK_INTERFACE_NAME			L"HAPPYNET"
+#define NPCAP_LOOPBACK_INTERFACE_NAME			TEXT("HAPPYNET")
 
 
 static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_uuid[])
@@ -27,7 +28,7 @@ static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_u
     INetSharingEveryConnectionCollection * nsecc_ptr = NULL;
     HRESULT hr = pNSM->get_EnumEveryConnection(&nsecc_ptr);
     if (!nsecc_ptr)
-        wprintf(L"failed to get EveryConnectionCollection!\r\n");
+        log_event(TEXT("failed to get EveryConnectionCollection!\r\n"));
     else {
 
         // enumerate connections
@@ -54,7 +55,7 @@ static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_u
 
                         wchar_t currentGUID[255];
                         GUID guid = pNETCON_PROPERTIES->guidId;
-                        wsprintf(currentGUID, L"{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
+                        wsprintf(currentGUID, TEXT("{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}"),
                             guid.Data1, guid.Data2, guid.Data3,
                             guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3],
                             guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
@@ -65,7 +66,7 @@ static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_u
                             is_found = TRUE;
                             if (hr != S_OK)
                             {
-                                wprintf(L"failed to create rename NPCAP_LOOPBACK_INTERFACE_NAME\r\n");
+                                log_event(TEXT("failed to create rename NPCAP_LOOPBACK_INTERFACE_NAME\r\n"));
                             }
                         }
 
@@ -101,7 +102,7 @@ BOOL set_netinterface_name_by_id(WCHAR device_uuid[])
         (void**)&nsm_ptr);
     if (!nsm_ptr)
     {
-        wprintf(L"failed to create NetSharingManager object\r\n");
+        log_event(TEXT("failed to create NetSharingManager object\r\n"));
         return ret;
     }
     else {
@@ -118,7 +119,7 @@ BOOL set_netinterface_name_by_id(WCHAR device_uuid[])
 }
 
 
-void get_mac_address(WCHAR* mac_address, WCHAR* guid)
+VOID get_mac_address(WCHAR* mac_address, WCHAR* guid)
 {
 	PIP_ADAPTER_ADDRESSES addresses = NULL;
 	PIP_ADAPTER_ADDRESSES curr_addr;
@@ -131,9 +132,9 @@ void get_mac_address(WCHAR* mac_address, WCHAR* guid)
 		if (err == ERROR_SUCCESS)
 		{
 			curr_addr = addresses;
-			char* guid_ansi = NULL;
+			CHAR* guid_ansi = NULL;
 			guid_ansi = new char[wcslen(guid) + 1];
-			size_t num_conv;
+			UINT num_conv;
 			wcstombs_s(&num_conv, guid_ansi, wcslen(guid) + 1, guid, _TRUNCATE);
 			while (curr_addr != NULL)
 			{
@@ -145,7 +146,8 @@ void get_mac_address(WCHAR* mac_address, WCHAR* guid)
 				BYTE* a = curr_addr->PhysicalAddress;
 				for (int i = 0; i < 5; i++)
 				{
-					wsprintf(mac_address, L"%02X:%02X:%02X:%02X:%02X:%02X", a[0], a[1], a[2], a[3], a[4], a[5], a[6]);
+					wsprintf(mac_address, TEXT("%02X:%02X:%02X:%02X:%02X:%02X"),
+                                a[0], a[1], a[2], a[3], a[4], a[5], a[6]);
 				}
 				break;
 			}
@@ -164,7 +166,7 @@ DWORD get_adapter_friendly_name(CHAR* adapter_name, WCHAR* friendly_name, ULONG 
     do {
         pAddresses = (IP_ADAPTER_ADDRESSES *)MALLOC(out_buf_len);
         if (pAddresses == NULL) {
-            printf("Memory allocation failed for IP_ADAPTER_ADDRESSES struct\n");
+            log_event(TEXT("Error:%s"), TEXT("Memory allocation failed for IP_ADAPTER_ADDRESSES struct\n"));
             return E_FAIL;
         }
 
@@ -201,34 +203,35 @@ DWORD get_adapter_friendly_name(CHAR* adapter_name, WCHAR* friendly_name, ULONG 
 }
 
 
-void get_addresses(WCHAR* ip_address, WCHAR* mac_address)
+VOID get_addresses(WCHAR* ip_address, WCHAR* mac_address)
 {
 	HKEY hkey_adapters, hkey_adapter, hkey_ip, hkey_ipg;
 	DWORD i = 0;
-	WCHAR net_key[] = L"SYSTEM\\CurrentControlSet\\Control\\Class\\{4D36E972-E325-11CE-BFC1-08002BE10318}";
-	WCHAR tcpip_key[] = L"SYSTEM\\CurrentControlSet\\services\\Tcpip\\Parameters\\Interfaces";
+	WCHAR net_key[] = TEXT("SYSTEM\\CurrentControlSet\\Control\\Class\\{4D36E972-E325-11CE-BFC1-08002BE10318}");
+	WCHAR tcpip_key[] = TEXT("SYSTEM\\CurrentControlSet\\services\\Tcpip\\Parameters\\Interfaces");
 	WCHAR subkey_name[128];
 	WCHAR component_id[128];
 	WCHAR guid[39];
 	DWORD subkey_size = 128;
 	DWORD component_size = 128 * sizeof(WCHAR);
 	DWORD guid_size = 39 * sizeof(WCHAR);
-	bool adapter_found = false;
+	BOOL adapter_found = FALSE;
 
 	// Clear the addresses
-	wsprintf(ip_address, L"<unknown>");
-	wsprintf(mac_address, L"<unknown>");
+	wsprintf(ip_address, TEXT("<unknown>"));
+	wsprintf(mac_address, TEXT("<unknown>"));
 
     // check if user select adapter manually by ad_option dialog
     WCHAR tmp_buf[MAX_ADAPTER_NAME_LEN] = {0};
     DWORD buf_len = MAX_ADAPTER_NAME_LEN;
     WCHAR *strtok_buf = NULL, *adapter_id = NULL;
-    const WCHAR s[4] = L"_";
+    const WCHAR s[4] = TEXT("_");
     HKEY hkey_adapter_id;
-    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey_adapter_id) == ERROR_SUCCESS)
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"),
+                        NULL, KEY_READ, &hkey_adapter_id) == ERROR_SUCCESS)
     {
         // Community
-        reg_get_string(hkey_adapter_id, L"adapter", tmp_buf, buf_len);
+        reg_get_string(hkey_adapter_id, TEXT("adapter"), tmp_buf, buf_len);
         adapter_id = wcstok_s(tmp_buf, s, &strtok_buf);
         adapter_id = wcstok_s(NULL, s, &strtok_buf);
         RegCloseKey(hkey_adapter_id);
@@ -239,12 +242,12 @@ void get_addresses(WCHAR* ip_address, WCHAR* mac_address)
     while (RegEnumKeyEx(hkey_adapters, i, subkey_name, &subkey_size, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
     {
         RegOpenKeyEx(hkey_adapters, subkey_name, NULL, KEY_READ, &hkey_adapter);
-        RegQueryValueEx(hkey_adapter, L"ComponentId", NULL, NULL, (LPBYTE)component_id, &component_size);
-        RegQueryValueEx(hkey_adapter, L"NetCfgInstanceId", NULL, NULL, (LPBYTE)guid, &guid_size);
+        RegQueryValueEx(hkey_adapter, TEXT("ComponentId"), NULL, NULL, (LPBYTE)component_id, &component_size);
+        RegQueryValueEx(hkey_adapter, TEXT("NetCfgInstanceId"), NULL, NULL, (LPBYTE)guid, &guid_size);
         RegCloseKey(hkey_adapter);
         if (
             // auto select adapter
-            ((adapter_id == NULL) && (!wcscmp(component_id, L"tap0901") || !wcscmp(component_id, L"TAP0901"))) ||
+            ((adapter_id == NULL) && (!wcscmp(component_id, TEXT("tap0901")) || !wcscmp(component_id, TEXT("TAP0901")))) ||
             // user select adapter manually by ad_option dialog
             ((adapter_id != NULL) && (!wcscmp(guid, adapter_id)))
             )
@@ -265,14 +268,14 @@ void get_addresses(WCHAR* ip_address, WCHAR* mac_address)
 		DWORD ip_size = 16 * sizeof(WCHAR);
 		RegOpenKeyEx(HKEY_LOCAL_MACHINE, tcpip_key, NULL, KEY_READ, &hkey_ip);
 		RegOpenKeyEx(hkey_ip, guid, NULL, KEY_READ, &hkey_ipg);
-		RegQueryValueEx(hkey_ipg, L"EnableDHCP", NULL, NULL, (LPBYTE)&dhcp_enabled, &buf_size);
+		RegQueryValueEx(hkey_ipg, TEXT("EnableDHCP"), NULL, NULL, (LPBYTE)&dhcp_enabled, &buf_size);
 		if (dhcp_enabled)
 		{
-			RegQueryValueEx(hkey_ipg, L"DhcpIPAddress", NULL, NULL, (LPBYTE)ip_address, &ip_size);
+			RegQueryValueEx(hkey_ipg, TEXT("DhcpIPAddress"), NULL, NULL, (LPBYTE)ip_address, &ip_size);
 		}
 		else
 		{
-			RegQueryValueEx(hkey_ipg, L"IPAddress", NULL, NULL, (LPBYTE)ip_address, &ip_size);
+			RegQueryValueEx(hkey_ipg, TEXT("IPAddress"), NULL, NULL, (LPBYTE)ip_address, &ip_size);
 		}
 		RegCloseKey(hkey_ipg);
 		RegCloseKey(hkey_ip);
@@ -281,58 +284,58 @@ void get_addresses(WCHAR* ip_address, WCHAR* mac_address)
 	}
 }
 
-bool validate_ipv4_address(WCHAR* ip_address)
+BOOL validate_ipv4_address(WCHAR* ip_address)
 {
 	WCHAR c;
 	WCHAR octet_val[4];
 	octet_val[0] = 0;
-	int octets = 0;
-	int c_octet_len = 0;
-	for (int i = 0; i < (int)wcslen(ip_address); i++)
+	INT octets = 0;
+	INT c_octet_len = 0;
+	for (INT i = 0; i < (INT)wcslen(ip_address); i++)
 	{
 		c = ip_address[i];
-		if ((c < '0' || c > '9') && c != '.' && c != '/') return false;
+		if ((c < '0' || c > '9') && c != '.' && c != '/') return FALSE;
 		if (c == '.' || c == '/')
 		{
-			if (c_octet_len < 1 || c_octet_len > 3) return false;
+			if (c_octet_len < 1 || c_octet_len > 3) return FALSE;
 			octets++;
 			octet_val[c_octet_len] = 0;
-			int int_octet_val = _wtoi(octet_val);
-			if (int_octet_val < 0 || int_octet_val > 255) return false;
-			if (octets > 3 && c != '/') return false;
+			INT int_octet_val = _wtoi(octet_val);
+			if (int_octet_val < 0 || int_octet_val > 255) return FALSE;
+			if (octets > 3 && c != '/') return FALSE;
 			c_octet_len = 0;
 			continue;
 		}
 		octet_val[c_octet_len] = c;
 		c_octet_len++;
-		if (c_octet_len > 3) return false;
+		if (c_octet_len > 3) return FALSE;
 	}
 	octets++;
-	if (c_octet_len < 1 || c_octet_len > 3 || (octets != 4  && octets != 5)) return false;
-	return true;
+	if (c_octet_len < 1 || c_octet_len > 3 || (octets != 4  && octets != 5)) return FALSE;
+	return TRUE;
 }
 
-bool validate_mac_address(WCHAR* mac_address)
+BOOL validate_mac_address(WCHAR* mac_address)
 {
-	if (wcslen(mac_address) != 17) return false;
+	if (wcslen(mac_address) != 17) return FALSE;
 	WCHAR mac_addr_lower[18];
 	wcscpy_s(mac_addr_lower, 18, mac_address);
 	_wcslwr_s(mac_addr_lower, 18);
 	WCHAR* w;
-	for (int i = 0; i < 6; i++)
+	for (INT i = 0; i < 6; i++)
 	{
 		w = mac_addr_lower + (i * 3);
-		if ((w[0] < '0' || w[0] > '9') && (w[0] < 'a' || w[0] > 'f')) return false;
-		if ((w[1] < '0' || w[1] > '9') && (w[1] < 'a' || w[1] > 'f')) return false;
-		if (i != 5 && w[2] != ':') return false;
+		if ((w[0] < '0' || w[0] > '9') && (w[0] < 'a' || w[0] > 'f')) return FALSE;
+		if ((w[1] < '0' || w[1] > '9') && (w[1] < 'a' || w[1] > 'f')) return FALSE;
+		if (i != 5 && w[2] != ':') return FALSE;
 	}
-	return true;
+	return TRUE;
 }
 
-bool validate_number_range(WCHAR* num, int min, int max)
+BOOL validate_number_range(WCHAR* num, INT min, INT max)
 {
-	int v = _wtoi(num);
-	if (min != -1 && v < min) return false;
-	if (max != -1 && v > max) return false;
-	return true;
+	INT v = _wtoi(num);
+	if (min != -1 && v < min) return FALSE;
+	if (max != -1 && v > max) return FALSE;
+	return TRUE;
 }
