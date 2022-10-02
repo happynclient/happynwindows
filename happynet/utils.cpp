@@ -91,15 +91,15 @@ INT get_app_datapath(WCHAR* datapath)
 {
     WCHAR default_app_datapath[MAX_PATH] = { 0 };
     SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, default_app_datapath);
-    swprintf_s(datapath, MAX_PATH, L"%s\\happynet", default_app_datapath);
+    swprintf_s(datapath, MAX_PATH, TEXT("%s\\happynet"), default_app_datapath);
     return SHCreateDirectoryEx(NULL, datapath, NULL);
 }
 
 
 INT get_command_line_edge(WCHAR* dir_path, WCHAR* command_line, DWORD buf_len)
 {
-    WCHAR edge_path[MAX_PATH] = { '\0' };
-    swprintf_s(edge_path, MAX_PATH, L"\"%s\\happynedge.exe\"", dir_path);
+    WCHAR edge_path[MAX_PATH] = { 0 };
+    swprintf_s(edge_path, MAX_PATH, TEXT("\"%s\\happynedge.exe\""), dir_path);
     return get_params_edge(edge_path, command_line, buf_len);
 }
 
@@ -111,49 +111,51 @@ INT get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
 
     // Use 'ptr' to append to the end of the command line
     WCHAR* ptr = command_line;
-    ptr += swprintf_s(command_line, buf_len, L"%s ", edge_path);
+    ptr += swprintf_s(command_line, buf_len, TEXT("%s "), edge_path);
 
     // Open registry key
     HKEY hkey;
-    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"),
+                        NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
     {
-        log_event(L"%s:%d (%s) - Error opening registry key.\n", __FILEW__, __LINE__, __FUNCTIONW__);
+        log_event(TEXT("%s:%d (%s) - Error opening registry key.\n"),
+                    __FILEW__, __LINE__, __FUNCTIONW__);
         return 0;
     }
 
     // Community
-    if (!reg_get_string(hkey, L"community", ret_val, 512)) return 0;
-    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -c %s", ret_val);
+    if (!reg_get_string(hkey, TEXT("community"), ret_val, 512)) return 0;
+    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -c %s"), ret_val);
 
     // Encryption key
-    if (!reg_get_string(hkey, L"enckey", ret_val, 512)) return 0;
+    if (!reg_get_string(hkey, TEXT("enckey"), ret_val, 512)) return 0;
     if (wcslen(ret_val) != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -k %s", ret_val);
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -k %s"), ret_val);
     }
 
     // IP address
-    if (!reg_get_string(hkey, L"ip_address", ret_val, 512)) return 0;
-    if (!reg_get_dword(hkey, L"packet_forwarding", &ret_dword)) return 0;
+    if (!reg_get_string(hkey, TEXT("ip_address"), ret_val, 512)) return 0;
+    if (!reg_get_dword(hkey, TEXT("packet_forwarding"), &ret_dword)) return 0;
     if (wcslen(ret_val) != 0 && ret_dword == 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -a %s", ret_val);
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -a %s"), ret_val);
     }
 
     if (wcslen(ret_val) == 0 && ret_dword == 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -r -a dhcp:0.0.0.0");
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -r -a dhcp:0.0.0.0"));
     }
 
     // Encryption key file
-    if (!reg_get_string(hkey, L"keyfile", ret_val, 512)) return 0;
+    if (!reg_get_string(hkey, TEXT("keyfile"), ret_val, 512)) return 0;
     if (wcslen(ret_val) != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -K %s", ret_val);
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -K %s"), ret_val);
     }
 
     // set adapter
-    if (!reg_get_string(hkey, L"adapter", ret_val, 512)) return 0;
+    if (!reg_get_string(hkey, TEXT("adapter"), ret_val, 512)) return 0;
     if (wcslen(ret_val) != 0)
     {
         CHAR *adapter_id = NULL;
@@ -165,74 +167,74 @@ INT get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
 
         TCHAR adapter_firendly_name[512] = { 0 };
         if (get_adapter_friendly_name(adapter_id, adapter_firendly_name, 512) == NOERROR) {
-            ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -d \"%s\"", adapter_firendly_name);
+            ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -d \"%s\""), adapter_firendly_name);
         }
     }
 
     // Local Port
-    if (!reg_get_dword(hkey, L"local_port", &ret_dword)) return 0;
+    if (!reg_get_dword(hkey, TEXT("local_port"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -p %d", ret_dword);
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -p %d"), ret_dword);
     }
 
 
     // MAC address
-    if (!reg_get_string(hkey, L"mac_address", ret_val, 512)) return 0;
+    if (!reg_get_string(hkey, TEXT("mac_address"), ret_val, 512)) return 0;
     if (wcslen(ret_val) != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -m %s", ret_val);
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -m %s"), ret_val);
     }
 
     // MTU
-    if (!reg_get_dword(hkey, L"mtu", &ret_dword)) return 0;
+    if (!reg_get_dword(hkey, TEXT("mtu"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -M %d", ret_dword);
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -M %d"), ret_dword);
     }
 
     // Multicast
-    if (!reg_get_dword(hkey, L"multicast", &ret_dword)) return 0;
+    if (!reg_get_dword(hkey, TEXT("multicast"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -E");
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -E"));
     }
 
     // Packet forwarding
-    if (!reg_get_dword(hkey, L"packet_forwarding", &ret_dword)) return 0;
+    if (!reg_get_dword(hkey, TEXT("packet_forwarding"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -r");
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -r"));
     }
 
     // header encryption
-    if (!reg_get_dword(hkey, L"header_encry", &ret_dword)) return 0;
+    if (!reg_get_dword(hkey, TEXT("header_encry"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -H");
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -H"));
     }
 
     // data compress
-    if (!reg_get_dword(hkey, L"data_compress", &ret_dword)) return 0;
+    if (!reg_get_dword(hkey, TEXT("data_compress"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -z1");
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -z1"));
     }
 
     // select rtt
-    if (!reg_get_dword(hkey, L"select_rtt", &ret_dword)) return 0;
+    if (!reg_get_dword(hkey, TEXT("select_rtt"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" --select-rtt ");
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" --select-rtt "));
     }
 
     // Supernode address
-    if (!reg_get_string(hkey, L"supernode_addr", ret_val, 512)) return 0;
-    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -l %s", ret_val);
+    if (!reg_get_string(hkey, TEXT("supernode_addr"), ret_val, 512)) return 0;
+    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -l %s"), ret_val);
 
     // Supernode port
-    if (!reg_get_dword(hkey, L"supernode_port", &ret_dword)) return 0;
-    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L":%d", ret_dword);
+    if (!reg_get_dword(hkey, TEXT("supernode_port"), &ret_dword)) return 0;
+    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(":%d"), ret_dword);
 
     // device name
     const int info_buf_size = MAX_COMPUTERNAME_LENGTH * 16;
@@ -244,9 +246,10 @@ INT get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
     if (GetComputerName(hostname, &buf_char_count))
     {
         HKEY hkey_hostname;
-        WCHAR reg_hostname[info_buf_size] = { '\0' };
-        if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters", NULL, KEY_READ, &hkey_hostname) == ERROR_SUCCESS && \
-            (reg_get_string(hkey_hostname, L"hostname", reg_hostname, 512)))
+        WCHAR reg_hostname[info_buf_size] = { 0 };
+        if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters"),
+                            NULL, KEY_READ, &hkey_hostname) == ERROR_SUCCESS && \
+                            (reg_get_string(hkey_hostname, TEXT("hostname"), reg_hostname, 512)))
         {
             lstrcpynW(hostname, reg_hostname, lstrlenW(reg_hostname) + 1);
         }
@@ -254,15 +257,15 @@ INT get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
 
     if (is_valid_ascii_string(hostname) || (!is_valid_ascii_string(hostname) && strip_no_ascii_string(hostname)))
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I %s", hostname);
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -I %s"), hostname);
     }
     else
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" -I unknown");
+        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -I unknown"));
     }
 
     //custom param
-    if (!reg_get_string(hkey, L"custom_param", ret_val, MAX_COMMAND_LINE_LEN)) return 0;
-    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), L" %s", ret_val);
+    if (!reg_get_string(hkey, TEXT("custom_param"), ret_val, MAX_COMMAND_LINE_LEN)) return 0;
+    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" %s"), ret_val);
     return 1;
 }
