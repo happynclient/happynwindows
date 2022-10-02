@@ -14,9 +14,9 @@ static WCHAR* get_nssm_exe_path(VOID)
     WCHAR install_path[MAX_PATH] = { 0 };
     
     // Build path and command line parameters
-    if (!get_install_dir_path(install_path, MAX_PATH))
+    if (!GetInstallDirPath(install_path, MAX_PATH))
     {
-        log_event(TEXT("%s:%d (%s) - Error building executable path.\n"),
+        LogEvent(TEXT("%s:%d (%s) - Error building executable path.\n"),
             __FILEW__, __LINE__, __FUNCTIONW__);
         return NULL;
     }
@@ -30,9 +30,9 @@ static WCHAR* get_nssm_log_path(VOID)
     WCHAR app_datapath[MAX_PATH] = { 0 };
 
     // Build path and command line parameters
-    get_app_datapath(app_datapath);
+    GetAppDatapath(app_datapath);
     swprintf_s(nssm_log_path, MAX_PATH, L"%s\\happynet.log", app_datapath);
-    log_event(TEXT("%s:%d (%s) - building log path:%s \n"),
+    LogEvent(TEXT("%s:%d (%s) - building log path:%s \n"),
         __FILEW__, __LINE__, __FUNCTIONW__, nssm_log_path);
     return nssm_log_path;
 }
@@ -48,16 +48,16 @@ VOID reg_service_system(VOID)
     WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
 
     // Build path and command line parameters
-    if (!get_install_dir_path(install_path, MAX_PATH))
+    if (!GetInstallDirPath(install_path, MAX_PATH))
     {
-        log_event(TEXT("%s:%d (%s) - Error building executable path.\n"),
+        LogEvent(TEXT("%s:%d (%s) - Error building executable path.\n"),
                     __FILEW__, __LINE__, __FUNCTIONW__);
         return;
     }
     swprintf_s(edge_path, MAX_PATH, TEXT("\"%s\\happynedge.exe\""), install_path);
     INT ret = 0;
 
-    get_params_edge(TEXT(" "), params_line, MAX_COMMAND_LINE_LEN);
+    GetEdgeParams(TEXT(" "), params_line, MAX_COMMAND_LINE_LEN);
     
     // nssm install <servicename> <program>[<arguments>]
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
@@ -190,7 +190,7 @@ DWORD get_service_system_status(VOID)
 
     bsuccess = ReadFile(hRead, chbuf, PROCESS_STDOUT_BUFSIZE, &dwread, NULL);
     if (!bsuccess || dwread == 0) return EXCEPTION_BREAKPOINT;
-    log_event(TEXT("%s\n"), chbuf);
+    LogEvent(TEXT("%s\n"), chbuf);
     CloseHandle(hRead);
     
     //Convert char* string to a wchar_t* string.
@@ -199,7 +199,7 @@ DWORD get_service_system_status(VOID)
     WCHAR read_buf[PROCESS_STDOUT_BUFSIZE] = { 0 };
     mbstowcs_s(&convertedChars, read_buf, newsize, chbuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
-    log_event(TEXT("%s\n"), read_buf);
+    LogEvent(TEXT("%s\n"), read_buf);
 
     if (wcsstr(read_buf, TEXT("SERVICE_STOPPED"))) {
         return PROCESS_EXIT_CODE;
@@ -229,7 +229,7 @@ VOID get_service_system_output(WCHAR *szReadBuf)
     
     DWORD offset = SetFilePointer(hFile, 0-PROCESS_STDOUT_BUFSIZE-1, NULL, FILE_END);
     if (offset == INVALID_SET_FILE_POINTER) {
-        log_event(TEXT("Terminal failure: unable to set file pointer.\n"));
+        LogEvent(TEXT("Terminal failure: unable to set file pointer.\n"));
         return;
     }
     ol.Offset = offset;
@@ -239,7 +239,7 @@ VOID get_service_system_output(WCHAR *szReadBuf)
     UINT convertedChars = 0;
     mbstowcs_s(&convertedChars, szReadBuf, PROCESS_STDOUT_BUFSIZE, chbuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
-    log_event(TEXT("%s\n"), szReadBuf);
+    LogEvent(TEXT("%s\n"), szReadBuf);
 }
 
 VOID terminal_service_system(VOID)

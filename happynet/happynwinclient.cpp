@@ -236,7 +236,7 @@ DWORD CALLBACK update_main_status_thread(PVOID pvoid)
 		update_addresses(hwndDlg);
 		Sleep(1000);
 	}
-	log_event(TEXT("thread end here\n"));
+	LogEvent(TEXT("thread end here\n"));
 	return 0;
 }
 
@@ -674,7 +674,7 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 	case WM_SIZE:
 		{
 			if (wParam == SIZE_MINIMIZED && is_auto_tray()) {
-				hide_to_tray(hwndDlg);
+				HideToTray(hwndDlg);
 				ShowWindow(hwndDlg, SW_HIDE);
 				break;
 			}
@@ -704,7 +704,7 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 			CloseHandle(h_mutex);
 			CloseHandle(h_update_main_status_thread);
 
-			destroy_tray(hwndDlg);
+			DestroyTray(hwndDlg);
 			PostQuitMessage(0);
 			break;
 		}

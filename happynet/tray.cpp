@@ -1,6 +1,6 @@
 #include "tray.h"
 
-VOID hide_to_tray(HWND hWnd)
+VOID HideToTray(HWND hWnd)
 {
 	NOTIFYICONDATA nid;
 	nid.cbSize = (DWORD)sizeof(NOTIFYICONDATA);
@@ -14,7 +14,7 @@ VOID hide_to_tray(HWND hWnd)
 }
 
 
-VOID destroy_tray(HWND hWnd)
+VOID DestroyTray(HWND hWnd)
 {
 	NOTIFYICONDATA nid;
 	nid.cbSize = (DWORD)sizeof(NOTIFYICONDATA);
