@@ -6,7 +6,7 @@
 
 #define	WM_USER_SHELLICON WM_USER + 100
 
-void hide_to_tray(HWND hWnd);
-void destroy_tray(HWND hWnd);
+VOID hide_to_tray(HWND hWnd);
+VOID destroy_tray(HWND hWnd);
 
 #endif
