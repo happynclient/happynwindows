@@ -25,26 +25,25 @@ const ULONG WORKING_BUFFER_SIZE = 15000;
 static BOOL RenameNetinterfaceById(INetSharingManager *pNSM, WCHAR* pszDeviceUUID)
 {   // add a port mapping to every firewalled or shared connection 
     BOOL bFound = FALSE;
-    INetSharingEveryConnectionCollection * nsecc_ptr = NULL;
-    HRESULT hr = pNSM->get_EnumEveryConnection(&nsecc_ptr);
-    if (!nsecc_ptr)
+    INetSharingEveryConnectionCollection * pINetNsecc = NULL;
+    HRESULT hr = pNSM->get_EnumEveryConnection(&pINetNsecc);
+    if (!pINetNsecc) {
         LogEvent(TEXT("failed to get EveryConnectionCollection!\r\n"));
-    else {
-
+    }else {
         // enumerate connections
-        IEnumVARIANT * ev_ptr = NULL;
-        IUnknown * unk_ptr = NULL;
-        hr = nsecc_ptr->get__NewEnum(&unk_ptr);
-        if (unk_ptr) {
-            hr = unk_ptr->QueryInterface(__uuidof(IEnumVARIANT),
-                (void**)&ev_ptr);
-            unk_ptr->Release();
+        IEnumVARIANT * pEnumValue = NULL;
+        IUnknown * pUnknown = NULL;
+        hr = pINetNsecc->get__NewEnum(&pUnknown);
+        if (pUnknown) {
+            hr = pUnknown->QueryInterface(__uuidof(IEnumVARIANT),
+                (void**)&pEnumValue);
+            pUnknown->Release();
         }
-        if (ev_ptr) {
+        if (pEnumValue) {
             VARIANT v;
             VariantInit(&v);
 
-            while ((S_OK == ev_ptr->Next(1, &v, NULL)) && (bFound == FALSE)) {
+            while ((S_OK == pEnumValue->Next(1, &v, NULL)) && (bFound == FALSE)) {
                 if (V_VT(&v) == VT_UNKNOWN) {
                     INetConnection * pNC = NULL;
                     V_UNKNOWN(&v)->QueryInterface(__uuidof(INetConnection),
@@ -75,9 +74,9 @@ static BOOL RenameNetinterfaceById(INetSharingManager *pNSM, WCHAR* pszDeviceUUI
                 }
                 VariantClear(&v);
             }
-            ev_ptr->Release();
+            pEnumValue->Release();
         }
-        nsecc_ptr->Release();
+        pINetNsecc->Release();
     }
 
     return bFound;
@@ -94,91 +93,89 @@ BOOL SetNetinterfaceNameById(WCHAR* pszDeviceUUID)
         RPC_C_IMP_LEVEL_IMPERSONATE,
         NULL, EOAC_NONE, NULL);
 
-    INetSharingManager * nsm_ptr = NULL;
+    INetSharingManager * pINetNsm = NULL;
     HRESULT hr = ::CoCreateInstance(__uuidof(NetSharingManager),
         NULL,
         CLSCTX_ALL,
         __uuidof(INetSharingManager),
-        (void**)&nsm_ptr);
-    if (!nsm_ptr)
-    {
+        (void**)&pINetNsm);
+    if (!pINetNsm) {
         LogEvent(TEXT("failed to create NetSharingManager object\r\n"));
         return bSuccess;
     }
     else {
 
         // add a port mapping to every shared or firewalled connection.
-        bSuccess = RenameNetinterfaceById(nsm_ptr, pszDeviceUUID);
+        bSuccess = RenameNetinterfaceById(pINetNsm, pszDeviceUUID);
 
-        nsm_ptr->Release();
+        pINetNsm->Release();
     }
 
     /*	CoUninitialize ();*/
-
     return bSuccess;
 }
 
 
-VOID GetMacAddress(WCHAR* mac_address, WCHAR* guid)
+VOID GetMacAddress(WCHAR* pszMacAddress, WCHAR* pszGuid)
 {
-	PIP_ADAPTER_ADDRESSES addresses = NULL;
-	PIP_ADAPTER_ADDRESSES curr_addr;
-	ULONG buf_len = 0;
-	ULONG err = GetAdaptersAddresses(AF_INET, NULL, NULL, NULL, &buf_len);
-	if (err == ERROR_BUFFER_OVERFLOW)
+	PIP_ADAPTER_ADDRESSES sAddresses = NULL;
+	PIP_ADAPTER_ADDRESSES sCurrAddr;
+	ULONG nBufLen = 0;
+	ULONG nError = GetAdaptersAddresses(AF_INET, NULL, NULL, NULL, &nBufLen);
+	if (nError == ERROR_BUFFER_OVERFLOW)
 	{
-		addresses = (IP_ADAPTER_ADDRESSES*)HeapAlloc(GetProcessHeap(), 0, buf_len);
-		err = GetAdaptersAddresses(AF_INET, NULL, NULL, addresses, &buf_len);
-		if (err == ERROR_SUCCESS)
+		sAddresses = (IP_ADAPTER_ADDRESSES*)HeapAlloc(GetProcessHeap(), 0, nBufLen);
+		nError = GetAdaptersAddresses(AF_INET, NULL, NULL, sAddresses, &nBufLen);
+		if (nError == ERROR_SUCCESS)
 		{
-			curr_addr = addresses;
-			CHAR* guid_ansi = NULL;
-			guid_ansi = new char[wcslen(guid) + 1];
-			UINT num_conv;
-			wcstombs_s(&num_conv, guid_ansi, wcslen(guid) + 1, guid, _TRUNCATE);
-			while (curr_addr != NULL)
+			sCurrAddr = sAddresses;
+			CHAR* pszGuidAnsi = NULL;
+			pszGuidAnsi = new CHAR[wcslen(pszGuid) + 1];
+			UINT nConv = 0;
+			wcstombs_s(&nConv, pszGuidAnsi, wcslen(pszGuid) + 1, pszGuid, _TRUNCATE);
+			while (sCurrAddr != NULL)
 			{
-				if (_stricmp(curr_addr->AdapterName, guid_ansi))
+				if (_stricmp(sCurrAddr->AdapterName, pszGuidAnsi))
 				{
-					curr_addr = curr_addr->Next;
+					sCurrAddr = sCurrAddr->Next;
 					continue;
 				}
-				BYTE* a = curr_addr->PhysicalAddress;
+				BYTE* a = sCurrAddr->PhysicalAddress;
 				for (int i = 0; i < 5; i++)
 				{
-					wsprintf(mac_address, TEXT("%02X:%02X:%02X:%02X:%02X:%02X"),
+					wsprintf(pszMacAddress, TEXT("%02X:%02X:%02X:%02X:%02X:%02X"),
                                 a[0], a[1], a[2], a[3], a[4], a[5], a[6]);
 				}
 				break;
 			}
-			delete [] guid_ansi;
+			delete []pszGuidAnsi;
 		}
-		HeapFree(GetProcessHeap(), 0, addresses);
+		HeapFree(GetProcessHeap(), 0, sAddresses);
 	}
 }
 
 DWORD GetAdapterFriendlyName(CHAR* pszAdapterName, WCHAR* pszFriendlyName, ULONG nMaxNameLength)
 {
-    ULONG out_buf_len = WORKING_BUFFER_SIZE;
-    ULONG iterations = 0;
+    ULONG nOutBufLen = WORKING_BUFFER_SIZE;
+    ULONG nIerations = 0;
     PIP_ADAPTER_ADDRESSES pAddresses = NULL;
-    DWORD ret_value = 0;
+    DWORD dwRet = 0;
     do {
-        pAddresses = (IP_ADAPTER_ADDRESSES *)MALLOC(out_buf_len);
+        pAddresses = (IP_ADAPTER_ADDRESSES *)MALLOC(nOutBufLen);
         if (pAddresses == NULL) {
             LogEvent(TEXT("Error:%s"), TEXT("Memory allocation failed for IP_ADAPTER_ADDRESSES struct\n"));
             return E_FAIL;
         }
 
-        ret_value = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, pAddresses, &out_buf_len);
+        dwRet = GetAdaptersAddresses(AF_UNSPEC, GAA_FLAG_INCLUDE_PREFIX, NULL, pAddresses, &nOutBufLen);
 
-        if (ret_value == ERROR_BUFFER_OVERFLOW) {
+        if (dwRet == ERROR_BUFFER_OVERFLOW) {
             FREE(pAddresses);
             pAddresses = NULL;
             return E_FAIL;
         }
-        iterations++;
-    } while ((ret_value == ERROR_BUFFER_OVERFLOW) && (iterations < MAX_TRIES));
+        nIerations++;
+    } while ((dwRet == ERROR_BUFFER_OVERFLOW) && (nIerations < MAX_TRIES));
 
     PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
     while (pCurrAddresses) {
@@ -203,128 +200,128 @@ DWORD GetAdapterFriendlyName(CHAR* pszAdapterName, WCHAR* pszFriendlyName, ULONG
 }
 
 
-VOID GetIpMacAddresses(WCHAR* ip_address, WCHAR* mac_address)
+VOID GetIpMacAddresses(WCHAR* pszIpAddress, WCHAR* pszMacAddress)
 {
-	HKEY hkey_adapters, hkey_adapter, hkey_ip, hkey_ipg;
+	HKEY hkeyAdapters, hkeyAdapter, hkeyIp, hkeyIpg;
 	DWORD i = 0;
-	WCHAR net_key[] = TEXT("SYSTEM\\CurrentControlSet\\Control\\Class\\{4D36E972-E325-11CE-BFC1-08002BE10318}");
-	WCHAR tcpip_key[] = TEXT("SYSTEM\\CurrentControlSet\\services\\Tcpip\\Parameters\\Interfaces");
-	WCHAR subkey_name[128];
-	WCHAR component_id[128];
-	WCHAR guid[39];
-	DWORD subkey_size = 128;
-	DWORD component_size = 128 * sizeof(WCHAR);
-	DWORD guid_size = 39 * sizeof(WCHAR);
-	BOOL adapter_found = FALSE;
+	WCHAR arrcNetKey[] = TEXT("SYSTEM\\CurrentControlSet\\Control\\Class\\{4D36E972-E325-11CE-BFC1-08002BE10318}");
+	WCHAR arrcTcpipKey[] = TEXT("SYSTEM\\CurrentControlSet\\services\\Tcpip\\Parameters\\Interfaces");
+	WCHAR arrcSubkeyName[128];
+	WCHAR arrcComponentId[128];
+	WCHAR arrcGuid[39];
+	DWORD dwSubkeySize = 128;
+	DWORD dwComponentSize = 128 * sizeof(WCHAR);
+	DWORD dwGuidSize = 39 * sizeof(WCHAR);
+	BOOL bIsAdapterFound = FALSE;
 
 	// Clear the addresses
-	wsprintf(ip_address, TEXT("<unknown>"));
-	wsprintf(mac_address, TEXT("<unknown>"));
+	wsprintf(pszIpAddress, TEXT("<unknown>"));
+	wsprintf(pszMacAddress, TEXT("<unknown>"));
 
     // check if user select adapter manually by ad_option dialog
-    WCHAR tmp_buf[MAX_ADAPTER_NAME_LEN] = {0};
-    DWORD buf_len = MAX_ADAPTER_NAME_LEN;
-    WCHAR *strtok_buf = NULL, *adapter_id = NULL;
+    WCHAR arrcTmpBuf[MAX_ADAPTER_NAME_LEN] = {0};
+    DWORD nBufLen = MAX_ADAPTER_NAME_LEN;
+    WCHAR *pszStrtokBuf = NULL, *pAdapterId = NULL;
     const WCHAR s[4] = TEXT("_");
-    HKEY hkey_adapter_id;
+    HKEY hkeyAdapterId;
     if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"),
-                        NULL, KEY_READ, &hkey_adapter_id) == ERROR_SUCCESS)
+                        NULL, KEY_READ, &hkeyAdapterId) == ERROR_SUCCESS)
     {
         // Community
-        GetRegString(hkey_adapter_id, TEXT("adapter"), tmp_buf, buf_len);
-        adapter_id = wcstok_s(tmp_buf, s, &strtok_buf);
-        adapter_id = wcstok_s(NULL, s, &strtok_buf);
-        RegCloseKey(hkey_adapter_id);
+        GetRegString(hkeyAdapterId, TEXT("adapter"), arrcTmpBuf, nBufLen);
+        pAdapterId = wcstok_s(arrcTmpBuf, s, &pszStrtokBuf);
+        pAdapterId = wcstok_s(NULL, s, &pszStrtokBuf);
+        RegCloseKey(hkeyAdapterId);
     }
 
 	// First we need to find the TAP-Win32 adapter (identified by 'tap0901') and get its GUID
-	RegOpenKeyEx(HKEY_LOCAL_MACHINE, net_key, NULL, KEY_READ, &hkey_adapters);
-    while (RegEnumKeyEx(hkey_adapters, i, subkey_name, &subkey_size, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
+	RegOpenKeyEx(HKEY_LOCAL_MACHINE, arrcNetKey, NULL, KEY_READ, &hkeyAdapters);
+    while (RegEnumKeyEx(hkeyAdapters, i, arrcSubkeyName, &dwSubkeySize, NULL, NULL, NULL, NULL) == ERROR_SUCCESS)
     {
-        RegOpenKeyEx(hkey_adapters, subkey_name, NULL, KEY_READ, &hkey_adapter);
-        RegQueryValueEx(hkey_adapter, TEXT("ComponentId"), NULL, NULL, (LPBYTE)component_id, &component_size);
-        RegQueryValueEx(hkey_adapter, TEXT("NetCfgInstanceId"), NULL, NULL, (LPBYTE)guid, &guid_size);
-        RegCloseKey(hkey_adapter);
+        RegOpenKeyEx(hkeyAdapters, arrcSubkeyName, NULL, KEY_READ, &hkeyAdapter);
+        RegQueryValueEx(hkeyAdapter, TEXT("ComponentId"), NULL, NULL, (LPBYTE)arrcComponentId, &dwComponentSize);
+        RegQueryValueEx(hkeyAdapter, TEXT("NetCfgInstanceId"), NULL, NULL, (LPBYTE)arrcGuid, &dwGuidSize);
+        RegCloseKey(hkeyAdapter);
         if (
             // auto select adapter
-            ((adapter_id == NULL) && (!wcscmp(component_id, TEXT("tap0901")) || !wcscmp(component_id, TEXT("TAP0901")))) ||
+            ((pAdapterId == NULL) && (!wcscmp(arrcComponentId, TEXT("tap0901")) || !wcscmp(arrcComponentId, TEXT("TAP0901")))) ||
             // user select adapter manually by ad_option dialog
-            ((adapter_id != NULL) && (!wcscmp(guid, adapter_id)))
+            ((pAdapterId != NULL) && (!wcscmp(arrcGuid, pAdapterId)))
             )
 		{
-			adapter_found = true;
+			bIsAdapterFound = true;
 			break;
 		}
 		i++;
-		subkey_size = 128;
+		dwSubkeySize = 128;
 	}
-	RegCloseKey(hkey_adapters);
+	RegCloseKey(hkeyAdapters);
 
 	// If we have the guid, fetch the IP address from the registry
-	if (adapter_found)
+	if (bIsAdapterFound)
 	{
-		DWORD dhcp_enabled = 0;
-		DWORD buf_size = sizeof(DWORD);
-		DWORD ip_size = 16 * sizeof(WCHAR);
-		RegOpenKeyEx(HKEY_LOCAL_MACHINE, tcpip_key, NULL, KEY_READ, &hkey_ip);
-		RegOpenKeyEx(hkey_ip, guid, NULL, KEY_READ, &hkey_ipg);
-		RegQueryValueEx(hkey_ipg, TEXT("EnableDHCP"), NULL, NULL, (LPBYTE)&dhcp_enabled, &buf_size);
-		if (dhcp_enabled)
+		DWORD dwDhcpEnabled = 0;
+		DWORD nBufSize = sizeof(DWORD);
+		DWORD nIpSize = 16 * sizeof(WCHAR);
+		RegOpenKeyEx(HKEY_LOCAL_MACHINE, arrcTcpipKey, NULL, KEY_READ, &hkeyIp);
+		RegOpenKeyEx(hkeyIp, arrcGuid, NULL, KEY_READ, &hkeyIpg);
+		RegQueryValueEx(hkeyIpg, TEXT("EnableDHCP"), NULL, NULL, (LPBYTE)&dwDhcpEnabled, &nBufSize);
+		if (dwDhcpEnabled)
 		{
-			RegQueryValueEx(hkey_ipg, TEXT("DhcpIPAddress"), NULL, NULL, (LPBYTE)ip_address, &ip_size);
+			RegQueryValueEx(hkeyIpg, TEXT("DhcpIPAddress"), NULL, NULL, (LPBYTE)pszIpAddress, &nIpSize);
 		}
 		else
 		{
-			RegQueryValueEx(hkey_ipg, TEXT("IPAddress"), NULL, NULL, (LPBYTE)ip_address, &ip_size);
+			RegQueryValueEx(hkeyIpg, TEXT("IPAddress"), NULL, NULL, (LPBYTE)pszIpAddress, &nIpSize);
 		}
-		RegCloseKey(hkey_ipg);
-		RegCloseKey(hkey_ip);
+		RegCloseKey(hkeyIpg);
+		RegCloseKey(hkeyIp);
 
-		GetMacAddress(mac_address, guid);
+		GetMacAddress(pszMacAddress, arrcGuid);
 	}
 }
 
-BOOL ValidateIpv4Address(WCHAR* ip_address)
+BOOL ValidateIpv4Address(WCHAR* pszIpAddress)
 {
 	WCHAR c;
-	WCHAR octet_val[4];
-	octet_val[0] = 0;
-	INT octets = 0;
-	INT c_octet_len = 0;
-	for (INT i = 0; i < (INT)wcslen(ip_address); i++)
+	WCHAR arrcOctetValue[4];
+	arrcOctetValue[0] = 0;
+	INT nOctets = 0;
+	INT nOctetLen = 0;
+	for (INT i = 0; i < (INT)wcslen(pszIpAddress); i++)
 	{
-		c = ip_address[i];
+		c = pszIpAddress[i];
 		if ((c < '0' || c > '9') && c != '.' && c != '/') return FALSE;
 		if (c == '.' || c == '/')
 		{
-			if (c_octet_len < 1 || c_octet_len > 3) return FALSE;
-			octets++;
-			octet_val[c_octet_len] = 0;
-			INT int_octet_val = _wtoi(octet_val);
-			if (int_octet_val < 0 || int_octet_val > 255) return FALSE;
-			if (octets > 3 && c != '/') return FALSE;
-			c_octet_len = 0;
+			if (nOctetLen < 1 || nOctetLen > 3) return FALSE;
+			nOctets++;
+			arrcOctetValue[nOctetLen] = 0;
+			INT nOctetValue = _wtoi(arrcOctetValue);
+			if (nOctetValue < 0 || nOctetValue > 255) return FALSE;
+			if (nOctets > 3 && c != '/') return FALSE;
+			nOctetLen = 0;
 			continue;
 		}
-		octet_val[c_octet_len] = c;
-		c_octet_len++;
-		if (c_octet_len > 3) return FALSE;
+		arrcOctetValue[nOctetLen] = c;
+		nOctetLen++;
+		if (nOctetLen > 3) return FALSE;
 	}
-	octets++;
-	if (c_octet_len < 1 || c_octet_len > 3 || (octets != 4  && octets != 5)) return FALSE;
+	nOctets++;
+	if (nOctetLen < 1 || nOctetLen > 3 || (nOctets != 4  && nOctets != 5)) return FALSE;
 	return TRUE;
 }
 
-BOOL ValidateMacAddress(WCHAR* mac_address)
+BOOL ValidateMacAddress(WCHAR* pszMacAddress)
 {
-	if (wcslen(mac_address) != 17) return FALSE;
-	WCHAR mac_addr_lower[18];
-	wcscpy_s(mac_addr_lower, 18, mac_address);
-	_wcslwr_s(mac_addr_lower, 18);
+	if (wcslen(pszMacAddress) != 17) return FALSE;
+	WCHAR arrcMacAddressLower[18];
+	wcscpy_s(arrcMacAddressLower, 18, pszMacAddress);
+	_wcslwr_s(arrcMacAddressLower, 18);
 	WCHAR* w;
 	for (INT i = 0; i < 6; i++)
 	{
-		w = mac_addr_lower + (i * 3);
+		w = arrcMacAddressLower + (i * 3);
 		if ((w[0] < '0' || w[0] > '9') && (w[0] < 'a' || w[0] > 'f')) return FALSE;
 		if ((w[1] < '0' || w[1] > '9') && (w[1] < 'a' || w[1] > 'f')) return FALSE;
 		if (i != 5 && w[2] != ':') return FALSE;
@@ -332,10 +329,10 @@ BOOL ValidateMacAddress(WCHAR* mac_address)
 	return TRUE;
 }
 
-BOOL ValidateNumberRange(WCHAR* num, INT min, INT max)
+BOOL ValidateNumberRange(WCHAR* pNum, INT nMin, INT nMax)
 {
-	INT v = _wtoi(num);
-	if (min != -1 && v < min) return FALSE;
-	if (max != -1 && v > max) return FALSE;
+	INT v = _wtoi(pNum);
+	if (nMin != -1 && v < nMin) return FALSE;
+	if (nMax != -1 && v > nMax) return FALSE;
 	return TRUE;
 }
