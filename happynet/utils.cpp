@@ -14,14 +14,14 @@
 #include "process.h"
 #include "utils.h"
 
-LARGE_INTEGER intToLargeInt(UINT nCount) {
+LARGE_INTEGER IntToLargeInt(UINT nCount) {
     LARGE_INTEGER li;
     li.QuadPart = nCount;
     return li;
 }
 
 
-BOOL is_valid_ascii_string(WCHAR *line)
+BOOL IsValidAsciiString(WCHAR *line)
 {
 	for (INT i = 0; i < lstrlenW(line); i++)
 	{
@@ -32,7 +32,7 @@ BOOL is_valid_ascii_string(WCHAR *line)
 	return TRUE;
 }
 
-BOOL strip_no_ascii_string(WCHAR *line)
+BOOL StripNoAsciiString(WCHAR *line)
 {
 	INT i = 0;
 	for (i = 0; i < lstrlenW(line); i++)
@@ -51,7 +51,7 @@ UINT WinExecW(WCHAR* command_line, UINT command_show)
     return WinExec(W2A(command_line), command_show);
 }
 
-VOID log_event(WCHAR* format, ...)
+VOID LogEvent(WCHAR* format, ...)
 {
     INT n = 0;
     va_list arg;
@@ -71,7 +71,7 @@ VOID log_event(WCHAR* format, ...)
     delete[] message;
 }
 
-INT get_install_dir_path(WCHAR* dir_path, DWORD buf_len)
+INT GetInstallDirPath(WCHAR* dir_path, DWORD buf_len)
 {
     WCHAR exe_dir_buf[MAX_PATH] = { 0 };
     DWORD exe_dir_buf_len = buf_len * sizeof(WCHAR);
@@ -87,7 +87,7 @@ INT get_install_dir_path(WCHAR* dir_path, DWORD buf_len)
 }
 
 
-INT get_app_datapath(WCHAR* datapath)
+INT GetAppDatapath(WCHAR* datapath)
 {
     WCHAR default_app_datapath[MAX_PATH] = { 0 };
     SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, default_app_datapath);
@@ -96,15 +96,15 @@ INT get_app_datapath(WCHAR* datapath)
 }
 
 
-INT get_command_line_edge(WCHAR* dir_path, WCHAR* command_line, DWORD buf_len)
+INT GetEdgeCmdLine(WCHAR* dir_path, WCHAR* command_line, DWORD buf_len)
 {
     WCHAR edge_path[MAX_PATH] = { 0 };
     swprintf_s(edge_path, MAX_PATH, TEXT("\"%s\\happynedge.exe\""), dir_path);
-    return get_params_edge(edge_path, command_line, buf_len);
+    return GetEdgeParams(edge_path, command_line, buf_len);
 }
 
 
-INT get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
+INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
 {
     WCHAR ret_val[MAX_COMMAND_LINE_LEN];
     DWORD ret_dword = 0;
@@ -118,7 +118,7 @@ INT get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
     if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"),
                         NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
     {
-        log_event(TEXT("%s:%d (%s) - Error opening registry key.\n"),
+        LogEvent(TEXT("%s:%d (%s) - Error opening registry key.\n"),
                     __FILEW__, __LINE__, __FUNCTIONW__);
         return 0;
     }
@@ -255,7 +255,7 @@ INT get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
         }
     }
 
-    if (is_valid_ascii_string(hostname) || (!is_valid_ascii_string(hostname) && strip_no_ascii_string(hostname)))
+    if (IsValidAsciiString(hostname) || (!IsValidAsciiString(hostname) && StripNoAsciiString(hostname)))
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -I %s"), hostname);
     }

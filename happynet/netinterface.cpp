@@ -28,7 +28,7 @@ static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_u
     INetSharingEveryConnectionCollection * nsecc_ptr = NULL;
     HRESULT hr = pNSM->get_EnumEveryConnection(&nsecc_ptr);
     if (!nsecc_ptr)
-        log_event(TEXT("failed to get EveryConnectionCollection!\r\n"));
+        LogEvent(TEXT("failed to get EveryConnectionCollection!\r\n"));
     else {
 
         // enumerate connections
@@ -66,7 +66,7 @@ static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_u
                             is_found = TRUE;
                             if (hr != S_OK)
                             {
-                                log_event(TEXT("failed to create rename NPCAP_LOOPBACK_INTERFACE_NAME\r\n"));
+                                LogEvent(TEXT("failed to create rename NPCAP_LOOPBACK_INTERFACE_NAME\r\n"));
                             }
                         }
 
@@ -102,7 +102,7 @@ BOOL set_netinterface_name_by_id(WCHAR device_uuid[])
         (void**)&nsm_ptr);
     if (!nsm_ptr)
     {
-        log_event(TEXT("failed to create NetSharingManager object\r\n"));
+        LogEvent(TEXT("failed to create NetSharingManager object\r\n"));
         return ret;
     }
     else {
@@ -166,7 +166,7 @@ DWORD get_adapter_friendly_name(CHAR* adapter_name, WCHAR* friendly_name, ULONG 
     do {
         pAddresses = (IP_ADAPTER_ADDRESSES *)MALLOC(out_buf_len);
         if (pAddresses == NULL) {
-            log_event(TEXT("Error:%s"), TEXT("Memory allocation failed for IP_ADAPTER_ADDRESSES struct\n"));
+            LogEvent(TEXT("Error:%s"), TEXT("Memory allocation failed for IP_ADAPTER_ADDRESSES struct\n"));
             return E_FAIL;
         }
 

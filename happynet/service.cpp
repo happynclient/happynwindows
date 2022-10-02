@@ -37,19 +37,19 @@ VOID start_service(VOID)
 	}
 
 	// Build path and command line parameters
-	if (!get_install_dir_path(dir_path, MAX_PATH))
+	if (!GetInstallDirPath(dir_path, MAX_PATH))
 	{
-		log_event(TEXT("%s:%d (%s) - Error building executable path.\n"),
+		LogEvent(TEXT("%s:%d (%s) - Error building executable path.\n"),
                     __FILEW__, __LINE__, __FUNCTIONW__);
 		return;
 	}
 	INT ret = 0;
 
-	ret = get_command_line_edge(dir_path, command_line, MAX_COMMAND_LINE_LEN);
+	ret = GetEdgeCmdLine(dir_path, command_line, MAX_COMMAND_LINE_LEN);
 
-	log_event(TEXT("%s:%d (%s) - building command line: %s \n"),
+	LogEvent(TEXT("%s:%d (%s) - building command line: %s \n"),
                 __FILEW__, __LINE__, __FUNCTIONW__, command_line);
-	log_event(TEXT("\n->Start of parent execution.\n"));
+	LogEvent(TEXT("\n->Start of parent execution.\n"));
 
 	// Create the child process. 
 	create_service_process(command_line); 

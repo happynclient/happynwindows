@@ -130,10 +130,10 @@ VOID grace_stop_service_process(VOID)
 		u_short edge_manager_port = (u_short)(dword_edge_manager_port);
 		//CreateThread(NULL, 0, send_sig_stop, &edge_manager_port, 0, NULL);
 		if (send_sig_stop(edge_manager_port) != 0) {
-			log_event(L"%s:%d (%s) - send sig to stop edge socket error.\n", __FILEW__, __LINE__, __FUNCTIONW__);
+			LogEvent(L"%s:%d (%s) - send sig to stop edge socket error.\n", __FILEW__, __LINE__, __FUNCTIONW__);
 		}
 	} else {
-		log_event(L"%s:%d (%s) - Failed to stop or had been stopped.\n", __FILEW__, __LINE__, __FUNCTIONW__);
+		LogEvent(L"%s:%d (%s) - Failed to stop or had been stopped.\n", __FILEW__, __LINE__, __FUNCTIONW__);
 	}
 	return;
 }
@@ -158,10 +158,10 @@ VOID terminal_service_process(VOID)
 			}
 			else {
 				// Timed out or an error occurred
-				log_event(L"%s:%d (%s) - Failed to WatiForSingleObject.\n", __FILEW__, __LINE__, __FUNCTIONW__);
+				LogEvent(L"%s:%d (%s) - Failed to WatiForSingleObject.\n", __FILEW__, __LINE__, __FUNCTIONW__);
 			}
 		} else {
-			log_event(L"%s:%d (%s) - Process had been stopped.\n", __FILEW__, __LINE__, __FUNCTIONW__);
+			LogEvent(L"%s:%d (%s) - Process had been stopped.\n", __FILEW__, __LINE__, __FUNCTIONW__);
 		}
 	}
 }
@@ -208,7 +208,7 @@ void get_service_process_output(WCHAR *read_buf)
     }
 	mbstowcs_s(&convertedChars, read_buf, newsize, chbuf, _TRUNCATE);
 	//Display the result and indicate the type of string that it is.
-	log_event(TEXT("%s\n"), read_buf); 
+	LogEvent(TEXT("%s\n"), read_buf); 
 } 
 
 
