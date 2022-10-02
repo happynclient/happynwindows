@@ -14,9 +14,16 @@
 #include "process.h"
 #include "utils.h"
 
+LARGE_INTEGER intToLargeInt(UINT nCount) {
+    LARGE_INTEGER li;
+    li.QuadPart = nCount;
+    return li;
+}
+
+
 BOOL is_valid_ascii_string(WCHAR *line)
 {
-	for (int i = 0; i < lstrlenW(line); i++)
+	for (INT i = 0; i < lstrlenW(line); i++)
 	{
 		if (!iswascii(line[i])) {
 			return FALSE;
@@ -27,7 +34,7 @@ BOOL is_valid_ascii_string(WCHAR *line)
 
 BOOL strip_no_ascii_string(WCHAR *line)
 {
-	int i = 0;
+	INT i = 0;
 	for (i = 0; i < lstrlenW(line); i++)
 	{
 		if (!iswascii(line[i])) {
@@ -44,16 +51,15 @@ UINT WinExecW(WCHAR* command_line, UINT command_show)
     return WinExec(W2A(command_line), command_show);
 }
 
-void log_event(WCHAR* format, ...)
+VOID log_event(WCHAR* format, ...)
 {
-    //WCHAR message[4096] = {'\0'};
-    int n = 0;
+    INT n = 0;
     va_list arg;
 
     // Construct the message
     va_start(arg, format);
-    int size = _vscwprintf(format, arg) + 1;
-    wchar_t *message = new wchar_t[size];
+    INT size = _vscwprintf(format, arg) + 1;
+    WCHAR *message = new WCHAR[size];
     n = _vsnwprintf_s(message, size, size, format, arg);
     va_end(arg);
 
@@ -65,9 +71,9 @@ void log_event(WCHAR* format, ...)
     delete[] message;
 }
 
-int get_install_dir_path(WCHAR* dir_path, DWORD buf_len)
+INT get_install_dir_path(WCHAR* dir_path, DWORD buf_len)
 {
-    WCHAR exe_dir_buf[MAX_PATH] = { '\0' };
+    WCHAR exe_dir_buf[MAX_PATH] = { 0 };
     DWORD exe_dir_buf_len = buf_len * sizeof(WCHAR);
     
     // get happyn exe dir path
@@ -81,18 +87,16 @@ int get_install_dir_path(WCHAR* dir_path, DWORD buf_len)
 }
 
 
-int get_app_datapath(WCHAR* datapath)
+INT get_app_datapath(WCHAR* datapath)
 {
-    WCHAR default_app_datapath[MAX_PATH] = { '\0' };
+    WCHAR default_app_datapath[MAX_PATH] = { 0 };
     SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, default_app_datapath);
     swprintf_s(datapath, MAX_PATH, L"%s\\happynet", default_app_datapath);
-    
-    ///swprintf_s(datapath, MAX_PATH, L"D:\\happynet", default_app_datapath);
     return SHCreateDirectoryEx(NULL, datapath, NULL);
 }
 
 
-int get_command_line_edge(WCHAR* dir_path, WCHAR* command_line, DWORD buf_len)
+INT get_command_line_edge(WCHAR* dir_path, WCHAR* command_line, DWORD buf_len)
 {
     WCHAR edge_path[MAX_PATH] = { '\0' };
     swprintf_s(edge_path, MAX_PATH, L"\"%s\\happynedge.exe\"", dir_path);
@@ -100,7 +104,7 @@ int get_command_line_edge(WCHAR* dir_path, WCHAR* command_line, DWORD buf_len)
 }
 
 
-int get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
+INT get_params_edge(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
 {
     WCHAR ret_val[MAX_COMMAND_LINE_LEN];
     DWORD ret_dword = 0;
