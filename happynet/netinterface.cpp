@@ -332,7 +332,7 @@ BOOL ValidateMacAddress(WCHAR* mac_address)
 	return TRUE;
 }
 
-BOOL validate_number_range(WCHAR* num, INT min, INT max)
+BOOL ValidateNumberRange(WCHAR* num, INT min, INT max)
 {
 	INT v = _wtoi(num);
 	if (min != -1 && v < min) return FALSE;

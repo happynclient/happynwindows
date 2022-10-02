@@ -8,6 +8,6 @@ VOID GetMacAddress(WCHAR* mac_address, WCHAR* guid);
 VOID GetIpMacAddresses(WCHAR* ip_address, WCHAR* mac_address);
 BOOL ValidateIpv4Address(WCHAR* ip_address);
 BOOL ValidateMacAddress(WCHAR* mac_address);
-BOOL validate_number_range(WCHAR* num, INT min, INT max);
+BOOL ValidateNumberRange(WCHAR* num, INT min, INT max);
 
 #endif
