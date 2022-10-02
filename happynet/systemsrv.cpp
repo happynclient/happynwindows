@@ -245,15 +245,8 @@ DWORD get_service_system_status(void)
     return EXCEPTION_BREAKPOINT;
 }
 
-LARGE_INTEGER intToLargeInt(int i) {
-    LARGE_INTEGER li;
-    li.QuadPart = i;
-    return li;
-}
-
-void get_service_system_output(WCHAR *read_buf)
+void get_service_system_output(WCHAR *szReadBuf)
 {
-    DWORD dwread;
     CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { '\0' };
     BOOL bsuccess = FALSE;
     HANDLE hparent_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -278,7 +271,7 @@ void get_service_system_output(WCHAR *read_buf)
     if (!bsuccess) return;
     //Convert char* string to a wchar_t* string.
     size_t convertedChars = 0;
-    mbstowcs_s(&convertedChars, read_buf, PROCESS_STDOUT_BUFSIZE, chbuf, _TRUNCATE);
+    mbstowcs_s(&convertedChars, szReadBuf, PROCESS_STDOUT_BUFSIZE, chbuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
-    log_event(L"%s\n", read_buf);
+    log_event(L"%s\n", szReadBuf);
 }
