@@ -19,14 +19,14 @@
 
 #define is_item_checked(x,y) (SendDlgItemMessage(x, y, BM_GETCHECK, 0, 0) == BST_CHECKED)
 
-WCHAR szClassName[] = L"HappynetClient";
+WCHAR szClassName[] = TEXT("HappynetClient");
 HICON h_icon;
 HICON h_icon_sm;
 HANDLE h_update_main_status_thread;
 HANDLE h_mutex = NULL;
 CNetworkAdapter *m_pAdapters = NULL;
 
-bool string_empty(WCHAR* str)
+BOOL string_empty(WCHAR* str)
 {
 	if (wcslen(str) == 0) return true;
 	for (int i = 0; i < (int)wcslen(str); i++)
@@ -36,7 +36,7 @@ bool string_empty(WCHAR* str)
 	return true;
 }
 
-bool validate_options(HWND hwndDlg)
+BOOL validate_options(HWND hwndDlg)
 {
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	WCHAR err_str[MAX_COMMAND_LINE_LEN];
@@ -82,18 +82,18 @@ bool validate_options(HWND hwndDlg)
 	// Finished
 	if (!ret_val)
 	{
-		MessageBox(hwndDlg, err_str, L"Error", MB_OK | MB_ICONSTOP);
+		MessageBox(hwndDlg, err_str, TEXT("Error"), MB_OK | MB_ICONSTOP);
 	}
 	return ret_val;
 }
 
 
-bool validate_ad_options(HWND hwndDlg)
+BOOL validate_ad_options(HWND hwndDlg)
 {
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	WCHAR err_str[MAX_COMMAND_LINE_LEN];
-	int buf_len = MAX_COMMAND_LINE_LEN;
-	bool ret_val = true;
+	INT buf_len = MAX_COMMAND_LINE_LEN;
+	BOOL ret_val = TRUE;
 
 
 	// Key file
@@ -101,8 +101,8 @@ bool validate_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_KEYFILE) && string_empty(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE));
-		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Key file is required");
-		ret_val = false;
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("Key file is required"));
+		ret_val = FALSE;
 	}
 
 	// MTU
@@ -110,8 +110,8 @@ bool validate_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_MTU) && string_empty(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_MTU));
-		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"MTU is required");
-		ret_val = false;
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("MTU is required"));
+		ret_val = FALSE;
 	}
 
 	// Local port
@@ -119,8 +119,8 @@ bool validate_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_LOCALPORT) && !validate_number_range(tmp_buf, 1, 65535))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT));
-		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Invalid local port");
-		ret_val = false;
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("Invalid local port"));
+		ret_val = FALSE;
 	}
 
 	// MAC address
@@ -128,20 +128,20 @@ bool validate_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_MACADDRESS) && !validate_mac_address(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS));
-		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Invalid MAC address");
-		ret_val = false;
+		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("Invalid MAC address"));
+		ret_val = FALSE;
 	}
 
 	// Finished
 	if (!ret_val)
 	{
-		MessageBox(hwndDlg, err_str, L"Error", MB_OK | MB_ICONSTOP);
+		MessageBox(hwndDlg, err_str, TEXT("Error"), MB_OK | MB_ICONSTOP);
 	}
 	return ret_val;
 }
 
 
-void update_addresses(HWND hwndDlg)
+VOID update_addresses(HWND hwndDlg)
 {
 	if (get_service_status() == STILL_ACTIVE)
 	{
@@ -153,12 +153,12 @@ void update_addresses(HWND hwndDlg)
 	}
 	else
 	{
-		SetDlgItemText(hwndDlg, IDC_EDT_CUR_IP, L"0.0.0.0");
-		SetDlgItemText(hwndDlg, IDC_EDT_CUR_MAC, L"00:00:00:00:00:00");
+		SetDlgItemText(hwndDlg, IDC_EDT_CUR_IP, TEXT("0.0.0.0"));
+		SetDlgItemText(hwndDlg, IDC_EDT_CUR_MAC, TEXT("00:00:00:00:00:00"));
 	}
 }
 
-void sync_service_output_text( const HWND &hwnd)
+VOID sync_service_output_text(const HWND &hwnd)
 {
     TCHAR read_buf[PROCESS_STDOUT_BUFSIZE] = { 0 };
 
@@ -194,7 +194,7 @@ void sync_service_output_text( const HWND &hwnd)
 	GlobalFree( buf );
 }
 
-void update_service_status(HWND hwndDlg)
+VOID update_service_status(HWND hwndDlg)
 {
 	WaitForSingleObject(h_mutex, 1000);
 
@@ -206,20 +206,20 @@ void update_service_status(HWND hwndDlg)
 	switch (service_status)
 	{
 	case PROCESS_EXIT_CODE:
-		SetDlgItemText(hwndDlg, IDC_STC_SRV_STATUS, L"Stopped");
+		SetDlgItemText(hwndDlg, IDC_STC_SRV_STATUS, TEXT("Stopped"));
 		EnableWindow(btn_start, TRUE);
 		EnableWindow(btn_stop, FALSE);
         EnableWindow(btn_monitor, FALSE);
 		break;
 	case STILL_ACTIVE:
-		SetDlgItemText(hwndDlg, IDC_STC_SRV_STATUS, L"Started");
+		SetDlgItemText(hwndDlg, IDC_STC_SRV_STATUS, TEXT("Started"));
 		EnableWindow(btn_start, FALSE);
 		EnableWindow(btn_stop, TRUE);
         EnableWindow(btn_monitor, TRUE);
 		sync_service_output_text(hwndDlg);
 		break;
 	default:
-		SetDlgItemText(hwndDlg, IDC_STC_SRV_STATUS, L"Unknown");
+		SetDlgItemText(hwndDlg, IDC_STC_SRV_STATUS, TEXT("Unknown"));
 		EnableWindow(btn_start, TRUE);
 		EnableWindow(btn_stop, TRUE);
 		break;
@@ -236,192 +236,197 @@ DWORD CALLBACK update_main_status_thread(PVOID pvoid)
 		update_addresses(hwndDlg);
 		Sleep(1000);
 	}
-	log_event(L"thread end here\n");
+	log_event(TEXT("thread end here\n"));
 	return 0;
 }
 
 
-void read_options(HWND hwndDlg)
+VOID  read_options(HWND hwndDlg)
 {
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	DWORD dword_buf;
 	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"),
+                        NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
 	{
-		MessageBox(hwndDlg, L"The registry key could not be opened.", L"Error", MB_OK | MB_ICONSTOP);
+		MessageBox(hwndDlg, TEXT("The registry key could not be opened."),
+                    TEXT("Error"), MB_OK | MB_ICONSTOP);
 		return;
 	}
 	// Community
-	reg_get_string(hkey, L"community", tmp_buf, buf_len);
+	reg_get_string(hkey, TEXT("community"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_COMMUNITY, tmp_buf);
 
 	// Encryption key
-	reg_get_string(hkey, L"enckey", tmp_buf, buf_len);
+	reg_get_string(hkey, TEXT("enckey"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_ENCKEY, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_ENCKEY, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_ENCKEY), !string_empty(tmp_buf));
 	EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_KEYFILE), string_empty(tmp_buf));
 
 	// IP address
-	reg_get_string(hkey, L"ip_address", tmp_buf, buf_len);
+	reg_get_string(hkey, TEXT("ip_address"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_IPADDRESS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), !string_empty(tmp_buf));
 
 	// Supernode address
-	reg_get_string(hkey, L"supernode_addr", tmp_buf, buf_len);
+	reg_get_string(hkey, TEXT("supernode_addr"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_SUPERNODEADDR, tmp_buf);
 
 	// Supernode port
-	reg_get_dword(hkey, L"supernode_port", &dword_buf);
+	reg_get_dword(hkey, TEXT("supernode_port"), &dword_buf);
 	SetDlgItemInt(hwndDlg, IDC_EDT_SUPERNODEPORT, dword_buf, FALSE);
 	RegCloseKey(hkey);
 }
 
-void read_ad_options(HWND hwndDlg)
+VOID  read_ad_options(HWND hwndDlg)
 {
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	DWORD dword_buf;
 	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"),
+                        NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
 	{
-		MessageBox(hwndDlg, L"The registry key could not be opened.", L"Error", MB_OK | MB_ICONSTOP);
+		MessageBox(hwndDlg, TEXT("The registry key could not be opened."), TEXT("Error"), MB_OK | MB_ICONSTOP);
 		return;
 	}
 
 	// Local Port
-	reg_get_dword(hkey, L"local_port", &dword_buf);
+	reg_get_dword(hkey, TEXT("local_port"), &dword_buf);
 	SetDlgItemInt(hwndDlg, IDC_EDT_LOCALPORT, dword_buf, FALSE);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_LOCALPORT, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT), dword_buf != 0);
 
 	// Key file
-	reg_get_string(hkey, L"keyfile", tmp_buf, buf_len);
+	reg_get_string(hkey, TEXT("keyfile"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_KEYFILE, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_KEYFILE, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE), !string_empty(tmp_buf));
 	EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_ENCKEY), string_empty(tmp_buf));
 
     // Adapter
-    reg_get_string(hkey, L"adapter", tmp_buf, buf_len);
+    reg_get_string(hkey, TEXT("adapter"), tmp_buf, buf_len);
     SetDlgItemText(hwndDlg, IDC_COMBO_ADAPTERS, tmp_buf);
     SendDlgItemMessage(hwndDlg, IDC_CHK_ADAPTERS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
     EnableWindow(GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS), !string_empty(tmp_buf));
 
 
 	// MAC address
-	reg_get_string(hkey, L"mac_address", tmp_buf, buf_len);
+	reg_get_string(hkey, TEXT("mac_address"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_MACADDRESS, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_MACADDRESS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS), !string_empty(tmp_buf));
 
 	// MTU
-	reg_get_dword(hkey, L"mtu", &dword_buf);
+	reg_get_dword(hkey, TEXT("mtu"), &dword_buf);
 	SetDlgItemInt(hwndDlg, IDC_EDT_MTU, dword_buf, FALSE);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_MTU, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MTU), dword_buf);
 
 	// Multicast
-	reg_get_dword(hkey, L"multicast", &dword_buf);
+	reg_get_dword(hkey, TEXT("multicast"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_MULTICAST, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	// Packet Forwarding
-	reg_get_dword(hkey, L"packet_forwarding", &dword_buf);
+	reg_get_dword(hkey, TEXT("packet_forwarding"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_PKTFORWARD, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	// header_encry
-	reg_get_dword(hkey, L"header_encry", &dword_buf);
+	reg_get_dword(hkey, TEXT("header_encry"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_HEADER_ENCRY, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
-	reg_get_dword(hkey, L"data_compress", &dword_buf);
+	reg_get_dword(hkey, TEXT("data_compress"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_DATA_COMPRESS, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
-	reg_get_dword(hkey, L"select_rtt", &dword_buf);
+	reg_get_dword(hkey, TEXT("select_rtt"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_SELECT_RTT, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	//custom param
-	reg_get_string(hkey, L"custom_param", tmp_buf, buf_len);
+	reg_get_string(hkey, TEXT("custom_param"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_CUSTOM_PARAM, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_CUSTOM_PARAM, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), !string_empty(tmp_buf));
 
     // system_service
-    reg_get_dword(hkey, L"system_service", &dword_buf);
+    reg_get_dword(hkey, TEXT("system_service"), &dword_buf);
     SendDlgItemMessage(hwndDlg, IDC_CHK_SYSTEM_SERVICE, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	// auto_start
-	reg_get_dword(hkey, L"auto_start", &dword_buf);
+	reg_get_dword(hkey, TEXT("auto_start"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_AUTO_START, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	// auto_tray
-	reg_get_dword(hkey, L"auto_tray", &dword_buf);
+	reg_get_dword(hkey, TEXT("auto_tray"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_AUTO_TRAY, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	RegCloseKey(hkey);
 }
 
 
-void save_options(HWND hwndDlg)
+VOID save_options(HWND hwndDlg)
 {
 	if (!validate_options(hwndDlg)) return;
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"),
+                        NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
 	{
-		MessageBox(hwndDlg, L"The registry key could not be opened.", L"Error", MB_OK | MB_ICONSTOP);
+		MessageBox(hwndDlg, TEXT("The registry key could not be opened."), TEXT("Error"), MB_OK | MB_ICONSTOP);
 		return;
 	}
 	// Community
 	GetDlgItemText(hwndDlg, IDC_EDT_COMMUNITY, tmp_buf, buf_len);
-	reg_set_string(hkey, L"community", tmp_buf);
+	reg_set_string(hkey, TEXT("community"), tmp_buf);
 
 	// Encryption key
 	if (is_item_checked(hwndDlg, IDC_CHK_ENCKEY))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_ENCKEY, tmp_buf, buf_len);
-		reg_set_string(hkey, L"enckey", tmp_buf);
+		reg_set_string(hkey, TEXT("enckey"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, L"enckey", L"");
+		reg_set_string(hkey, TEXT("enckey"), TEXT(""));
 	}
 
 	// IP Address
 	if (is_item_checked(hwndDlg, IDC_CHK_IPADDRESS))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf, buf_len);
-		reg_set_string(hkey, L"ip_address", tmp_buf);
+		reg_set_string(hkey, TEXT("ip_address"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, L"ip_address", L"");
+		reg_set_string(hkey, TEXT("ip_address"), TEXT(""));
 	}
 
 	// Supernode address
 	GetDlgItemText(hwndDlg, IDC_EDT_SUPERNODEADDR, tmp_buf, buf_len);
-	reg_set_string(hkey, L"supernode_addr", tmp_buf);
+	reg_set_string(hkey, TEXT("supernode_addr"), tmp_buf);
 
 	// Supernode port
 	GetDlgItemText(hwndDlg, IDC_EDT_SUPERNODEPORT, tmp_buf, buf_len);
-	reg_set_dword(hkey, L"supernode_port", (DWORD)_wtoi(tmp_buf));
+	reg_set_dword(hkey, TEXT("supernode_port"), (DWORD)_wtoi(tmp_buf));
 
 
 	// Finished
 	RegCloseKey(hkey);
 }
 
-void save_ad_options(HWND hwndDlg)
+VOID save_ad_options(HWND hwndDlg)
 {
 	if (!validate_ad_options(hwndDlg)) return;
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	HKEY hkey;
-	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Happynet\\Parameters", NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"),
+                        NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
 	{
-		MessageBox(hwndDlg, L"The registry key could not be opened.", L"Error", MB_OK | MB_ICONSTOP);
+		MessageBox(hwndDlg, TEXT("The registry key could not be opened."), TEXT("Error"), MB_OK | MB_ICONSTOP);
 		return;
 	}
 
@@ -429,11 +434,11 @@ void save_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_KEYFILE))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_KEYFILE, tmp_buf, buf_len);
-		reg_set_string(hkey, L"keyfile", tmp_buf);
+		reg_set_string(hkey, TEXT("keyfile"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, L"keyfile", L"");
+		reg_set_string(hkey, TEXT("keyfile"), TEXT(""));
 	}
 
 
@@ -441,81 +446,81 @@ void save_ad_options(HWND hwndDlg)
     if (is_item_checked(hwndDlg, IDC_CHK_ADAPTERS))
     {
         GetDlgItemText(hwndDlg, IDC_COMBO_ADAPTERS, tmp_buf, buf_len);
-        reg_set_string(hkey, L"adapter", tmp_buf);
+        reg_set_string(hkey, TEXT("adapter"), tmp_buf);
 
         // set adapter net interface name to HAPPYNET by uuid
         WCHAR *strtok_buf = NULL, *adapter_id = NULL;
-        const WCHAR s[4] = L"_";
+        const WCHAR s[4] = TEXT("_");
         adapter_id = wcstok_s(tmp_buf, s, &strtok_buf);
         adapter_id = wcstok_s(NULL, s, &strtok_buf);
         set_netinterface_name_by_id(adapter_id);
     }
     else
     {
-        reg_set_string(hkey, L"adapter", L"");
+        reg_set_string(hkey, TEXT("adapter"), TEXT(""));
     }
 
 	// MAC address
 	if (is_item_checked(hwndDlg, IDC_CHK_MACADDRESS))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_MACADDRESS, tmp_buf, buf_len);
-		reg_set_string(hkey, L"mac_address", tmp_buf);
+		reg_set_string(hkey, TEXT("mac_address"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, L"mac_address", L"");
+		reg_set_string(hkey, TEXT("mac_address"), TEXT(""));
 	}
 
 	// MTU
 	if (is_item_checked(hwndDlg, IDC_CHK_MTU))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_MTU, tmp_buf, buf_len);
-		reg_set_dword(hkey, L"mtu", (DWORD)_wtoi(tmp_buf));
+		reg_set_dword(hkey, TEXT("mtu"), (DWORD)_wtoi(tmp_buf));
 	}
 	else
 	{
-		reg_set_dword(hkey, L"mtu", 0);
+		reg_set_dword(hkey, TEXT("mtu"), 0);
 	}
 
 	// Local port
 	if (is_item_checked(hwndDlg, IDC_CHK_LOCALPORT))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_LOCALPORT, tmp_buf, buf_len);
-		reg_set_dword(hkey, L"local_port", (DWORD)_wtoi(tmp_buf));
+		reg_set_dword(hkey, TEXT("local_port"), (DWORD)_wtoi(tmp_buf));
 	}
 	else
 	{
-		reg_set_dword(hkey, L"local_port", 0);
+		reg_set_dword(hkey, TEXT("local_port"), 0);
 	}
 
 	// Multicast
-	reg_set_dword(hkey, L"multicast", (is_item_checked(hwndDlg, IDC_CHK_MULTICAST) ? 1 : 0));
+	reg_set_dword(hkey, TEXT("multicast"), (is_item_checked(hwndDlg, IDC_CHK_MULTICAST) ? 1 : 0));
 
 	// Packet Forwarding
-	reg_set_dword(hkey, L"packet_forwarding", (is_item_checked(hwndDlg, IDC_CHK_PKTFORWARD) ? 1 : 0));
+	reg_set_dword(hkey, TEXT("packet_forwarding"), (is_item_checked(hwndDlg, IDC_CHK_PKTFORWARD) ? 1 : 0));
 
 	// header encry
-	reg_set_dword(hkey, L"header_encry", (is_item_checked(hwndDlg, IDC_HEADER_ENCRY) ? 1 : 0));
+	reg_set_dword(hkey, TEXT("header_encry"), (is_item_checked(hwndDlg, IDC_HEADER_ENCRY) ? 1 : 0));
 
 	// data compress
-	reg_set_dword(hkey, L"data_compress", (is_item_checked(hwndDlg, IDC_CHK_DATA_COMPRESS) ? 1 : 0));
+	reg_set_dword(hkey, TEXT("data_compress"), (is_item_checked(hwndDlg, IDC_CHK_DATA_COMPRESS) ? 1 : 0));
 
 	// select rtt
-	reg_set_dword(hkey, L"select_rtt", (is_item_checked(hwndDlg, IDC_CHK_SELECT_RTT) ? 1 : 0));
+	reg_set_dword(hkey, TEXT("select_rtt"), (is_item_checked(hwndDlg, IDC_CHK_SELECT_RTT) ? 1 : 0));
 
 	//custom param
 	if (is_item_checked(hwndDlg, IDC_CHK_CUSTOM_PARAM))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_CUSTOM_PARAM, tmp_buf, buf_len);
-		reg_set_string(hkey, L"custom_param", tmp_buf);
+		reg_set_string(hkey, TEXT("custom_param"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, L"custom_param", L"");
+		reg_set_string(hkey, TEXT("custom_param"), TEXT(""));
 	}
 
     // set system service
-    reg_set_dword(hkey, L"system_service", (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
+    reg_set_dword(hkey, TEXT("system_service"), (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
     if (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
         reg_service_system();
     }
@@ -524,7 +529,7 @@ void save_ad_options(HWND hwndDlg)
     }
 
 	// auto start
-	reg_set_dword(hkey, L"auto_start", (is_item_checked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
+	reg_set_dword(hkey, TEXT("auto_start"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
 	if (is_item_checked(hwndDlg, IDC_CHK_AUTO_START)) {
         set_auto_start_service();
 	}
@@ -532,7 +537,7 @@ void save_ad_options(HWND hwndDlg)
         cancel_auto_start_service();
 	}
 	// auto tray
-	reg_set_dword(hkey, L"auto_tray", (is_item_checked(hwndDlg, IDC_CHK_AUTO_TRAY) ? 1 : 0));
+	reg_set_dword(hkey, TEXT("auto_tray"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_TRAY) ? 1 : 0));
 
 
 	// Finished
@@ -541,7 +546,7 @@ void save_ad_options(HWND hwndDlg)
 
 
 
-void handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+VOID handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (HIWORD(wParam != BN_CLICKED)) return;
 	static HINSTANCE hInstance;
@@ -601,11 +606,11 @@ void handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 }
 
-void setup_system_menu(HWND hwndDlg)
+VOID setup_system_menu(HWND hwndDlg)
 {
 	HMENU sys_menu = GetSystemMenu(hwndDlg, FALSE);
 	AppendMenu(sys_menu, MF_SEPARATOR, NULL, NULL);
-	AppendMenu(sys_menu, MF_STRING, IDM_ABOUT, L"About HappynetClient..");
+	AppendMenu(sys_menu, MF_STRING, IDM_ABOUT, TEXT("About HappynetClient.."));
 }
 
 INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -658,7 +663,8 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			if (wParam == IDM_ABOUT)
 			{
-				MessageBox(hwndDlg, L"Happynet Version 1.0.6", L"About HappynetClient", MB_OK | MB_ICONINFORMATION);
+				MessageBox(hwndDlg, TEXT("Happynet Version 1.0.6"), TEXT("About HappynetClient"),
+                                MB_OK | MB_ICONINFORMATION);
 				break;
 			}
 			return FALSE;
@@ -767,12 +773,12 @@ INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
             for (UINT m_nDisplay = 0; m_nDisplay < m_nCount; m_nDisplay++) {
                 CNetworkAdapter* pAdapt = &m_pAdapters[m_nDisplay];   
 
-                if (pAdapt->GetAdapterDescription().rfind(_T("TAP"), 0) != 0) {
+                if (pAdapt->GetAdapterDescription().rfind(TEXT("TAP"), 0) != 0) {
                     continue;
                 }
                 else {
                     TCHAR adapter_name[512] = { 0 };                    
-                    swprintf_s(adapter_name, L"%s_%s", pAdapt->GetAdapterDescription().c_str(), pAdapt->GetAdapterName().c_str());
+                    swprintf_s(adapter_name, TEXT("%s_%s"), pAdapt->GetAdapterDescription().c_str(), pAdapt->GetAdapterName().c_str());
                     SendMessage(hwndCombo, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)adapter_name);
                 }
             }            
@@ -813,7 +819,7 @@ INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam,
 
 
 
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+INT WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	// Initialize
 	INITCOMMONCONTROLSEX icx;
