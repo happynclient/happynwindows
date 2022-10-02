@@ -13,7 +13,7 @@
 
 HANDLE m_pid;
 
-DWORD get_service_status(VOID)
+DWORD GetServiceStatus(VOID)
 {
 	//if( STILL_ACTIVE == dwMark) //running
 	//if( PROCESS_EXIT_CODE == dwMark) //stopped
@@ -23,7 +23,7 @@ DWORD get_service_status(VOID)
 	return get_service_process_status();
 }
 
-VOID start_service(VOID)
+VOID StartService(VOID)
 {
     if (is_system_service()) {
         StartSystemService();
@@ -32,7 +32,7 @@ VOID start_service(VOID)
 
     WCHAR dir_path[MAX_PATH] = { 0 };
     WCHAR command_line[MAX_COMMAND_LINE_LEN] = { 0 };
-	if (get_service_status() == STILL_ACTIVE) {
+	if (GetServiceStatus() == STILL_ACTIVE) {
 		return;
 	}
 
@@ -55,7 +55,7 @@ VOID start_service(VOID)
 	create_service_process(command_line); 
 }
 
-VOID stop_service(VOID)
+VOID StopService(VOID)
 {
     if (is_system_service()) {
         StopSystemService();
@@ -68,7 +68,7 @@ VOID stop_service(VOID)
 }
 
 // auto start exe when system startup
-VOID set_auto_start_service(VOID)
+VOID SetServiceAutoStart(VOID)
 {
     if (is_system_service()) {
         SetSystemServiceAutoStart();
@@ -103,7 +103,7 @@ VOID set_auto_start_service(VOID)
 
 
 //cancle auto start
-VOID cancel_auto_start_service(VOID)
+VOID UnsetServiceAutoStart(VOID)
 {
     if (is_system_service()) {
         UnsetSystemServiceAutoStart();

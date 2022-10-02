@@ -143,7 +143,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 
 VOID update_addresses(HWND hwndDlg)
 {
-	if (get_service_status() == STILL_ACTIVE)
+	if (GetServiceStatus() == STILL_ACTIVE)
 	{
 		WCHAR ip_address[16];
 		WCHAR mac_address[18];
@@ -202,7 +202,7 @@ VOID update_service_status(HWND hwndDlg)
 	HWND btn_stop = GetDlgItem(hwndDlg, IDC_BTN_STOP);
     HWND btn_monitor = GetDlgItem(hwndDlg, IDC_BTN_MONITOR);
 	HWND btn_ad_settings = GetDlgItem(hwndDlg, IDC_BTN_AD_SETTINGS);
-	DWORD service_status = get_service_status();
+	DWORD service_status = GetServiceStatus();
 	switch (service_status)
 	{
 	case PROCESS_EXIT_CODE:
@@ -531,10 +531,10 @@ VOID save_ad_options(HWND hwndDlg)
 	// auto start
 	reg_set_dword(hkey, TEXT("auto_start"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
 	if (is_item_checked(hwndDlg, IDC_CHK_AUTO_START)) {
-        set_auto_start_service();
+        SetServiceAutoStart();
 	}
 	else {
-        cancel_auto_start_service();
+        UnsetServiceAutoStart();
 	}
 	// auto tray
 	reg_set_dword(hkey, TEXT("auto_tray"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_TRAY) ? 1 : 0));
@@ -561,12 +561,12 @@ VOID handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	case IDC_BTN_START:
 		save_options(hwndDlg);
-		start_service();
+		StartService();
 		update_service_status(hwndDlg);
 		update_addresses(hwndDlg);
 		break;
 	case IDC_BTN_STOP:
-		stop_service();
+		StopService();
 		update_service_status(hwndDlg);
 		update_addresses(hwndDlg);
         sync_service_output_text(hwndDlg);
@@ -583,7 +583,7 @@ VOID handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	*/
 
 	case IDC_BTN_EXIT:
-		stop_service();
+		StopService();
 		EndDialog(hwndDlg, NULL);
 		break;
 
@@ -698,7 +698,7 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	case WM_DESTROY:
 		{
-			stop_service();
+			StopService();
 
 			// stop thread
 			CloseHandle(h_mutex);
