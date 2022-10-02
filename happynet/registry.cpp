@@ -1,50 +1,50 @@
 #include <windows.h>
 #include "registry.h"
 
-INT reg_get_dword(HKEY hkey, LPWSTR value_name, LPDWORD ret_dword)
+INT GetRegDword(HKEY hkey, LPWSTR pszValueName, LPDWORD lpdwRetValue)
 {
   // Fetch DWORD value from registry
   DWORD buf_size = sizeof(DWORD);
-  if (RegQueryValueEx(hkey, value_name, NULL, NULL, (LPBYTE)ret_dword, &buf_size) != ERROR_SUCCESS)
+  if (RegQueryValueEx(hkey, pszValueName, NULL, NULL, (LPBYTE)lpdwRetValue, &buf_size) != ERROR_SUCCESS)
   {
-    *ret_dword = 0;
+    *lpdwRetValue = 0;
     return 0;
   }
   return 1;
 }
 
-INT reg_get_string(HKEY hkey, LPWSTR value_name, LPWSTR ret_str, DWORD buf_size)
+INT GetRegString(HKEY hkey, LPWSTR pszValueName, LPWSTR pszRetValue, DWORD dwBufSize)
 {
   // Fetch string value from registry
-  if (RegQueryValueEx(hkey, value_name, NULL, NULL, (LPBYTE)ret_str, &buf_size) != ERROR_SUCCESS)
+  if (RegQueryValueEx(hkey, pszValueName, NULL, NULL, (LPBYTE)pszRetValue, &dwBufSize) != ERROR_SUCCESS)
   {
     return 0;
   }
   return 1;
 }
 
-INT reg_set_dword(HKEY hkey, LPWSTR value_name, DWORD dword_val)
+INT SetRegDword(HKEY hkey, LPWSTR pszValueName, DWORD dwValue)
 {
   // Set DWORD value in registry
-  if (RegSetValueEx(hkey, value_name, NULL, REG_DWORD, (LPBYTE)&dword_val, sizeof(DWORD)) != ERROR_SUCCESS)
+  if (RegSetValueEx(hkey, pszValueName, NULL, REG_DWORD, (LPBYTE)&dwValue, sizeof(DWORD)) != ERROR_SUCCESS)
   {
     return 0;
   }
   return 1;
 }
 
-INT reg_set_string(HKEY hkey, LPWSTR value_name, LPWSTR str_val)
+INT SetRegString(HKEY hkey, LPWSTR pszValueName, LPWSTR pszValueString)
 {
-  DWORD data_len = (wcslen(str_val) + 1) * sizeof(WCHAR);
+  DWORD data_len = (wcslen(pszValueString) + 1) * sizeof(WCHAR);
   // Set string value in registry
-  if (RegSetValueEx(hkey, value_name, NULL, REG_SZ, (LPBYTE)str_val, data_len) != ERROR_SUCCESS)
+  if (RegSetValueEx(hkey, pszValueName, NULL, REG_SZ, (LPBYTE)pszValueString, data_len) != ERROR_SUCCESS)
   {
     return 0;
   }
   return 1;
 }
 
-BOOL is_system_service()
+BOOL IsSetSystemService(VOID)
 {
     DWORD dword_buf;
     HKEY hkey;
@@ -53,13 +53,13 @@ BOOL is_system_service()
         return FALSE;
     }
     // system_service
-    reg_get_dword(hkey, TEXT("system_service"), &dword_buf);
+    GetRegDword(hkey, TEXT("system_service"), &dword_buf);
     RegCloseKey(hkey);
 
     return dword_buf != 0;
 }
 
-BOOL is_auto_start()
+BOOL IsSetAutoStart(VOID)
 {
     DWORD dword_buf;
     HKEY hkey;
@@ -68,13 +68,13 @@ BOOL is_auto_start()
         return FALSE;
     }
     // auto_start
-    reg_get_dword(hkey, TEXT("auto_start"), &dword_buf);
+    GetRegDword(hkey, TEXT("auto_start"), &dword_buf);
     RegCloseKey(hkey);
 
     return dword_buf != 0;
 }
 
-BOOL is_auto_tray()
+BOOL IsSetAutoTray(VOID)
 {
     DWORD dword_buf;
     HKEY hkey;
@@ -83,7 +83,7 @@ BOOL is_auto_tray()
         return FALSE;
     }
     // auto_tray
-    reg_get_dword(hkey, TEXT("auto_tray"), &dword_buf);
+    GetRegDword(hkey, TEXT("auto_tray"), &dword_buf);
     RegCloseKey(hkey);
 
     return dword_buf != 0;

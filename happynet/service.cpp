@@ -17,7 +17,7 @@ DWORD GetServiceStatus(VOID)
 {
 	//if( STILL_ACTIVE == dwMark) //running
 	//if( PROCESS_EXIT_CODE == dwMark) //stopped
-    if (is_system_service()) {
+    if (IsSetSystemService()) {
         return GetSystemServiceStatus();
     }
 	return get_service_process_status();
@@ -25,7 +25,7 @@ DWORD GetServiceStatus(VOID)
 
 VOID StartService(VOID)
 {
-    if (is_system_service()) {
+    if (IsSetSystemService()) {
         StartSystemService();
         return;
     }
@@ -57,7 +57,7 @@ VOID StartService(VOID)
 
 VOID StopService(VOID)
 {
-    if (is_system_service()) {
+    if (IsSetSystemService()) {
         StopSystemService();
         return;
     }
@@ -70,7 +70,7 @@ VOID StopService(VOID)
 // auto start exe when system startup
 VOID SetServiceAutoStart(VOID)
 {
-    if (is_system_service()) {
+    if (IsSetSystemService()) {
         SetSystemServiceAutoStart();
     }
     
@@ -90,7 +90,7 @@ VOID SetServiceAutoStart(VOID)
 		DWORD nLength = MAX_PATH;
 		
 		//already exist
-		if (!reg_get_string(hkey, L"Happynet", ret_val, 512) || _tcscmp(str_exe_fulldir, str_dir) != 0)
+		if (!GetRegString(hkey, L"Happynet", ret_val, 512) || _tcscmp(str_exe_fulldir, str_dir) != 0)
 		{
 			//append child Key and set value:"happynet" is exe name
 			RegSetValueEx(hkey, TEXT("Happynet"), 0, REG_SZ, (LPBYTE)str_exe_fulldir, (lstrlen(str_exe_fulldir) + 1)*sizeof(TCHAR));
@@ -105,7 +105,7 @@ VOID SetServiceAutoStart(VOID)
 //cancle auto start
 VOID UnsetServiceAutoStart(VOID)
 {
-    if (is_system_service()) {
+    if (IsSetSystemService()) {
         UnsetSystemServiceAutoStart();
     }
     
