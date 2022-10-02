@@ -19,11 +19,11 @@ static HANDLE m_hthread = NULL;
 static DWORD m_dwprocess_id = 0;
 
 
-static int send_sig_stop(u_short edge_manager_port)
+static INT send_sig_stop(UINT edge_manager_port)
 {
 	WORD w_version_requested;
 	WSADATA wsa_data;
-	int err; w_version_requested = MAKEWORD( 1, 1 );
+	INT err; w_version_requested = MAKEWORD( 1, 1 );
 	err = WSAStartup( w_version_requested, &wsa_data );
 	if ( err != 0 ) 
 	{ 
@@ -39,8 +39,8 @@ static int send_sig_stop(u_short edge_manager_port)
 	addr_srv.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 	addr_srv.sin_family = AF_INET;
 	addr_srv.sin_port = htons(edge_manager_port);
-	char send_buf[8] = "stop";
-	int len = sizeof(SOCKADDR);
+	CHAR send_buf[8] = "stop";
+	INT len = sizeof(SOCKADDR);
 	sendto(sock_client, send_buf, strlen(send_buf), 0, (SOCKADDR*)&addr_srv, len);
 	closesocket(sock_client) ;
 	WSACleanup();
@@ -110,7 +110,7 @@ HANDLE create_service_process(WCHAR* command_line)
 	return pi_process_info.hProcess;
 }
 
-void grace_stop_service_process(void)
+VOID grace_stop_service_process(VOID)
 {
 	DWORD dword_edge_manager_port = 0;
 
@@ -138,7 +138,7 @@ void grace_stop_service_process(void)
 	return;
 }
 
-void terminal_service_process(void)
+VOID terminal_service_process(VOID)
 {
 	if (m_hprocess != NULL && m_dwprocess_id)
 	{
@@ -167,7 +167,7 @@ void terminal_service_process(void)
 }
 
 
-DWORD get_service_process_status(void)
+DWORD get_service_process_status(VOID)
 {
 	//if( STILL_ACTIVE == dwmark) //running
 	//if( PROCESS_EXIT_CODE == dwmark) //stopped
@@ -194,7 +194,7 @@ void get_service_process_output(WCHAR *read_buf)
 		return;
 	}
 	DWORD dwread; 
-	CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = {'\0'}; 
+	CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { 0 }; 
 	BOOL bsuccess = FALSE;
 	HANDLE hparent_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
@@ -208,11 +208,11 @@ void get_service_process_output(WCHAR *read_buf)
     }
 	mbstowcs_s(&convertedChars, read_buf, newsize, chbuf, _TRUNCATE);
 	//Display the result and indicate the type of string that it is.
-	log_event(L"%s\n", read_buf); 
+	log_event(TEXT("%s\n"), read_buf); 
 } 
 
 
-void get_service_process_error(PTSTR lpszFunction) 
+VOID get_service_process_error(PTSTR lpszFunction) 
 
 	// Format a readable error message, display a message box, 
 	// and exit from the application.
