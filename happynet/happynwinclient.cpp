@@ -164,7 +164,7 @@ VOID sync_service_output_text(const HWND &hwnd)
 
     if (is_system_service()) {
 
-        get_service_system_output(read_buf);
+        GetSystemServiceOutput(read_buf);
     }
     else {
         get_service_process_output(read_buf);
@@ -522,10 +522,10 @@ VOID save_ad_options(HWND hwndDlg)
     // set system service
     reg_set_dword(hkey, TEXT("system_service"), (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
     if (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
-        reg_service_system();
+        RegSystemService();
     }
     else {
-        unreg_service_system();
+        UnregSystemService();
     }
 
 	// auto start

@@ -3,14 +3,14 @@
 
 #define SYSTEMSRV_NAME TEXT("Happynet")
 
-VOID reg_service_system(VOID);
-VOID unreg_service_system(VOID);
-VOID set_auto_start_service_system(VOID);
-VOID cancel_auto_start_service_system(VOID);
-VOID start_service_system(VOID);
-VOID stop_service_system(VOID);
-VOID terminal_service_system(VOID);
-VOID get_service_system_output(WCHAR *read_buf);
-DWORD get_service_system_status(VOID);
+VOID RegSystemService(VOID);
+VOID UnregSystemService(VOID);
+VOID SetSystemServiceAutoStart(VOID);
+VOID UnsetSystemServiceAutoStart(VOID);
+VOID StartSystemService(VOID);
+VOID StopSystemService(VOID);
+VOID TerminalSystemService(VOID);
+VOID GetSystemServiceOutput(WCHAR *read_buf);
+DWORD GetSystemServiceStatus(VOID);
 
 #endif
