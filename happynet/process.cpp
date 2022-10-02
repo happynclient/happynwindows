@@ -201,8 +201,8 @@ void get_service_process_output(WCHAR *read_buf)
 	bsuccess = ReadFile( m_hchild_stdout_read, chbuf, PROCESS_STDOUT_BUFSIZE-1, &dwread, NULL);
 	if( ! bsuccess || dwread == 0 ) return; 
 	//Convert char* string to a wchar_t* string.
-	size_t convertedChars = 0;
-	size_t newsize = strlen(chbuf) + 1;
+	UINT convertedChars = 0;
+	UINT newsize = strlen(chbuf) + 1;
     if (newsize > PROCESS_STDOUT_BUFSIZE) {
         newsize = PROCESS_STDOUT_BUFSIZE;
     }

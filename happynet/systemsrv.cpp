@@ -8,33 +8,31 @@
 #include "systemsrv.h"
 #include "utils.h"
 
-#define SYSTEMSRV_NAME L"Happynet"
-
-static WCHAR* get_nssm_exe_path()
+static WCHAR* get_nssm_exe_path(VOID)
 {
-    static WCHAR nssm_path[MAX_PATH] = { '\0' };
-    WCHAR install_path[MAX_PATH] = { '\0' };
+    static WCHAR nssm_path[MAX_PATH] = { 0 };
+    WCHAR install_path[MAX_PATH] = { 0 };
     
     // Build path and command line parameters
     if (!get_install_dir_path(install_path, MAX_PATH))
     {
-        log_event(L"%s:%d (%s) - Error building executable path.\n",
+        log_event(TEXT("%s:%d (%s) - Error building executable path.\n"),
             __FILEW__, __LINE__, __FUNCTIONW__);
         return NULL;
     }
-    swprintf_s(nssm_path, MAX_PATH, L"\"%s\\happynssm.exe\"", install_path);
+    swprintf_s(nssm_path, MAX_PATH, TEXT("\"%s\\happynssm.exe\""), install_path);
     return nssm_path;
 }
 
-static WCHAR* get_nssm_log_path()
+static WCHAR* get_nssm_log_path(VOID)
 {
-    static WCHAR nssm_log_path[MAX_PATH] = { '\0' };
-    WCHAR app_datapath[MAX_PATH] = { '\0' };
+    static WCHAR nssm_log_path[MAX_PATH] = { 0 };
+    WCHAR app_datapath[MAX_PATH] = { 0 };
 
     // Build path and command line parameters
     get_app_datapath(app_datapath);
     swprintf_s(nssm_log_path, MAX_PATH, L"%s\\happynet.log", app_datapath);
-    log_event(L"%s:%d (%s) - building log path:%s \n",
+    log_event(TEXT("%s:%d (%s) - building log path:%s \n"),
         __FILEW__, __LINE__, __FUNCTIONW__, nssm_log_path);
     return nssm_log_path;
 }
@@ -42,138 +40,109 @@ static WCHAR* get_nssm_log_path()
 
 // nssm install <servicename> <program> [<arguments>]
 // nssm set <servicename> Description "Happynet is a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn"
-void reg_service_system()
+VOID reg_service_system(VOID)
 {
-    WCHAR install_path[MAX_PATH] = { '\0' };
-    WCHAR edge_path[MAX_PATH] = { '\0' };
-    WCHAR params_line[MAX_COMMAND_LINE_LEN] = { '\0' };
-    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { '\0' };
+    WCHAR install_path[MAX_PATH] = { 0 };
+    WCHAR edge_path[MAX_PATH] = { 0 };
+    WCHAR params_line[MAX_COMMAND_LINE_LEN] = { 0 };
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
 
     // Build path and command line parameters
     if (!get_install_dir_path(install_path, MAX_PATH))
     {
-        log_event(L"%s:%d (%s) - Error building executable path.\n",
+        log_event(TEXT("%s:%d (%s) - Error building executable path.\n"),
                     __FILEW__, __LINE__, __FUNCTIONW__);
         return;
     }
-    swprintf_s(edge_path, MAX_PATH, L"\"%s\\happynedge.exe\"", install_path);
-    int ret = 0;
+    swprintf_s(edge_path, MAX_PATH, TEXT("\"%s\\happynedge.exe\""), install_path);
+    INT ret = 0;
 
-    get_params_edge(L" ", params_line, MAX_COMMAND_LINE_LEN);
+    get_params_edge(TEXT(" "), params_line, MAX_COMMAND_LINE_LEN);
     
     // nssm install <servicename> <program>[<arguments>]
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-                L"%s install %s %s \"%s\"",
+                TEXT("%s install %s %s \"%s\""),
                 get_nssm_exe_path(), SYSTEMSRV_NAME, edge_path, params_line);
 
-    log_event(L"%s:%d (%s) - building nssm line: %s \n",
-                __FILEW__, __LINE__, __FUNCTIONW__,
-                nssm_command_line);
     WinExecW(nssm_command_line, SW_HIDE);
 
     //nssm set <servicename> Description "Happynet ..."
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-        L"%s set %s Description \"Happynet is a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn\"",
+        TEXT("%s set %s Description \"Happynet is a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn\""),
         get_nssm_exe_path(), SYSTEMSRV_NAME);
-    log_event(L"%s:%d (%s) - building nssm line: %s \n",
-        __FILEW__, __LINE__, __FUNCTIONW__,
-        nssm_command_line);
     WinExecW(nssm_command_line, SW_HIDE);
 
     //nssm set <servicename> AppStdout logpath
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-        L"%s set %s AppStdout %s",
+        TEXT("%s set %s AppStdout %s"),
         get_nssm_exe_path(), SYSTEMSRV_NAME, get_nssm_log_path());
-    log_event(L"%s:%d (%s) - building nssm line: %s \n",
-        __FILEW__, __LINE__, __FUNCTIONW__,
-        nssm_command_line);
     WinExecW(nssm_command_line, SW_HIDE);
 
     //nssm set <servicename> AppStderr logpath
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-        L"%s set %s AppStderr %s",
+        TEXT("%s set %s AppStderr %s"),
         get_nssm_exe_path(), SYSTEMSRV_NAME, get_nssm_log_path());
-    log_event(L"%s:%d (%s) - building nssm line: %s \n",
-        __FILEW__, __LINE__, __FUNCTIONW__,
-        nssm_command_line);
     WinExecW(nssm_command_line, SW_HIDE);
 }
 
 // nssm remove <servicename>
-void unreg_service_system()
+VOID unreg_service_system(VOID)
 {
-    WCHAR nssm_path[MAX_PATH] = { '\0' };
-    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { '\0' };
+    WCHAR nssm_path[MAX_PATH] = { 0 };
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-                L"%s remove %s confirm", get_nssm_exe_path(), SYSTEMSRV_NAME);
+                TEXT("%s remove %s confirm"), get_nssm_exe_path(), SYSTEMSRV_NAME);
 
     stop_service_system();
     WinExecW(nssm_command_line, SW_HIDE);
 }
 
 // nssm set <servicename> Start SERVICE_AUTO_START
-void set_auto_start_service_system()
+VOID set_auto_start_service_system(VOID)
 {
-    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { '\0' };
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     //nssm set <servicename> Start SERVICE_AUTO_START
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-            L"%s set %s Start SERVICE_AUTO_START",
+            TEXT("%s set %s Start SERVICE_AUTO_START"),
             get_nssm_exe_path(), SYSTEMSRV_NAME);
-    log_event(L"%s:%d (%s) - building nssm line: %s \n",
-        __FILEW__, __LINE__, __FUNCTIONW__,
-        nssm_command_line);
     WinExecW(nssm_command_line, SW_HIDE);
     return;
 }
 
 // nssm set <servicename> Start SERVICE_DEMAND_START
-void cancel_auto_start_service_system()
+VOID cancel_auto_start_service_system(VOID)
 {
-    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { '\0' };
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     //nssm set <servicename> Start SERVICE_DEMAND_START
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-        L"%s set %s Start SERVICE_DEMAND_START",
+        TEXT("%s set %s Start SERVICE_DEMAND_START"),
         get_nssm_exe_path(), SYSTEMSRV_NAME);
-    log_event(L"%s:%d (%s) - building nssm line: %s \n",
-        __FILEW__, __LINE__, __FUNCTIONW__,
-        nssm_command_line);
     WinExecW(nssm_command_line, SW_HIDE);
     return;
 }
 
 // nssm start <servicename>
-void start_service_system()
+VOID start_service_system(VOID)
 {
-    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { '\0' };
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     //nssm set <servicename> Start SERVICE_DEMAND_START
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-        L"%s start  %s",
+        TEXT("%s start  %s"),
         get_nssm_exe_path(), SYSTEMSRV_NAME);
-    log_event(L"%s:%d (%s) - building nssm line: %s \n",
-        __FILEW__, __LINE__, __FUNCTIONW__,
-        nssm_command_line);
     WinExecW(nssm_command_line, SW_HIDE);
     return;
 }
 
 // nssm stop <servicename>
-void stop_service_system(void)
+VOID stop_service_system(VOID)
 {
-    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { '\0' };
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     //nssm stop <servicename>
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-        L"%s stop  %s",
+        TEXT("%s stop  %s"),
         get_nssm_exe_path(), SYSTEMSRV_NAME);
-    log_event(L"%s:%d (%s) - building nssm line: %s \n",
-        __FILEW__, __LINE__, __FUNCTIONW__,
-        nssm_command_line);
     WinExecW(nssm_command_line, SW_HIDE);
     return;
-}
-
-void terminal_service_system(void)
-{
-
 }
 
 // nssm status <servicename>
@@ -181,7 +150,7 @@ void terminal_service_system(void)
 // Can't open service!
 // SERVICE_STOPPED
 // SERVICE_RUNNING
-DWORD get_service_system_status(void)
+DWORD get_service_system_status(VOID)
 {
     //创建匿名管道
     SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
@@ -200,13 +169,10 @@ DWORD get_service_system_status(void)
     si.hStdOutput = hWrite;
 
     //启动命令行
-    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { '\0' };
+    WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
-        L"%s status %s",
+        TEXT("%s status %s"),
         get_nssm_exe_path(), SYSTEMSRV_NAME);
-    log_event(L"%s:%d (%s) - building nssm line: %s \n",
-        __FILEW__, __LINE__, __FUNCTIONW__,
-        nssm_command_line);
     PROCESS_INFORMATION pi;
     if (!CreateProcessW(NULL, nssm_command_line, NULL, NULL, TRUE, NULL, NULL, NULL, &si, &pi))
     {
@@ -218,36 +184,36 @@ DWORD get_service_system_status(void)
 
     //读取命令行返回值
     DWORD dwread;
-    CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { '\0' };
+    CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { 0 };
     BOOL bsuccess = FALSE;
     HANDLE hparent_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
     bsuccess = ReadFile(hRead, chbuf, PROCESS_STDOUT_BUFSIZE, &dwread, NULL);
     if (!bsuccess || dwread == 0) return EXCEPTION_BREAKPOINT;
-    log_event(L"%s\n", chbuf);
+    log_event(TEXT("%s\n"), chbuf);
     CloseHandle(hRead);
     
     //Convert char* string to a wchar_t* string.
-    size_t convertedChars = 0;
-    size_t newsize = strlen(chbuf) + 1;
-    WCHAR read_buf[PROCESS_STDOUT_BUFSIZE] = { '\0' };
+    UINT convertedChars = 0;
+    UINT newsize = strlen(chbuf) + 1;
+    WCHAR read_buf[PROCESS_STDOUT_BUFSIZE] = { 0 };
     mbstowcs_s(&convertedChars, read_buf, newsize, chbuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
-    log_event(L"%s\n", read_buf);
+    log_event(TEXT("%s\n"), read_buf);
 
-    if (wcsstr(read_buf, L"SERVICE_STOPPED")) {
+    if (wcsstr(read_buf, TEXT("SERVICE_STOPPED"))) {
         return PROCESS_EXIT_CODE;
     }
 
-    if (wcsstr(read_buf, L"SERVICE_RUNNING")) {
+    if (wcsstr(read_buf, TEXT("SERVICE_RUNNING"))) {
         return STILL_ACTIVE;
     }
     return EXCEPTION_BREAKPOINT;
 }
 
-void get_service_system_output(WCHAR *szReadBuf)
+VOID get_service_system_output(WCHAR *szReadBuf)
 {
-    CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { '\0' };
+    CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { 0 };
     BOOL bsuccess = FALSE;
     HANDLE hparent_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
     OVERLAPPED ol = { 0 };
@@ -270,8 +236,13 @@ void get_service_system_output(WCHAR *szReadBuf)
     bsuccess = ReadFileEx(hFile, chbuf, PROCESS_STDOUT_BUFSIZE, &ol, NULL);
     if (!bsuccess) return;
     //Convert char* string to a wchar_t* string.
-    size_t convertedChars = 0;
+    UINT convertedChars = 0;
     mbstowcs_s(&convertedChars, szReadBuf, PROCESS_STDOUT_BUFSIZE, chbuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
-    log_event(L"%s\n", szReadBuf);
+    log_event(TEXT("%s\n"), szReadBuf);
+}
+
+VOID terminal_service_system(VOID)
+{
+    return;
 }
