@@ -22,9 +22,9 @@ const ULONG WORKING_BUFFER_SIZE = 15000;
 #define NPCAP_LOOPBACK_INTERFACE_NAME			TEXT("HAPPYNET")
 
 
-static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_uuid[])
+static BOOL RenameNetinterfaceById(INetSharingManager *pNSM, WCHAR* pszDeviceUUID)
 {   // add a port mapping to every firewalled or shared connection 
-    BOOL is_found = FALSE;
+    BOOL bFound = FALSE;
     INetSharingEveryConnectionCollection * nsecc_ptr = NULL;
     HRESULT hr = pNSM->get_EnumEveryConnection(&nsecc_ptr);
     if (!nsecc_ptr)
@@ -44,7 +44,7 @@ static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_u
             VARIANT v;
             VariantInit(&v);
 
-            while ((S_OK == ev_ptr->Next(1, &v, NULL)) && (is_found == FALSE)) {
+            while ((S_OK == ev_ptr->Next(1, &v, NULL)) && (bFound == FALSE)) {
                 if (V_VT(&v) == VT_UNKNOWN) {
                     INetConnection * pNC = NULL;
                     V_UNKNOWN(&v)->QueryInterface(__uuidof(INetConnection),
@@ -60,10 +60,10 @@ static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_u
                             guid.Data4[0], guid.Data4[1], guid.Data4[2], guid.Data4[3],
                             guid.Data4[4], guid.Data4[5], guid.Data4[6], guid.Data4[7]);
 
-                        if (wcscmp(currentGUID, device_uuid) == 0)
+                        if (wcscmp(currentGUID, pszDeviceUUID) == 0)
                         {
                             hr = pNC->Rename(NPCAP_LOOPBACK_INTERFACE_NAME);
-                            is_found = TRUE;
+                            bFound = TRUE;
                             if (hr != S_OK)
                             {
                                 LogEvent(TEXT("failed to create rename NPCAP_LOOPBACK_INTERFACE_NAME\r\n"));
@@ -80,12 +80,12 @@ static BOOL rename_netinterface_by_id(INetSharingManager *pNSM, wchar_t device_u
         nsecc_ptr->Release();
     }
 
-    return is_found;
+    return bFound;
 }
 
-BOOL SetNetinterfaceNameById(WCHAR device_uuid[])
+BOOL SetNetinterfaceNameById(WCHAR* pszDeviceUUID)
 {
-    BOOL ret = FALSE;
+    BOOL bSuccess = FALSE;
     /*	CoInitialize (NULL);*/
 
         // init security to enum RAS connections
@@ -103,19 +103,19 @@ BOOL SetNetinterfaceNameById(WCHAR device_uuid[])
     if (!nsm_ptr)
     {
         LogEvent(TEXT("failed to create NetSharingManager object\r\n"));
-        return ret;
+        return bSuccess;
     }
     else {
 
         // add a port mapping to every shared or firewalled connection.
-        ret = rename_netinterface_by_id(nsm_ptr, device_uuid);
+        bSuccess = RenameNetinterfaceById(nsm_ptr, pszDeviceUUID);
 
         nsm_ptr->Release();
     }
 
     /*	CoUninitialize ();*/
 
-    return ret;
+    return bSuccess;
 }
 
 
@@ -157,7 +157,7 @@ VOID GetMacAddress(WCHAR* mac_address, WCHAR* guid)
 	}
 }
 
-DWORD GetAdapterFriendlyName(CHAR* adapter_name, WCHAR* friendly_name, ULONG max_name_length)
+DWORD GetAdapterFriendlyName(CHAR* pszAdapterName, WCHAR* pszFriendlyName, ULONG nMaxNameLength)
 {
     ULONG out_buf_len = WORKING_BUFFER_SIZE;
     ULONG iterations = 0;
@@ -182,10 +182,10 @@ DWORD GetAdapterFriendlyName(CHAR* adapter_name, WCHAR* friendly_name, ULONG max
 
     PIP_ADAPTER_ADDRESSES pCurrAddresses = pAddresses;
     while (pCurrAddresses) {
-        if (!lstrcmpA(pCurrAddresses->AdapterName, adapter_name)) {
+        if (!lstrcmpA(pCurrAddresses->AdapterName, pszAdapterName)) {
             UINT friendly_name_length = lstrlenW(pCurrAddresses->FriendlyName);
-            if (friendly_name_length < max_name_length && friendly_name_length > 0) {
-                lstrcpynW(friendly_name, pCurrAddresses->FriendlyName, friendly_name_length + 1);
+            if (friendly_name_length < nMaxNameLength && friendly_name_length > 0) {
+                lstrcpynW(pszFriendlyName, pCurrAddresses->FriendlyName, friendly_name_length + 1);
                 if (pAddresses != NULL) {
                     FREE(pAddresses);
                     pAddresses = NULL;
