@@ -124,19 +124,19 @@ INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
     }
 
     // Community
-    if (!reg_get_string(hkey, TEXT("community"), ret_val, 512)) return 0;
+    if (!GetRegString(hkey, TEXT("community"), ret_val, 512)) return 0;
     ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -c %s"), ret_val);
 
     // Encryption key
-    if (!reg_get_string(hkey, TEXT("enckey"), ret_val, 512)) return 0;
+    if (!GetRegString(hkey, TEXT("enckey"), ret_val, 512)) return 0;
     if (wcslen(ret_val) != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -k %s"), ret_val);
     }
 
     // IP address
-    if (!reg_get_string(hkey, TEXT("ip_address"), ret_val, 512)) return 0;
-    if (!reg_get_dword(hkey, TEXT("packet_forwarding"), &ret_dword)) return 0;
+    if (!GetRegString(hkey, TEXT("ip_address"), ret_val, 512)) return 0;
+    if (!GetRegDword(hkey, TEXT("packet_forwarding"), &ret_dword)) return 0;
     if (wcslen(ret_val) != 0 && ret_dword == 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -a %s"), ret_val);
@@ -148,14 +148,14 @@ INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
     }
 
     // Encryption key file
-    if (!reg_get_string(hkey, TEXT("keyfile"), ret_val, 512)) return 0;
+    if (!GetRegString(hkey, TEXT("keyfile"), ret_val, 512)) return 0;
     if (wcslen(ret_val) != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -K %s"), ret_val);
     }
 
     // set adapter
-    if (!reg_get_string(hkey, TEXT("adapter"), ret_val, 512)) return 0;
+    if (!GetRegString(hkey, TEXT("adapter"), ret_val, 512)) return 0;
     if (wcslen(ret_val) != 0)
     {
         CHAR *adapter_id = NULL;
@@ -172,7 +172,7 @@ INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
     }
 
     // Local Port
-    if (!reg_get_dword(hkey, TEXT("local_port"), &ret_dword)) return 0;
+    if (!GetRegDword(hkey, TEXT("local_port"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -p %d"), ret_dword);
@@ -180,60 +180,60 @@ INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
 
 
     // MAC address
-    if (!reg_get_string(hkey, TEXT("mac_address"), ret_val, 512)) return 0;
+    if (!GetRegString(hkey, TEXT("mac_address"), ret_val, 512)) return 0;
     if (wcslen(ret_val) != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -m %s"), ret_val);
     }
 
     // MTU
-    if (!reg_get_dword(hkey, TEXT("mtu"), &ret_dword)) return 0;
+    if (!GetRegDword(hkey, TEXT("mtu"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -M %d"), ret_dword);
     }
 
     // Multicast
-    if (!reg_get_dword(hkey, TEXT("multicast"), &ret_dword)) return 0;
+    if (!GetRegDword(hkey, TEXT("multicast"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -E"));
     }
 
     // Packet forwarding
-    if (!reg_get_dword(hkey, TEXT("packet_forwarding"), &ret_dword)) return 0;
+    if (!GetRegDword(hkey, TEXT("packet_forwarding"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -r"));
     }
 
     // header encryption
-    if (!reg_get_dword(hkey, TEXT("header_encry"), &ret_dword)) return 0;
+    if (!GetRegDword(hkey, TEXT("header_encry"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -H"));
     }
 
     // data compress
-    if (!reg_get_dword(hkey, TEXT("data_compress"), &ret_dword)) return 0;
+    if (!GetRegDword(hkey, TEXT("data_compress"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -z1"));
     }
 
     // select rtt
-    if (!reg_get_dword(hkey, TEXT("select_rtt"), &ret_dword)) return 0;
+    if (!GetRegDword(hkey, TEXT("select_rtt"), &ret_dword)) return 0;
     if (ret_dword != 0)
     {
         ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" --select-rtt "));
     }
 
     // Supernode address
-    if (!reg_get_string(hkey, TEXT("supernode_addr"), ret_val, 512)) return 0;
+    if (!GetRegString(hkey, TEXT("supernode_addr"), ret_val, 512)) return 0;
     ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -l %s"), ret_val);
 
     // Supernode port
-    if (!reg_get_dword(hkey, TEXT("supernode_port"), &ret_dword)) return 0;
+    if (!GetRegDword(hkey, TEXT("supernode_port"), &ret_dword)) return 0;
     ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(":%d"), ret_dword);
 
     // device name
@@ -249,7 +249,7 @@ INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
         WCHAR reg_hostname[info_buf_size] = { 0 };
         if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters"),
                             NULL, KEY_READ, &hkey_hostname) == ERROR_SUCCESS && \
-                            (reg_get_string(hkey_hostname, TEXT("hostname"), reg_hostname, 512)))
+                            (GetRegString(hkey_hostname, TEXT("hostname"), reg_hostname, 512)))
         {
             lstrcpynW(hostname, reg_hostname, lstrlenW(reg_hostname) + 1);
         }
@@ -265,7 +265,7 @@ INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
     }
 
     //custom param
-    if (!reg_get_string(hkey, TEXT("custom_param"), ret_val, MAX_COMMAND_LINE_LEN)) return 0;
+    if (!GetRegString(hkey, TEXT("custom_param"), ret_val, MAX_COMMAND_LINE_LEN)) return 0;
     ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" %s"), ret_val);
     return 1;
 }

@@ -231,7 +231,7 @@ VOID get_addresses(WCHAR* ip_address, WCHAR* mac_address)
                         NULL, KEY_READ, &hkey_adapter_id) == ERROR_SUCCESS)
     {
         // Community
-        reg_get_string(hkey_adapter_id, TEXT("adapter"), tmp_buf, buf_len);
+        GetRegString(hkey_adapter_id, TEXT("adapter"), tmp_buf, buf_len);
         adapter_id = wcstok_s(tmp_buf, s, &strtok_buf);
         adapter_id = wcstok_s(NULL, s, &strtok_buf);
         RegCloseKey(hkey_adapter_id);

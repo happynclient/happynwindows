@@ -162,7 +162,7 @@ VOID sync_service_output_text(const HWND &hwnd)
 {
     TCHAR read_buf[PROCESS_STDOUT_BUFSIZE] = { 0 };
 
-    if (is_system_service()) {
+    if (IsSetSystemService()) {
 
         GetSystemServiceOutput(read_buf);
     }
@@ -255,28 +255,28 @@ VOID  read_options(HWND hwndDlg)
 		return;
 	}
 	// Community
-	reg_get_string(hkey, TEXT("community"), tmp_buf, buf_len);
+	GetRegString(hkey, TEXT("community"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_COMMUNITY, tmp_buf);
 
 	// Encryption key
-	reg_get_string(hkey, TEXT("enckey"), tmp_buf, buf_len);
+	GetRegString(hkey, TEXT("enckey"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_ENCKEY, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_ENCKEY, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_ENCKEY), !string_empty(tmp_buf));
 	EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_KEYFILE), string_empty(tmp_buf));
 
 	// IP address
-	reg_get_string(hkey, TEXT("ip_address"), tmp_buf, buf_len);
+	GetRegString(hkey, TEXT("ip_address"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_IPADDRESS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), !string_empty(tmp_buf));
 
 	// Supernode address
-	reg_get_string(hkey, TEXT("supernode_addr"), tmp_buf, buf_len);
+	GetRegString(hkey, TEXT("supernode_addr"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_SUPERNODEADDR, tmp_buf);
 
 	// Supernode port
-	reg_get_dword(hkey, TEXT("supernode_port"), &dword_buf);
+	GetRegDword(hkey, TEXT("supernode_port"), &dword_buf);
 	SetDlgItemInt(hwndDlg, IDC_EDT_SUPERNODEPORT, dword_buf, FALSE);
 	RegCloseKey(hkey);
 }
@@ -295,71 +295,71 @@ VOID  read_ad_options(HWND hwndDlg)
 	}
 
 	// Local Port
-	reg_get_dword(hkey, TEXT("local_port"), &dword_buf);
+	GetRegDword(hkey, TEXT("local_port"), &dword_buf);
 	SetDlgItemInt(hwndDlg, IDC_EDT_LOCALPORT, dword_buf, FALSE);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_LOCALPORT, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT), dword_buf != 0);
 
 	// Key file
-	reg_get_string(hkey, TEXT("keyfile"), tmp_buf, buf_len);
+	GetRegString(hkey, TEXT("keyfile"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_KEYFILE, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_KEYFILE, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE), !string_empty(tmp_buf));
 	EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_ENCKEY), string_empty(tmp_buf));
 
     // Adapter
-    reg_get_string(hkey, TEXT("adapter"), tmp_buf, buf_len);
+    GetRegString(hkey, TEXT("adapter"), tmp_buf, buf_len);
     SetDlgItemText(hwndDlg, IDC_COMBO_ADAPTERS, tmp_buf);
     SendDlgItemMessage(hwndDlg, IDC_CHK_ADAPTERS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
     EnableWindow(GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS), !string_empty(tmp_buf));
 
 
 	// MAC address
-	reg_get_string(hkey, TEXT("mac_address"), tmp_buf, buf_len);
+	GetRegString(hkey, TEXT("mac_address"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_MACADDRESS, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_MACADDRESS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS), !string_empty(tmp_buf));
 
 	// MTU
-	reg_get_dword(hkey, TEXT("mtu"), &dword_buf);
+	GetRegDword(hkey, TEXT("mtu"), &dword_buf);
 	SetDlgItemInt(hwndDlg, IDC_EDT_MTU, dword_buf, FALSE);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_MTU, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MTU), dword_buf);
 
 	// Multicast
-	reg_get_dword(hkey, TEXT("multicast"), &dword_buf);
+	GetRegDword(hkey, TEXT("multicast"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_MULTICAST, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	// Packet Forwarding
-	reg_get_dword(hkey, TEXT("packet_forwarding"), &dword_buf);
+	GetRegDword(hkey, TEXT("packet_forwarding"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_PKTFORWARD, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	// header_encry
-	reg_get_dword(hkey, TEXT("header_encry"), &dword_buf);
+	GetRegDword(hkey, TEXT("header_encry"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_HEADER_ENCRY, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
-	reg_get_dword(hkey, TEXT("data_compress"), &dword_buf);
+	GetRegDword(hkey, TEXT("data_compress"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_DATA_COMPRESS, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
-	reg_get_dword(hkey, TEXT("select_rtt"), &dword_buf);
+	GetRegDword(hkey, TEXT("select_rtt"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_SELECT_RTT, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	//custom param
-	reg_get_string(hkey, TEXT("custom_param"), tmp_buf, buf_len);
+	GetRegString(hkey, TEXT("custom_param"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_CUSTOM_PARAM, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_CUSTOM_PARAM, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), !string_empty(tmp_buf));
 
     // system_service
-    reg_get_dword(hkey, TEXT("system_service"), &dword_buf);
+    GetRegDword(hkey, TEXT("system_service"), &dword_buf);
     SendDlgItemMessage(hwndDlg, IDC_CHK_SYSTEM_SERVICE, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	// auto_start
-	reg_get_dword(hkey, TEXT("auto_start"), &dword_buf);
+	GetRegDword(hkey, TEXT("auto_start"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_AUTO_START, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	// auto_tray
-	reg_get_dword(hkey, TEXT("auto_tray"), &dword_buf);
+	GetRegDword(hkey, TEXT("auto_tray"), &dword_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_AUTO_TRAY, BM_SETCHECK, (dword_buf == 0 ? BST_UNCHECKED : BST_CHECKED), 0);
 
 	RegCloseKey(hkey);
@@ -380,37 +380,37 @@ VOID save_options(HWND hwndDlg)
 	}
 	// Community
 	GetDlgItemText(hwndDlg, IDC_EDT_COMMUNITY, tmp_buf, buf_len);
-	reg_set_string(hkey, TEXT("community"), tmp_buf);
+	SetRegString(hkey, TEXT("community"), tmp_buf);
 
 	// Encryption key
 	if (is_item_checked(hwndDlg, IDC_CHK_ENCKEY))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_ENCKEY, tmp_buf, buf_len);
-		reg_set_string(hkey, TEXT("enckey"), tmp_buf);
+		SetRegString(hkey, TEXT("enckey"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, TEXT("enckey"), TEXT(""));
+		SetRegString(hkey, TEXT("enckey"), TEXT(""));
 	}
 
 	// IP Address
 	if (is_item_checked(hwndDlg, IDC_CHK_IPADDRESS))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf, buf_len);
-		reg_set_string(hkey, TEXT("ip_address"), tmp_buf);
+		SetRegString(hkey, TEXT("ip_address"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, TEXT("ip_address"), TEXT(""));
+		SetRegString(hkey, TEXT("ip_address"), TEXT(""));
 	}
 
 	// Supernode address
 	GetDlgItemText(hwndDlg, IDC_EDT_SUPERNODEADDR, tmp_buf, buf_len);
-	reg_set_string(hkey, TEXT("supernode_addr"), tmp_buf);
+	SetRegString(hkey, TEXT("supernode_addr"), tmp_buf);
 
 	// Supernode port
 	GetDlgItemText(hwndDlg, IDC_EDT_SUPERNODEPORT, tmp_buf, buf_len);
-	reg_set_dword(hkey, TEXT("supernode_port"), (DWORD)_wtoi(tmp_buf));
+	SetRegDword(hkey, TEXT("supernode_port"), (DWORD)_wtoi(tmp_buf));
 
 
 	// Finished
@@ -434,11 +434,11 @@ VOID save_ad_options(HWND hwndDlg)
 	if (is_item_checked(hwndDlg, IDC_CHK_KEYFILE))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_KEYFILE, tmp_buf, buf_len);
-		reg_set_string(hkey, TEXT("keyfile"), tmp_buf);
+		SetRegString(hkey, TEXT("keyfile"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, TEXT("keyfile"), TEXT(""));
+		SetRegString(hkey, TEXT("keyfile"), TEXT(""));
 	}
 
 
@@ -446,7 +446,7 @@ VOID save_ad_options(HWND hwndDlg)
     if (is_item_checked(hwndDlg, IDC_CHK_ADAPTERS))
     {
         GetDlgItemText(hwndDlg, IDC_COMBO_ADAPTERS, tmp_buf, buf_len);
-        reg_set_string(hkey, TEXT("adapter"), tmp_buf);
+        SetRegString(hkey, TEXT("adapter"), tmp_buf);
 
         // set adapter net interface name to HAPPYNET by uuid
         WCHAR *strtok_buf = NULL, *adapter_id = NULL;
@@ -457,70 +457,70 @@ VOID save_ad_options(HWND hwndDlg)
     }
     else
     {
-        reg_set_string(hkey, TEXT("adapter"), TEXT(""));
+        SetRegString(hkey, TEXT("adapter"), TEXT(""));
     }
 
 	// MAC address
 	if (is_item_checked(hwndDlg, IDC_CHK_MACADDRESS))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_MACADDRESS, tmp_buf, buf_len);
-		reg_set_string(hkey, TEXT("mac_address"), tmp_buf);
+		SetRegString(hkey, TEXT("mac_address"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, TEXT("mac_address"), TEXT(""));
+		SetRegString(hkey, TEXT("mac_address"), TEXT(""));
 	}
 
 	// MTU
 	if (is_item_checked(hwndDlg, IDC_CHK_MTU))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_MTU, tmp_buf, buf_len);
-		reg_set_dword(hkey, TEXT("mtu"), (DWORD)_wtoi(tmp_buf));
+		SetRegDword(hkey, TEXT("mtu"), (DWORD)_wtoi(tmp_buf));
 	}
 	else
 	{
-		reg_set_dword(hkey, TEXT("mtu"), 0);
+		SetRegDword(hkey, TEXT("mtu"), 0);
 	}
 
 	// Local port
 	if (is_item_checked(hwndDlg, IDC_CHK_LOCALPORT))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_LOCALPORT, tmp_buf, buf_len);
-		reg_set_dword(hkey, TEXT("local_port"), (DWORD)_wtoi(tmp_buf));
+		SetRegDword(hkey, TEXT("local_port"), (DWORD)_wtoi(tmp_buf));
 	}
 	else
 	{
-		reg_set_dword(hkey, TEXT("local_port"), 0);
+		SetRegDword(hkey, TEXT("local_port"), 0);
 	}
 
 	// Multicast
-	reg_set_dword(hkey, TEXT("multicast"), (is_item_checked(hwndDlg, IDC_CHK_MULTICAST) ? 1 : 0));
+	SetRegDword(hkey, TEXT("multicast"), (is_item_checked(hwndDlg, IDC_CHK_MULTICAST) ? 1 : 0));
 
 	// Packet Forwarding
-	reg_set_dword(hkey, TEXT("packet_forwarding"), (is_item_checked(hwndDlg, IDC_CHK_PKTFORWARD) ? 1 : 0));
+	SetRegDword(hkey, TEXT("packet_forwarding"), (is_item_checked(hwndDlg, IDC_CHK_PKTFORWARD) ? 1 : 0));
 
 	// header encry
-	reg_set_dword(hkey, TEXT("header_encry"), (is_item_checked(hwndDlg, IDC_HEADER_ENCRY) ? 1 : 0));
+	SetRegDword(hkey, TEXT("header_encry"), (is_item_checked(hwndDlg, IDC_HEADER_ENCRY) ? 1 : 0));
 
 	// data compress
-	reg_set_dword(hkey, TEXT("data_compress"), (is_item_checked(hwndDlg, IDC_CHK_DATA_COMPRESS) ? 1 : 0));
+	SetRegDword(hkey, TEXT("data_compress"), (is_item_checked(hwndDlg, IDC_CHK_DATA_COMPRESS) ? 1 : 0));
 
 	// select rtt
-	reg_set_dword(hkey, TEXT("select_rtt"), (is_item_checked(hwndDlg, IDC_CHK_SELECT_RTT) ? 1 : 0));
+	SetRegDword(hkey, TEXT("select_rtt"), (is_item_checked(hwndDlg, IDC_CHK_SELECT_RTT) ? 1 : 0));
 
 	//custom param
 	if (is_item_checked(hwndDlg, IDC_CHK_CUSTOM_PARAM))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_CUSTOM_PARAM, tmp_buf, buf_len);
-		reg_set_string(hkey, TEXT("custom_param"), tmp_buf);
+		SetRegString(hkey, TEXT("custom_param"), tmp_buf);
 	}
 	else
 	{
-		reg_set_string(hkey, TEXT("custom_param"), TEXT(""));
+		SetRegString(hkey, TEXT("custom_param"), TEXT(""));
 	}
 
     // set system service
-    reg_set_dword(hkey, TEXT("system_service"), (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
+    SetRegDword(hkey, TEXT("system_service"), (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
     if (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
         RegSystemService();
     }
@@ -529,7 +529,7 @@ VOID save_ad_options(HWND hwndDlg)
     }
 
 	// auto start
-	reg_set_dword(hkey, TEXT("auto_start"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
+	SetRegDword(hkey, TEXT("auto_start"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
 	if (is_item_checked(hwndDlg, IDC_CHK_AUTO_START)) {
         SetServiceAutoStart();
 	}
@@ -537,7 +537,7 @@ VOID save_ad_options(HWND hwndDlg)
         UnsetServiceAutoStart();
 	}
 	// auto tray
-	reg_set_dword(hkey, TEXT("auto_tray"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_TRAY) ? 1 : 0));
+	SetRegDword(hkey, TEXT("auto_tray"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_TRAY) ? 1 : 0));
 
 
 	// Finished
@@ -640,13 +640,13 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 			update_addresses(hwndDlg);
 			read_options(hwndDlg);
 
-			if (is_auto_start()) {
+			if (IsSetAutoStart()) {
 				HWND hbtn_start = GetDlgItem(hwndDlg, IDC_BTN_START);
 				SendMessage(hbtn_start, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(0, 0));
 				SendMessage(hbtn_start, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(0, 0));
 			}
 
-			if (is_auto_tray()) {
+			if (IsSetAutoTray()) {
 				PostMessage(hwndDlg, WM_SYSCOMMAND, SC_MINIMIZE, 0);
 				ShowWindow(hwndDlg, SW_HIDE);
 			}
@@ -673,7 +673,7 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	case WM_SIZE:
 		{
-			if (wParam == SIZE_MINIMIZED && is_auto_tray()) {
+			if (wParam == SIZE_MINIMIZED && IsSetAutoTray()) {
 				HideToTray(hwndDlg);
 				ShowWindow(hwndDlg, SW_HIDE);
 				break;

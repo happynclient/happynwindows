@@ -119,7 +119,7 @@ VOID grace_stop_service_process(VOID)
 	{
 		dword_edge_manager_port = 0;
 	} else {
-		reg_get_dword(hkey, L"local_port", &dword_edge_manager_port);
+		GetRegDword(hkey, L"local_port", &dword_edge_manager_port);
 	}
 
 	if(dword_edge_manager_port == 0) {
