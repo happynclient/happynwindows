@@ -86,6 +86,8 @@ int get_app_datapath(WCHAR* datapath)
     WCHAR default_app_datapath[MAX_PATH] = { '\0' };
     SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, default_app_datapath);
     swprintf_s(datapath, MAX_PATH, L"%s\\happynet", default_app_datapath);
+    
+    ///swprintf_s(datapath, MAX_PATH, L"D:\\happynet", default_app_datapath);
     return SHCreateDirectoryEx(NULL, datapath, NULL);
 }
 
