@@ -18,7 +18,7 @@ DWORD get_service_status(VOID)
 	//if( STILL_ACTIVE == dwMark) //running
 	//if( PROCESS_EXIT_CODE == dwMark) //stopped
     if (is_system_service()) {
-        return get_service_system_status();
+        return GetSystemServiceStatus();
     }
 	return get_service_process_status();
 }
@@ -26,7 +26,7 @@ DWORD get_service_status(VOID)
 VOID start_service(VOID)
 {
     if (is_system_service()) {
-        start_service_system();
+        StartSystemService();
         return;
     }
 
@@ -58,7 +58,7 @@ VOID start_service(VOID)
 VOID stop_service(VOID)
 {
     if (is_system_service()) {
-        stop_service_system();
+        StopSystemService();
         return;
     }
 
@@ -71,7 +71,7 @@ VOID stop_service(VOID)
 VOID set_auto_start_service(VOID)
 {
     if (is_system_service()) {
-        set_auto_start_service_system();
+        SetSystemServiceAutoStart();
     }
     
     HKEY hkey;
@@ -106,7 +106,7 @@ VOID set_auto_start_service(VOID)
 VOID cancel_auto_start_service(VOID)
 {
     if (is_system_service()) {
-        cancel_auto_start_service_system();
+        UnsetSystemServiceAutoStart();
     }
     
     HKEY hkey;

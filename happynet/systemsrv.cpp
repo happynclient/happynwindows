@@ -40,7 +40,7 @@ static WCHAR* get_nssm_log_path(VOID)
 
 // nssm install <servicename> <program> [<arguments>]
 // nssm set <servicename> Description "Happynet is a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn"
-VOID reg_service_system(VOID)
+VOID RegSystemService(VOID)
 {
     WCHAR install_path[MAX_PATH] = { 0 };
     WCHAR edge_path[MAX_PATH] = { 0 };
@@ -86,19 +86,19 @@ VOID reg_service_system(VOID)
 }
 
 // nssm remove <servicename>
-VOID unreg_service_system(VOID)
+VOID UnregSystemService(VOID)
 {
     WCHAR nssm_path[MAX_PATH] = { 0 };
     WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     swprintf_s(nssm_command_line, MAX_COMMAND_LINE_LEN,
                 TEXT("%s remove %s confirm"), get_nssm_exe_path(), SYSTEMSRV_NAME);
 
-    stop_service_system();
+    StopSystemService();
     WinExecW(nssm_command_line, SW_HIDE);
 }
 
 // nssm set <servicename> Start SERVICE_AUTO_START
-VOID set_auto_start_service_system(VOID)
+VOID SetSystemServiceAutoStart(VOID)
 {
     WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     //nssm set <servicename> Start SERVICE_AUTO_START
@@ -110,7 +110,7 @@ VOID set_auto_start_service_system(VOID)
 }
 
 // nssm set <servicename> Start SERVICE_DEMAND_START
-VOID cancel_auto_start_service_system(VOID)
+VOID UnsetSystemServiceAutoStart(VOID)
 {
     WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     //nssm set <servicename> Start SERVICE_DEMAND_START
@@ -122,7 +122,7 @@ VOID cancel_auto_start_service_system(VOID)
 }
 
 // nssm start <servicename>
-VOID start_service_system(VOID)
+VOID StartSystemService(VOID)
 {
     WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     //nssm set <servicename> Start SERVICE_DEMAND_START
@@ -134,7 +134,7 @@ VOID start_service_system(VOID)
 }
 
 // nssm stop <servicename>
-VOID stop_service_system(VOID)
+VOID StopSystemService(VOID)
 {
     WCHAR nssm_command_line[MAX_COMMAND_LINE_LEN] = { 0 };
     //nssm stop <servicename>
@@ -150,7 +150,7 @@ VOID stop_service_system(VOID)
 // Can't open service!
 // SERVICE_STOPPED
 // SERVICE_RUNNING
-DWORD get_service_system_status(VOID)
+DWORD GetSystemServiceStatus(VOID)
 {
     //创建匿名管道
     SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
@@ -211,7 +211,7 @@ DWORD get_service_system_status(VOID)
     return EXCEPTION_BREAKPOINT;
 }
 
-VOID get_service_system_output(WCHAR *szReadBuf)
+VOID GetSystemServiceOutput(WCHAR *szReadBuf)
 {
     CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { 0 };
     BOOL bsuccess = FALSE;
@@ -242,7 +242,7 @@ VOID get_service_system_output(WCHAR *szReadBuf)
     LogEvent(TEXT("%s\n"), szReadBuf);
 }
 
-VOID terminal_service_system(VOID)
+VOID TerminalSystemService(VOID)
 {
     return;
 }
