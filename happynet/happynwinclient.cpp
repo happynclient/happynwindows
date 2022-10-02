@@ -158,13 +158,23 @@ void update_addresses(HWND hwndDlg)
 	}
 }
 
-void sync_service_output_text( const HWND &hwnd, TCHAR *newText )
+void sync_service_output_text( const HWND &hwnd)
 {
+    TCHAR read_buf[PROCESS_STDOUT_BUFSIZE] = { 0 };
+
+    if (is_system_service()) {
+
+        get_service_system_output(read_buf);
+    }
+    else {
+        get_service_process_output(read_buf);
+    }
+
 	// get edit control from dialog
 	HWND hwnd_output = GetDlgItem( hwnd, IDC_EDT_EDGE_OUTPUT );
 
 	// get new length to determine buffer size
-	int out_length = GetWindowTextLength( hwnd_output ) + lstrlen(newText) + 1;
+	int out_length = GetWindowTextLength( hwnd_output ) + lstrlen(read_buf) + 1;
 
 	// create buffer to hold current and new text
 	WCHAR * buf = ( WCHAR * ) GlobalAlloc( GPTR, out_length * sizeof(WCHAR) );
@@ -174,7 +184,7 @@ void sync_service_output_text( const HWND &hwnd, TCHAR *newText )
 	GetWindowText(hwnd_output, buf, out_length);
 
 	// append the newText to the buffer
-	_tcscat_s(buf, out_length, newText);
+	_tcscat_s(buf, out_length, read_buf);
 
 	// Set the text in the edit control and scroll the end
 	SetWindowText(hwnd_output, buf);
@@ -192,7 +202,6 @@ void update_service_status(HWND hwndDlg)
 	HWND btn_stop = GetDlgItem(hwndDlg, IDC_BTN_STOP);
     HWND btn_monitor = GetDlgItem(hwndDlg, IDC_BTN_MONITOR);
 	HWND btn_ad_settings = GetDlgItem(hwndDlg, IDC_BTN_AD_SETTINGS);
-	WCHAR read_buf[PROCESS_STDOUT_BUFSIZE] = {'\0'};
 	DWORD service_status = get_service_status();
 	switch (service_status)
 	{
@@ -207,8 +216,7 @@ void update_service_status(HWND hwndDlg)
 		EnableWindow(btn_start, FALSE);
 		EnableWindow(btn_stop, TRUE);
         EnableWindow(btn_monitor, TRUE);
-		get_service_process_output(read_buf);
-		sync_service_output_text(hwndDlg, read_buf);
+		sync_service_output_text(hwndDlg);
 		break;
 	default:
 		SetDlgItemText(hwndDlg, IDC_STC_SRV_STATUS, L"Unknown");
@@ -556,6 +564,7 @@ void handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		stop_service();
 		update_service_status(hwndDlg);
 		update_addresses(hwndDlg);
+        sync_service_output_text(hwndDlg);
 		break;
 
     case IDC_BTN_MONITOR:

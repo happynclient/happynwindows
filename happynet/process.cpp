@@ -198,11 +198,14 @@ void get_service_process_output(WCHAR *read_buf)
 	BOOL bsuccess = FALSE;
 	HANDLE hparent_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	bsuccess = ReadFile( m_hchild_stdout_read, chbuf, PROCESS_STDOUT_BUFSIZE, &dwread, NULL);
+	bsuccess = ReadFile( m_hchild_stdout_read, chbuf, PROCESS_STDOUT_BUFSIZE-1, &dwread, NULL);
 	if( ! bsuccess || dwread == 0 ) return; 
 	//Convert char* string to a wchar_t* string.
 	size_t convertedChars = 0;
 	size_t newsize = strlen(chbuf) + 1;
+    if (newsize > PROCESS_STDOUT_BUFSIZE) {
+        newsize = PROCESS_STDOUT_BUFSIZE;
+    }
 	mbstowcs_s(&convertedChars, read_buf, newsize, chbuf, _TRUNCATE);
 	//Display the result and indicate the type of string that it is.
 	log_event(L"%s\n", read_buf); 

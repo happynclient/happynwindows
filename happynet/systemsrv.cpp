@@ -245,8 +245,40 @@ DWORD get_service_system_status(void)
     return EXCEPTION_BREAKPOINT;
 }
 
+LARGE_INTEGER intToLargeInt(int i) {
+    LARGE_INTEGER li;
+    li.QuadPart = i;
+    return li;
+}
 
 void get_service_system_output(WCHAR *read_buf)
 {
+    DWORD dwread;
+    CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { '\0' };
+    BOOL bsuccess = FALSE;
+    HANDLE hparent_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    OVERLAPPED ol = { 0 };
 
+    HANDLE  hFile = CreateFileW(
+        get_nssm_log_path(), // file to open
+        GENERIC_READ,          // open for reading
+        FILE_SHARE_READ | FILE_SHARE_WRITE,       // share for reading
+        NULL,                  // default security
+        OPEN_EXISTING,         // existing file only
+        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, // normal file
+        NULL);
+    
+    DWORD offset = SetFilePointer(hFile, 0-PROCESS_STDOUT_BUFSIZE-1, NULL, FILE_END);
+    if (offset == INVALID_SET_FILE_POINTER) {
+        log_event(TEXT("Terminal failure: unable to set file pointer.\n"));
+        return;
+    }
+    ol.Offset = offset;
+    bsuccess = ReadFileEx(hFile, chbuf, PROCESS_STDOUT_BUFSIZE, &ol, NULL);
+    if (!bsuccess) return;
+    //Convert char* string to a wchar_t* string.
+    size_t convertedChars = 0;
+    mbstowcs_s(&convertedChars, read_buf, PROCESS_STDOUT_BUFSIZE, chbuf, _TRUNCATE);
+    //Display the result and indicate the type of string that it is.
+    log_event(L"%s\n", read_buf);
 }

@@ -9,6 +9,6 @@ void start_service_system(void);
 void stop_service_system(void);
 void terminal_service_system(void);
 DWORD get_service_system_status(void);
-void get_service_system_output(void);
+void get_service_system_output(WCHAR *read_buf);
 
 #endif
