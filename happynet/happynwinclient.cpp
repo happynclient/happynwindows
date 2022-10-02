@@ -72,7 +72,7 @@ BOOL validate_options(HWND hwndDlg)
 
 	// Supernode port
 	GetDlgItemText(hwndDlg, IDC_EDT_SUPERNODEPORT, tmp_buf, buf_len);
-	if (!validate_number_range(tmp_buf, 1, 65535))
+	if (!ValidateNumberRange(tmp_buf, 1, 65535))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_SUPERNODEPORT));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Invalid supernode port");
@@ -116,7 +116,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 
 	// Local port
 	GetDlgItemText(hwndDlg, IDC_EDT_LOCALPORT, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_LOCALPORT) && !validate_number_range(tmp_buf, 1, 65535))
+	if (is_item_checked(hwndDlg, IDC_CHK_LOCALPORT) && !ValidateNumberRange(tmp_buf, 1, 65535))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("Invalid local port"));
