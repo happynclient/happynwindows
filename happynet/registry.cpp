@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "registry.h"
 
-int reg_get_dword(HKEY hkey, LPWSTR value_name, LPDWORD ret_dword)
+INT reg_get_dword(HKEY hkey, LPWSTR value_name, LPDWORD ret_dword)
 {
   // Fetch DWORD value from registry
   DWORD buf_size = sizeof(DWORD);
@@ -13,7 +13,7 @@ int reg_get_dword(HKEY hkey, LPWSTR value_name, LPDWORD ret_dword)
   return 1;
 }
 
-int reg_get_string(HKEY hkey, LPWSTR value_name, LPWSTR ret_str, DWORD buf_size)
+INT reg_get_string(HKEY hkey, LPWSTR value_name, LPWSTR ret_str, DWORD buf_size)
 {
   // Fetch string value from registry
   if (RegQueryValueEx(hkey, value_name, NULL, NULL, (LPBYTE)ret_str, &buf_size) != ERROR_SUCCESS)
@@ -23,7 +23,7 @@ int reg_get_string(HKEY hkey, LPWSTR value_name, LPWSTR ret_str, DWORD buf_size)
   return 1;
 }
 
-int reg_set_dword(HKEY hkey, LPWSTR value_name, DWORD dword_val)
+INT reg_set_dword(HKEY hkey, LPWSTR value_name, DWORD dword_val)
 {
   // Set DWORD value in registry
   if (RegSetValueEx(hkey, value_name, NULL, REG_DWORD, (LPBYTE)&dword_val, sizeof(DWORD)) != ERROR_SUCCESS)
@@ -33,7 +33,7 @@ int reg_set_dword(HKEY hkey, LPWSTR value_name, DWORD dword_val)
   return 1;
 }
 
-int reg_set_string(HKEY hkey, LPWSTR value_name, LPWSTR str_val)
+INT reg_set_string(HKEY hkey, LPWSTR value_name, LPWSTR str_val)
 {
   DWORD data_len = (wcslen(str_val) + 1) * sizeof(WCHAR);
   // Set string value in registry
