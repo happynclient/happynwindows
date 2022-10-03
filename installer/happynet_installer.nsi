@@ -80,14 +80,17 @@ Section "happynet"
   SetOutPath $INSTDIR
   ${If} ${RunningX64}
     File "n2n_release\x64\happynedge.exe"
+    File "n2n_release\x64\happynssm.exe"
     File "n2n_release\happynmonitor.exe"
+    File "n2n_release\happynet.ico"
   ${Else}
     ${If} ${IsWinXP}
       File "n2n_release\winxp\happynedge.exe"
-      File "n2n_release\happynmonitor.exe"
     ${Else}  
       File "n2n_release\x86\happynedge.exe"
+      File "n2n_release\x86\happynssm.exe"
       File "n2n_release\happynmonitor.exe"
+      File "n2n_release\happynet.ico"
     ${EndIf}
   ${EndIf}
   
