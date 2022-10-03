@@ -26,15 +26,6 @@ HANDLE h_update_main_status_thread;
 HANDLE h_mutex = NULL;
 CNetworkAdapter *m_pAdapters = NULL;
 
-BOOL string_empty(WCHAR* str)
-{
-	if (wcslen(str) == 0) return true;
-	for (int i = 0; i < (int)wcslen(str); i++)
-	{
-		if (str[i] != ' ') return false;
-	}
-	return true;
-}
 
 BOOL validate_options(HWND hwndDlg)
 {
@@ -54,7 +45,7 @@ BOOL validate_options(HWND hwndDlg)
 
 	// Community
 	GetDlgItemText(hwndDlg, IDC_EDT_COMMUNITY, tmp_buf, buf_len);
-	if (string_empty(tmp_buf))
+	if (IsEmptyString(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_COMMUNITY));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Community is required");
@@ -63,7 +54,7 @@ BOOL validate_options(HWND hwndDlg)
 
 	// Encryption key
 	GetDlgItemText(hwndDlg, IDC_EDT_ENCKEY, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_ENCKEY) && string_empty(tmp_buf))
+	if (is_item_checked(hwndDlg, IDC_CHK_ENCKEY) && IsEmptyString(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_ENCKEY));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Encryption key is required");
@@ -98,7 +89,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 
 	// Key file
 	GetDlgItemText(hwndDlg, IDC_EDT_KEYFILE, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_KEYFILE) && string_empty(tmp_buf))
+	if (is_item_checked(hwndDlg, IDC_CHK_KEYFILE) && IsEmptyString(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("Key file is required"));
@@ -107,7 +98,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 
 	// MTU
 	GetDlgItemText(hwndDlg, IDC_EDT_MTU, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_MTU) && string_empty(tmp_buf))
+	if (is_item_checked(hwndDlg, IDC_CHK_MTU) && IsEmptyString(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_MTU));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("MTU is required"));
@@ -261,15 +252,15 @@ VOID  read_options(HWND hwndDlg)
 	// Encryption key
 	GetRegString(hkey, TEXT("enckey"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_ENCKEY, tmp_buf);
-	SendDlgItemMessage(hwndDlg, IDC_CHK_ENCKEY, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
-	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_ENCKEY), !string_empty(tmp_buf));
-	EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_KEYFILE), string_empty(tmp_buf));
+	SendDlgItemMessage(hwndDlg, IDC_CHK_ENCKEY, BM_SETCHECK, (IsEmptyString(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
+	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_ENCKEY), !IsEmptyString(tmp_buf));
+	EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_KEYFILE), IsEmptyString(tmp_buf));
 
 	// IP address
 	GetRegString(hkey, TEXT("ip_address"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf);
-	SendDlgItemMessage(hwndDlg, IDC_CHK_IPADDRESS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
-	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), !string_empty(tmp_buf));
+	SendDlgItemMessage(hwndDlg, IDC_CHK_IPADDRESS, BM_SETCHECK, (IsEmptyString(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
+	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), !IsEmptyString(tmp_buf));
 
 	// Supernode address
 	GetRegString(hkey, TEXT("supernode_addr"), tmp_buf, buf_len);
@@ -303,22 +294,22 @@ VOID  read_ad_options(HWND hwndDlg)
 	// Key file
 	GetRegString(hkey, TEXT("keyfile"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_KEYFILE, tmp_buf);
-	SendDlgItemMessage(hwndDlg, IDC_CHK_KEYFILE, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
-	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE), !string_empty(tmp_buf));
-	EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_ENCKEY), string_empty(tmp_buf));
+	SendDlgItemMessage(hwndDlg, IDC_CHK_KEYFILE, BM_SETCHECK, (IsEmptyString(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
+	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE), !IsEmptyString(tmp_buf));
+	EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_ENCKEY), IsEmptyString(tmp_buf));
 
     // Adapter
     GetRegString(hkey, TEXT("adapter"), tmp_buf, buf_len);
     SetDlgItemText(hwndDlg, IDC_COMBO_ADAPTERS, tmp_buf);
-    SendDlgItemMessage(hwndDlg, IDC_CHK_ADAPTERS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
-    EnableWindow(GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS), !string_empty(tmp_buf));
+    SendDlgItemMessage(hwndDlg, IDC_CHK_ADAPTERS, BM_SETCHECK, (IsEmptyString(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
+    EnableWindow(GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS), !IsEmptyString(tmp_buf));
 
 
 	// MAC address
 	GetRegString(hkey, TEXT("mac_address"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_MACADDRESS, tmp_buf);
-	SendDlgItemMessage(hwndDlg, IDC_CHK_MACADDRESS, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
-	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS), !string_empty(tmp_buf));
+	SendDlgItemMessage(hwndDlg, IDC_CHK_MACADDRESS, BM_SETCHECK, (IsEmptyString(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
+	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS), !IsEmptyString(tmp_buf));
 
 	// MTU
 	GetRegDword(hkey, TEXT("mtu"), &dword_buf);
@@ -347,8 +338,8 @@ VOID  read_ad_options(HWND hwndDlg)
 	//custom param
 	GetRegString(hkey, TEXT("custom_param"), tmp_buf, buf_len);
 	SetDlgItemText(hwndDlg, IDC_EDT_CUSTOM_PARAM, tmp_buf);
-	SendDlgItemMessage(hwndDlg, IDC_CHK_CUSTOM_PARAM, BM_SETCHECK, (string_empty(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
-	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), !string_empty(tmp_buf));
+	SendDlgItemMessage(hwndDlg, IDC_CHK_CUSTOM_PARAM, BM_SETCHECK, (IsEmptyString(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
+	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), !IsEmptyString(tmp_buf));
 
     // system_service
     GetRegDword(hkey, TEXT("system_service"), &dword_buf);
