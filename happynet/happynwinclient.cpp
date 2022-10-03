@@ -680,7 +680,15 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 	case WM_CLOSE:
 		{
 
-			DestroyWindow(hwndDlg);
+            if (GetServiceStatus() == STILL_ACTIVE) {
+                INT nRet = MessageBox(HWND_DESKTOP, TEXT("关闭程序后会终止网络服务，您确定退出吗?"), TEXT("终止服务"), MB_YESNO);
+                if (nRet == IDYES) {
+                        DestroyWindow(hwndDlg);
+                }
+            }
+            else {
+                DestroyWindow(hwndDlg);
+            }
 			break;
 		}
 
@@ -732,7 +740,7 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
             EnableWindow(GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS), bChecked);
 
             if(!bChecked) {
-                ComboBox_SetText(hwndCombo, _T("Auto Detect"));
+                ComboBox_SetText(hwndCombo, TEXT("Auto Detect"));
                 break;
             }
 
