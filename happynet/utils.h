@@ -7,12 +7,12 @@
 
 LARGE_INTEGER IntToLargeInt(UINT nCount);
 VOID LogEvent(WCHAR* format, ...);
-BOOL IsValidAsciiString(WCHAR *line);
-BOOL StripNoAsciiString(WCHAR *line);
-UINT WinExecW(WCHAR* command_line, UINT command_show);
-INT GetAppDatapath(WCHAR* datapath);
-INT GetInstallDirPath(WCHAR* install_path, DWORD buf_len);
-INT GetEdgeCmdLine(WCHAR* happynedge_path, WCHAR* command_line, DWORD buf_len);
-INT GetEdgeParams(WCHAR* edge_path, WCHAR* params_line, DWORD buf_len);
+BOOL IsValidAsciiString(WCHAR *pszLine);
+BOOL StripNoAsciiString(WCHAR *pszLine);
+UINT WinExecW(WCHAR* pszCommandLine, UINT nCommandShow);
+INT GetAppDatapath(WCHAR* pszDatapath);
+INT GetInstallDirPath(WCHAR* pszDirPath, DWORD dwBufLen);
+INT GetEdgeCmdLine(WCHAR* pszDirPath, WCHAR* pszCommandLine, DWORD dwBufLen);
+INT GetEdgeParams(WCHAR* pszEdgePath, WCHAR* pszCommandLine, DWORD dwCommandBufLen);
 
 #endif
