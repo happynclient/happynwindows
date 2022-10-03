@@ -20,6 +20,15 @@ LARGE_INTEGER IntToLargeInt(UINT nCount) {
     return li;
 }
 
+BOOL IsEmptyString(WCHAR* str)
+{
+    if (wcslen(str) == 0) return true;
+    for (int i = 0; i < (int)wcslen(str); i++)
+    {
+        if (str[i] != ' ') return false;
+    }
+    return true;
+}
 
 BOOL IsValidAsciiString(WCHAR *pszLine)
 {

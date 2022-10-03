@@ -6,6 +6,7 @@
 #define MAX_COMMAND_LINE_LEN 1024 * 8
 
 LARGE_INTEGER IntToLargeInt(UINT nCount);
+BOOL IsEmptyString(WCHAR* str);
 VOID LogEvent(WCHAR* format, ...);
 BOOL IsValidAsciiString(WCHAR *pszLine);
 BOOL StripNoAsciiString(WCHAR *pszLine);
