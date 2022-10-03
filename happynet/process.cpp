@@ -207,10 +207,10 @@ void GetProcessServiceOutput(WCHAR *pszReadBuf)
 } 
 
 
-VOID GetProcessServiceError(PTSTR lpszFunction) 
 
-	// Format a readable error message, display a message box, 
-	// and exit from the application.
+// Format a readable error message, display a message box, 
+// and exit from the application.
+VOID GetProcessServiceError(PTSTR lpszFunction) 
 { 
 	LPVOID lpMsgBuf;
 	LPVOID lpDisplayBuf;
