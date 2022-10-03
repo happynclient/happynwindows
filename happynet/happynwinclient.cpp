@@ -27,7 +27,7 @@ HANDLE h_mutex = NULL;
 CNetworkAdapter *m_pAdapters = NULL;
 
 
-BOOL validate_options(HWND hwndDlg)
+BOOL ValidateOptions(HWND hwndDlg)
 {
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	WCHAR err_str[MAX_COMMAND_LINE_LEN];
@@ -132,7 +132,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 }
 
 
-VOID update_addresses(HWND hwndDlg)
+VOID UpdateAddressesInfo(HWND hwndDlg)
 {
 	if (GetServiceStatus() == STILL_ACTIVE)
 	{
@@ -185,7 +185,7 @@ VOID sync_service_output_text(const HWND &hwnd)
 	GlobalFree( buf );
 }
 
-VOID update_service_status(HWND hwndDlg)
+VOID UpdateServiceStatus(HWND hwndDlg)
 {
 	WaitForSingleObject(h_mutex, 1000);
 
@@ -223,8 +223,8 @@ DWORD CALLBACK update_main_status_thread(PVOID pvoid)
 {
 	HWND hwndDlg = (HWND) pvoid;
 	while (1) {
-		update_service_status(hwndDlg);
-		update_addresses(hwndDlg);
+		UpdateServiceStatus(hwndDlg);
+		UpdateAddressesInfo(hwndDlg);
 		Sleep(1000);
 	}
 	LogEvent(TEXT("thread end here\n"));
@@ -232,7 +232,7 @@ DWORD CALLBACK update_main_status_thread(PVOID pvoid)
 }
 
 
-VOID  read_options(HWND hwndDlg)
+VOID  ReadOptions(HWND hwndDlg)
 {
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	DWORD buf_len = MAX_COMMAND_LINE_LEN;
@@ -357,9 +357,9 @@ VOID  read_ad_options(HWND hwndDlg)
 }
 
 
-VOID save_options(HWND hwndDlg)
+VOID SaveOptions(HWND hwndDlg)
 {
-	if (!validate_options(hwndDlg)) return;
+	if (!ValidateOptions(hwndDlg)) return;
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	HKEY hkey;
@@ -537,7 +537,7 @@ VOID save_ad_options(HWND hwndDlg)
 
 
 
-VOID handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (HIWORD(wParam != BN_CLICKED)) return;
 	static HINSTANCE hInstance;
@@ -548,18 +548,18 @@ VOID handle_command_event(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case IDC_BTN_AD_SETTINGS:
-		DialogBox(hInstance, MAKEINTRESOURCE(IDD_AD_SETTINGS), hwndDlg, ad_settings_dialog_proc);
+		DialogBox(hInstance, MAKEINTRESOURCE(IDD_AD_SETTINGS), hwndDlg, AdSettingsDialogProc);
 		break;
 	case IDC_BTN_START:
-		save_options(hwndDlg);
+		SaveOptions(hwndDlg);
 		StartService();
-		update_service_status(hwndDlg);
-		update_addresses(hwndDlg);
+		UpdateServiceStatus(hwndDlg);
+		UpdateAddressesInfo(hwndDlg);
 		break;
 	case IDC_BTN_STOP:
 		StopService();
-		update_service_status(hwndDlg);
-		update_addresses(hwndDlg);
+		UpdateServiceStatus(hwndDlg);
+		UpdateAddressesInfo(hwndDlg);
         sync_service_output_text(hwndDlg);
 		break;
 
@@ -604,7 +604,7 @@ VOID setup_system_menu(HWND hwndDlg)
 	AppendMenu(sys_menu, MF_STRING, IDM_ABOUT, TEXT("About HappynetClient.."));
 }
 
-INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
@@ -627,9 +627,9 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 			h_mutex = CreateMutex(NULL, FALSE, NULL);
 
 			h_update_main_status_thread = CreateThread(NULL, 0, update_main_status_thread, hwndDlg, 0, NULL);
-			update_service_status(hwndDlg);
-			update_addresses(hwndDlg);
-			read_options(hwndDlg);
+			UpdateServiceStatus(hwndDlg);
+			UpdateAddressesInfo(hwndDlg);
+			ReadOptions(hwndDlg);
 
 			if (IsSetAutoStart()) {
 				HWND hbtn_start = GetDlgItem(hwndDlg, IDC_BTN_START);
@@ -646,7 +646,7 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	case WM_COMMAND:
 		{
-			handle_command_event(hwndDlg, uMsg, wParam, lParam);
+			HandleCommandEvent(hwndDlg, uMsg, wParam, lParam);
 			break;
 		}
 
@@ -706,7 +706,7 @@ INT_PTR CALLBACK dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 	return TRUE;
 }
 
-INT_PTR CALLBACK ad_settings_dialog_proc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
@@ -821,7 +821,7 @@ INT WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	h_icon_sm = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON32), IMAGE_ICON, 16, 16, 0);
 
 	// Run GUI window
-	INT_PTR res = DialogBox(hInstance, MAKEINTRESOURCE(IDD_MAIN), NULL, dialog_proc);
+	INT_PTR res = DialogBox(hInstance, MAKEINTRESOURCE(IDD_MAIN), NULL, MainDialogProc);
 
 	return 0;
 }
