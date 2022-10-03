@@ -37,9 +37,9 @@ static INT SendStopSig(UINT nEdgeManagerPort)
 	sockServerAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 	sockServerAddr.sin_family = AF_INET;
 	sockServerAddr.sin_port = htons(nEdgeManagerPort);
-	CHAR send_buf[8] = "stop";
+	CHAR szSendBuf[8] = "stop";
 	INT nLen = sizeof(SOCKADDR);
-	sendto(sockClient, send_buf, strlen(send_buf), 0, (SOCKADDR*)&sockServerAddr, nLen);
+	sendto(sockClient, szSendBuf, strlen(szSendBuf), 0, (SOCKADDR*)&sockServerAddr, nLen);
 	closesocket(sockClient) ;
 	WSACleanup();
 	return 0;
