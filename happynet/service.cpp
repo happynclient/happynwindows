@@ -59,6 +59,7 @@ VOID StopService(VOID)
 {
     if (IsSetSystemService()) {
         StopSystemService();
+        Sleep(1500);
         return;
     }
 
