@@ -13,7 +13,7 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK AdSettingsDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
-VOID setup_system_menu(HWND hwndDlg);
+VOID SetupSystemMenu(HWND hwndDlg);
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
 
 #endif
