@@ -17,8 +17,6 @@
 
 #pragma comment(lib, "comctl32.lib")
 
-#define is_item_checked(x,y) (SendDlgItemMessage(x, y, BM_GETCHECK, 0, 0) == BST_CHECKED)
-
 WCHAR szClassName[] = TEXT("HappynetClient");
 HICON h_icon;
 HICON h_icon_sm;
@@ -36,7 +34,7 @@ BOOL ValidateOptions(HWND hwndDlg)
 
 	// IP Address
 	GetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_IPADDRESS) && !ValidateIpv4Address(tmp_buf))
+	if (IsItemChecked(hwndDlg, IDC_CHK_IPADDRESS) && !ValidateIpv4Address(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Invalid IP address");
@@ -54,7 +52,7 @@ BOOL ValidateOptions(HWND hwndDlg)
 
 	// Encryption key
 	GetDlgItemText(hwndDlg, IDC_EDT_ENCKEY, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_ENCKEY) && IsEmptyString(tmp_buf))
+	if (IsItemChecked(hwndDlg, IDC_CHK_ENCKEY) && IsEmptyString(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_ENCKEY));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, L"Encryption key is required");
@@ -89,7 +87,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 
 	// Key file
 	GetDlgItemText(hwndDlg, IDC_EDT_KEYFILE, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_KEYFILE) && IsEmptyString(tmp_buf))
+	if (IsItemChecked(hwndDlg, IDC_CHK_KEYFILE) && IsEmptyString(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("Key file is required"));
@@ -98,7 +96,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 
 	// MTU
 	GetDlgItemText(hwndDlg, IDC_EDT_MTU, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_MTU) && IsEmptyString(tmp_buf))
+	if (IsItemChecked(hwndDlg, IDC_CHK_MTU) && IsEmptyString(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_MTU));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("MTU is required"));
@@ -107,7 +105,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 
 	// Local port
 	GetDlgItemText(hwndDlg, IDC_EDT_LOCALPORT, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_LOCALPORT) && !ValidateNumberRange(tmp_buf, 1, 65535))
+	if (IsItemChecked(hwndDlg, IDC_CHK_LOCALPORT) && !ValidateNumberRange(tmp_buf, 1, 65535))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("Invalid local port"));
@@ -116,7 +114,7 @@ BOOL validate_ad_options(HWND hwndDlg)
 
 	// MAC address
 	GetDlgItemText(hwndDlg, IDC_EDT_MACADDRESS, tmp_buf, buf_len);
-	if (is_item_checked(hwndDlg, IDC_CHK_MACADDRESS) && !ValidateMacAddress(tmp_buf))
+	if (IsItemChecked(hwndDlg, IDC_CHK_MACADDRESS) && !ValidateMacAddress(tmp_buf))
 	{
 		SetFocus(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS));
 		wcscpy_s(err_str, MAX_COMMAND_LINE_LEN, TEXT("Invalid MAC address"));
@@ -374,7 +372,7 @@ VOID SaveOptions(HWND hwndDlg)
 	SetRegString(hkey, TEXT("community"), tmp_buf);
 
 	// Encryption key
-	if (is_item_checked(hwndDlg, IDC_CHK_ENCKEY))
+	if (IsItemChecked(hwndDlg, IDC_CHK_ENCKEY))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_ENCKEY, tmp_buf, buf_len);
 		SetRegString(hkey, TEXT("enckey"), tmp_buf);
@@ -385,7 +383,7 @@ VOID SaveOptions(HWND hwndDlg)
 	}
 
 	// IP Address
-	if (is_item_checked(hwndDlg, IDC_CHK_IPADDRESS))
+	if (IsItemChecked(hwndDlg, IDC_CHK_IPADDRESS))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf, buf_len);
 		SetRegString(hkey, TEXT("ip_address"), tmp_buf);
@@ -422,7 +420,7 @@ VOID save_ad_options(HWND hwndDlg)
 	}
 
 	// Key file
-	if (is_item_checked(hwndDlg, IDC_CHK_KEYFILE))
+	if (IsItemChecked(hwndDlg, IDC_CHK_KEYFILE))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_KEYFILE, tmp_buf, buf_len);
 		SetRegString(hkey, TEXT("keyfile"), tmp_buf);
@@ -434,7 +432,7 @@ VOID save_ad_options(HWND hwndDlg)
 
 
     // TAP Adapter
-    if (is_item_checked(hwndDlg, IDC_CHK_ADAPTERS))
+    if (IsItemChecked(hwndDlg, IDC_CHK_ADAPTERS))
     {
         GetDlgItemText(hwndDlg, IDC_COMBO_ADAPTERS, tmp_buf, buf_len);
         SetRegString(hkey, TEXT("adapter"), tmp_buf);
@@ -452,7 +450,7 @@ VOID save_ad_options(HWND hwndDlg)
     }
 
 	// MAC address
-	if (is_item_checked(hwndDlg, IDC_CHK_MACADDRESS))
+	if (IsItemChecked(hwndDlg, IDC_CHK_MACADDRESS))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_MACADDRESS, tmp_buf, buf_len);
 		SetRegString(hkey, TEXT("mac_address"), tmp_buf);
@@ -463,7 +461,7 @@ VOID save_ad_options(HWND hwndDlg)
 	}
 
 	// MTU
-	if (is_item_checked(hwndDlg, IDC_CHK_MTU))
+	if (IsItemChecked(hwndDlg, IDC_CHK_MTU))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_MTU, tmp_buf, buf_len);
 		SetRegDword(hkey, TEXT("mtu"), (DWORD)_wtoi(tmp_buf));
@@ -474,7 +472,7 @@ VOID save_ad_options(HWND hwndDlg)
 	}
 
 	// Local port
-	if (is_item_checked(hwndDlg, IDC_CHK_LOCALPORT))
+	if (IsItemChecked(hwndDlg, IDC_CHK_LOCALPORT))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_LOCALPORT, tmp_buf, buf_len);
 		SetRegDword(hkey, TEXT("local_port"), (DWORD)_wtoi(tmp_buf));
@@ -485,22 +483,22 @@ VOID save_ad_options(HWND hwndDlg)
 	}
 
 	// Multicast
-	SetRegDword(hkey, TEXT("multicast"), (is_item_checked(hwndDlg, IDC_CHK_MULTICAST) ? 1 : 0));
+	SetRegDword(hkey, TEXT("multicast"), (IsItemChecked(hwndDlg, IDC_CHK_MULTICAST) ? 1 : 0));
 
 	// Packet Forwarding
-	SetRegDword(hkey, TEXT("packet_forwarding"), (is_item_checked(hwndDlg, IDC_CHK_PKTFORWARD) ? 1 : 0));
+	SetRegDword(hkey, TEXT("packet_forwarding"), (IsItemChecked(hwndDlg, IDC_CHK_PKTFORWARD) ? 1 : 0));
 
 	// header encry
-	SetRegDword(hkey, TEXT("header_encry"), (is_item_checked(hwndDlg, IDC_HEADER_ENCRY) ? 1 : 0));
+	SetRegDword(hkey, TEXT("header_encry"), (IsItemChecked(hwndDlg, IDC_HEADER_ENCRY) ? 1 : 0));
 
 	// data compress
-	SetRegDword(hkey, TEXT("data_compress"), (is_item_checked(hwndDlg, IDC_CHK_DATA_COMPRESS) ? 1 : 0));
+	SetRegDword(hkey, TEXT("data_compress"), (IsItemChecked(hwndDlg, IDC_CHK_DATA_COMPRESS) ? 1 : 0));
 
 	// select rtt
-	SetRegDword(hkey, TEXT("select_rtt"), (is_item_checked(hwndDlg, IDC_CHK_SELECT_RTT) ? 1 : 0));
+	SetRegDword(hkey, TEXT("select_rtt"), (IsItemChecked(hwndDlg, IDC_CHK_SELECT_RTT) ? 1 : 0));
 
 	//custom param
-	if (is_item_checked(hwndDlg, IDC_CHK_CUSTOM_PARAM))
+	if (IsItemChecked(hwndDlg, IDC_CHK_CUSTOM_PARAM))
 	{
 		GetDlgItemText(hwndDlg, IDC_EDT_CUSTOM_PARAM, tmp_buf, buf_len);
 		SetRegString(hkey, TEXT("custom_param"), tmp_buf);
@@ -511,8 +509,8 @@ VOID save_ad_options(HWND hwndDlg)
 	}
 
     // set system service
-    SetRegDword(hkey, TEXT("system_service"), (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
-    if (is_item_checked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
+    SetRegDword(hkey, TEXT("system_service"), (IsItemChecked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
+    if (IsItemChecked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
         RegSystemService();
     }
     else {
@@ -520,15 +518,15 @@ VOID save_ad_options(HWND hwndDlg)
     }
 
 	// auto start
-	SetRegDword(hkey, TEXT("auto_start"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
-	if (is_item_checked(hwndDlg, IDC_CHK_AUTO_START)) {
+	SetRegDword(hkey, TEXT("auto_start"), (IsItemChecked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
+	if (IsItemChecked(hwndDlg, IDC_CHK_AUTO_START)) {
         SetServiceAutoStart();
 	}
 	else {
         UnsetServiceAutoStart();
 	}
 	// auto tray
-	SetRegDword(hkey, TEXT("auto_tray"), (is_item_checked(hwndDlg, IDC_CHK_AUTO_TRAY) ? 1 : 0));
+	SetRegDword(hkey, TEXT("auto_tray"), (IsItemChecked(hwndDlg, IDC_CHK_AUTO_TRAY) ? 1 : 0));
 
 
 	// Finished
@@ -582,14 +580,14 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	case IDC_CHK_IPADDRESS:
 		{
-			bool checked = is_item_checked(hwndDlg, IDC_CHK_IPADDRESS);
+			bool checked = IsItemChecked(hwndDlg, IDC_CHK_IPADDRESS);
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), checked);
 			// SendDlgItemMessage(hwndDlg, IDC_CHK_PKTFORWARD, BM_SETCHECK, (checked ? BST_UNCHECKED : BST_CHECKED), 0);
 			break;
 		}
 	case IDC_CHK_ENCKEY:
 		{
-			bool checked = is_item_checked(hwndDlg, IDC_CHK_ENCKEY);
+			bool checked = IsItemChecked(hwndDlg, IDC_CHK_ENCKEY);
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_ENCKEY), checked);
 			//EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_KEYFILE), !checked);
 			break;
@@ -722,7 +720,7 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
 		{
 		case IDC_CHK_KEYFILE:
 		{
-			bool checked = is_item_checked(hwndDlg, IDC_CHK_KEYFILE);
+			bool checked = IsItemChecked(hwndDlg, IDC_CHK_KEYFILE);
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_KEYFILE), checked);
 			//EnableWindow(GetDlgItem(hwndDlg, IDC_CHK_ENCKEY), !checked);
 			break;
@@ -731,7 +729,7 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
         case IDC_CHK_ADAPTERS:
         {
             HWND hwndCombo = GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS);
-            bool checked = is_item_checked(hwndDlg, IDC_CHK_ADAPTERS);
+            bool checked = IsItemChecked(hwndDlg, IDC_CHK_ADAPTERS);
             EnableWindow(GetDlgItem(hwndDlg, IDC_COMBO_ADAPTERS), checked);
 
             if(!checked) {
@@ -777,16 +775,16 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
             break;
         }
 		case IDC_CHK_MTU:
-			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MTU), is_item_checked(hwndDlg, IDC_CHK_MTU));
+			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MTU), IsItemChecked(hwndDlg, IDC_CHK_MTU));
 			break;
 		case IDC_CHK_CUSTOM_PARAM:
-			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), is_item_checked(hwndDlg, IDC_CHK_CUSTOM_PARAM));            
+			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), IsItemChecked(hwndDlg, IDC_CHK_CUSTOM_PARAM));            
 			break;
 		case IDC_CHK_LOCALPORT:
-			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT), is_item_checked(hwndDlg, IDC_CHK_LOCALPORT));
+			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT), IsItemChecked(hwndDlg, IDC_CHK_LOCALPORT));
 			break;
 		case IDC_CHK_MACADDRESS:
-			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS), is_item_checked(hwndDlg, IDC_CHK_MACADDRESS));
+			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS), IsItemChecked(hwndDlg, IDC_CHK_MACADDRESS));
 			break;
 		
 		case IDOK:

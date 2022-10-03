@@ -1,6 +1,8 @@
 #ifndef _H_MAINGUI
 #define _H_MAINGUI
 
+#define IsItemChecked(x,y) (SendDlgItemMessage(x, y, BM_GETCHECK, 0, 0) == BST_CHECKED)
+
 BOOL ValidateOptions(HWND hwndDlg);
 VOID UpdateAddressesInfo(HWND hwndDlg);
 VOID UpdateServiceStatus(HWND hwndDlg);
