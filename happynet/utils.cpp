@@ -21,34 +21,34 @@ LARGE_INTEGER IntToLargeInt(UINT nCount) {
 }
 
 
-BOOL IsValidAsciiString(WCHAR *line)
+BOOL IsValidAsciiString(WCHAR *pszLine)
 {
-	for (INT i = 0; i < lstrlenW(line); i++)
+	for (INT i = 0; i < lstrlenW(pszLine); i++)
 	{
-		if (!iswascii(line[i])) {
+		if (!iswascii(pszLine[i])) {
 			return FALSE;
 		}
 	}
 	return TRUE;
 }
 
-BOOL StripNoAsciiString(WCHAR *line)
+BOOL StripNoAsciiString(WCHAR *pszLine)
 {
 	INT i = 0;
-	for (i = 0; i < lstrlenW(line); i++)
+	for (i = 0; i < lstrlenW(pszLine); i++)
 	{
-		if (!iswascii(line[i])) {
-			line[i] = L'\0';
+		if (!iswascii(pszLine[i])) {
+			pszLine[i] = L'\0';
 			break;
 		}
 	}
 	return i;
 }
 
-UINT WinExecW(WCHAR* command_line, UINT command_show)
+UINT WinExecW(WCHAR* pszCommandLine, UINT nCommandShow)
 {
     USES_CONVERSION;
-    return WinExec(W2A(command_line), command_show);
+    return WinExec(W2A(pszCommandLine), nCommandShow);
 }
 
 VOID LogEvent(WCHAR* format, ...)
@@ -71,47 +71,47 @@ VOID LogEvent(WCHAR* format, ...)
     delete[] message;
 }
 
-INT GetInstallDirPath(WCHAR* dir_path, DWORD buf_len)
+INT GetInstallDirPath(WCHAR* pszDirPath, DWORD dwBufLen)
 {
-    WCHAR exe_dir_buf[MAX_PATH] = { 0 };
-    DWORD exe_dir_buf_len = buf_len * sizeof(WCHAR);
+    WCHAR arrcExeDirBuf[MAX_PATH] = { 0 };
+    DWORD nExeDirBufLen = dwBufLen * sizeof(WCHAR);
     
     // get happyn exe dir path
-    if (!GetModuleFileName(NULL, exe_dir_buf, MAX_PATH))
+    if (!GetModuleFileName(NULL, arrcExeDirBuf, MAX_PATH))
     {
         return 0;
     }
-    PathRemoveFileSpec(exe_dir_buf);
-    swprintf_s(dir_path, buf_len, exe_dir_buf);
+    PathRemoveFileSpec(arrcExeDirBuf);
+    swprintf_s(pszDirPath, dwBufLen, arrcExeDirBuf);
     return 1;
 }
 
 
-INT GetAppDatapath(WCHAR* datapath)
+INT GetAppDatapath(WCHAR* pszDatapath)
 {
-    WCHAR default_app_datapath[MAX_PATH] = { 0 };
-    SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, default_app_datapath);
-    swprintf_s(datapath, MAX_PATH, TEXT("%s\\happynet"), default_app_datapath);
-    return SHCreateDirectoryEx(NULL, datapath, NULL);
+    WCHAR pszDefaultAppDatapath[MAX_PATH] = { 0 };
+    SHGetFolderPath(NULL, CSIDL_COMMON_APPDATA, NULL, 0, pszDefaultAppDatapath);
+    swprintf_s(pszDatapath, MAX_PATH, TEXT("%s\\happynet"), pszDefaultAppDatapath);
+    return SHCreateDirectoryEx(NULL, pszDatapath, NULL);
 }
 
 
-INT GetEdgeCmdLine(WCHAR* dir_path, WCHAR* command_line, DWORD buf_len)
+INT GetEdgeCmdLine(WCHAR* pszDirPath, WCHAR* pszCommandLine, DWORD dwBufLen)
 {
     WCHAR edge_path[MAX_PATH] = { 0 };
-    swprintf_s(edge_path, MAX_PATH, TEXT("\"%s\\happynedge.exe\""), dir_path);
-    return GetEdgeParams(edge_path, command_line, buf_len);
+    swprintf_s(edge_path, MAX_PATH, TEXT("\"%s\\happynedge.exe\""), pszDirPath);
+    return GetEdgeParams(edge_path, pszCommandLine, dwBufLen);
 }
 
 
-INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
+INT GetEdgeParams(WCHAR* pszEdgePath, WCHAR* pszCommandLine, DWORD dwCommandBufLen)
 {
-    WCHAR ret_val[MAX_COMMAND_LINE_LEN];
-    DWORD ret_dword = 0;
+    WCHAR arrcRetVal[MAX_COMMAND_LINE_LEN];
+    DWORD dwRetVal = 0;
 
     // Use 'ptr' to append to the end of the command line
-    WCHAR* ptr = command_line;
-    ptr += swprintf_s(command_line, buf_len, TEXT("%s "), edge_path);
+    WCHAR* ptr = pszCommandLine;
+    ptr += swprintf_s(pszCommandLine, dwCommandBufLen, TEXT("%s "), pszEdgePath);
 
     // Open registry key
     HKEY hkey;
@@ -124,148 +124,148 @@ INT GetEdgeParams(WCHAR* edge_path, WCHAR* command_line, DWORD buf_len)
     }
 
     // Community
-    if (!GetRegString(hkey, TEXT("community"), ret_val, 512)) return 0;
-    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -c %s"), ret_val);
+    if (!GetRegString(hkey, TEXT("community"), arrcRetVal, 512)) return 0;
+    ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -c %s"), arrcRetVal);
 
     // Encryption key
-    if (!GetRegString(hkey, TEXT("enckey"), ret_val, 512)) return 0;
-    if (wcslen(ret_val) != 0)
+    if (!GetRegString(hkey, TEXT("enckey"), arrcRetVal, 512)) return 0;
+    if (wcslen(arrcRetVal) != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -k %s"), ret_val);
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -k %s"), arrcRetVal);
     }
 
     // IP address
-    if (!GetRegString(hkey, TEXT("ip_address"), ret_val, 512)) return 0;
-    if (!GetRegDword(hkey, TEXT("packet_forwarding"), &ret_dword)) return 0;
-    if (wcslen(ret_val) != 0 && ret_dword == 0)
+    if (!GetRegString(hkey, TEXT("ip_address"), arrcRetVal, 512)) return 0;
+    if (!GetRegDword(hkey, TEXT("packet_forwarding"), &dwRetVal)) return 0;
+    if (wcslen(arrcRetVal) != 0 && dwRetVal == 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -a %s"), ret_val);
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -a %s"), arrcRetVal);
     }
 
-    if (wcslen(ret_val) == 0 && ret_dword == 0)
+    if (wcslen(arrcRetVal) == 0 && dwRetVal == 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -r -a dhcp:0.0.0.0"));
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -r -a dhcp:0.0.0.0"));
     }
 
     // Encryption key file
-    if (!GetRegString(hkey, TEXT("keyfile"), ret_val, 512)) return 0;
-    if (wcslen(ret_val) != 0)
+    if (!GetRegString(hkey, TEXT("keyfile"), arrcRetVal, 512)) return 0;
+    if (wcslen(arrcRetVal) != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -K %s"), ret_val);
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -K %s"), arrcRetVal);
     }
 
     // set adapter
-    if (!GetRegString(hkey, TEXT("adapter"), ret_val, 512)) return 0;
-    if (wcslen(ret_val) != 0)
+    if (!GetRegString(hkey, TEXT("adapter"), arrcRetVal, 512)) return 0;
+    if (wcslen(arrcRetVal) != 0)
     {
-        CHAR *adapter_id = NULL;
+        CHAR *pAdapterId = NULL;
         const CHAR s[2] = "_";
-        _bstr_t b(ret_val);
-        CHAR *tmpbuf = NULL;
-        adapter_id = strtok_s(b, s, &tmpbuf);
-        adapter_id = strtok_s(NULL, s, &tmpbuf);
+        _bstr_t b(arrcRetVal);
+        CHAR *pTmpBuf = NULL;
+        pAdapterId = strtok_s(b, s, &pTmpBuf);
+        pAdapterId = strtok_s(NULL, s, &pTmpBuf);
 
         TCHAR adapter_firendly_name[512] = { 0 };
-        if (GetAdapterFriendlyName(adapter_id, adapter_firendly_name, 512) == NOERROR) {
-            ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -d \"%s\""), adapter_firendly_name);
+        if (GetAdapterFriendlyName(pAdapterId, adapter_firendly_name, 512) == NOERROR) {
+            ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -d \"%s\""), adapter_firendly_name);
         }
     }
 
     // Local Port
-    if (!GetRegDword(hkey, TEXT("local_port"), &ret_dword)) return 0;
-    if (ret_dword != 0)
+    if (!GetRegDword(hkey, TEXT("local_port"), &dwRetVal)) return 0;
+    if (dwRetVal != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -p %d"), ret_dword);
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -p %d"), dwRetVal);
     }
 
 
     // MAC address
-    if (!GetRegString(hkey, TEXT("mac_address"), ret_val, 512)) return 0;
-    if (wcslen(ret_val) != 0)
+    if (!GetRegString(hkey, TEXT("mac_address"), arrcRetVal, 512)) return 0;
+    if (wcslen(arrcRetVal) != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -m %s"), ret_val);
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -m %s"), arrcRetVal);
     }
 
     // MTU
-    if (!GetRegDword(hkey, TEXT("mtu"), &ret_dword)) return 0;
-    if (ret_dword != 0)
+    if (!GetRegDword(hkey, TEXT("mtu"), &dwRetVal)) return 0;
+    if (dwRetVal != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -M %d"), ret_dword);
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -M %d"), dwRetVal);
     }
 
     // Multicast
-    if (!GetRegDword(hkey, TEXT("multicast"), &ret_dword)) return 0;
-    if (ret_dword != 0)
+    if (!GetRegDword(hkey, TEXT("multicast"), &dwRetVal)) return 0;
+    if (dwRetVal != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -E"));
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -E"));
     }
 
     // Packet forwarding
-    if (!GetRegDword(hkey, TEXT("packet_forwarding"), &ret_dword)) return 0;
-    if (ret_dword != 0)
+    if (!GetRegDword(hkey, TEXT("packet_forwarding"), &dwRetVal)) return 0;
+    if (dwRetVal != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -r"));
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -r"));
     }
 
     // header encryption
-    if (!GetRegDword(hkey, TEXT("header_encry"), &ret_dword)) return 0;
-    if (ret_dword != 0)
+    if (!GetRegDword(hkey, TEXT("header_encry"), &dwRetVal)) return 0;
+    if (dwRetVal != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -H"));
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -H"));
     }
 
     // data compress
-    if (!GetRegDword(hkey, TEXT("data_compress"), &ret_dword)) return 0;
-    if (ret_dword != 0)
+    if (!GetRegDword(hkey, TEXT("data_compress"), &dwRetVal)) return 0;
+    if (dwRetVal != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -z1"));
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -z1"));
     }
 
     // select rtt
-    if (!GetRegDword(hkey, TEXT("select_rtt"), &ret_dword)) return 0;
-    if (ret_dword != 0)
+    if (!GetRegDword(hkey, TEXT("select_rtt"), &dwRetVal)) return 0;
+    if (dwRetVal != 0)
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" --select-rtt "));
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" --select-rtt "));
     }
 
     // Supernode address
-    if (!GetRegString(hkey, TEXT("supernode_addr"), ret_val, 512)) return 0;
-    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -l %s"), ret_val);
+    if (!GetRegString(hkey, TEXT("supernode_addr"), arrcRetVal, 512)) return 0;
+    ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -l %s"), arrcRetVal);
 
     // Supernode port
-    if (!GetRegDword(hkey, TEXT("supernode_port"), &ret_dword)) return 0;
-    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(":%d"), ret_dword);
+    if (!GetRegDword(hkey, TEXT("supernode_port"), &dwRetVal)) return 0;
+    ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(":%d"), dwRetVal);
 
     // device name
-    const int info_buf_size = MAX_COMPUTERNAME_LENGTH * 16;
-    TCHAR  hostname[info_buf_size];
-    DWORD  buf_char_count = info_buf_size;
+    const int nInfoBufSize = MAX_COMPUTERNAME_LENGTH * 16;
+    TCHAR  arrcHostName[nInfoBufSize];
+    DWORD  dwBufCount = nInfoBufSize;
 
     // Get and display the name of the computer.
     // TODO: support No-ASCII hostname
-    if (GetComputerName(hostname, &buf_char_count))
+    if (GetComputerName(arrcHostName, &dwBufCount))
     {
-        HKEY hkey_hostname;
-        WCHAR reg_hostname[info_buf_size] = { 0 };
+        HKEY hkeyHostName;
+        WCHAR arrcRegHostname[nInfoBufSize] = { 0 };
         if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters"),
-                            NULL, KEY_READ, &hkey_hostname) == ERROR_SUCCESS && \
-                            (GetRegString(hkey_hostname, TEXT("hostname"), reg_hostname, 512)))
+                            NULL, KEY_READ, &hkeyHostName) == ERROR_SUCCESS && \
+                            (GetRegString(hkeyHostName, TEXT("hostname"), arrcRegHostname, 512)))
         {
-            lstrcpynW(hostname, reg_hostname, lstrlenW(reg_hostname) + 1);
+            lstrcpynW(arrcHostName, arrcRegHostname, lstrlenW(arrcRegHostname) + 1);
         }
     }
 
-    if (IsValidAsciiString(hostname) || (!IsValidAsciiString(hostname) && StripNoAsciiString(hostname)))
+    if (IsValidAsciiString(arrcHostName) || (!IsValidAsciiString(arrcHostName) && StripNoAsciiString(arrcHostName)))
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -I %s"), hostname);
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -I %s"), arrcHostName);
     }
     else
     {
-        ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" -I unknown"));
+        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -I unknown"));
     }
 
     //custom param
-    if (!GetRegString(hkey, TEXT("custom_param"), ret_val, MAX_COMMAND_LINE_LEN)) return 0;
-    ptr += swprintf_s(ptr, buf_len - (ptr - command_line), TEXT(" %s"), ret_val);
+    if (!GetRegString(hkey, TEXT("custom_param"), arrcRetVal, MAX_COMMAND_LINE_LEN)) return 0;
+    ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" %s"), arrcRetVal);
     return 1;
 }
