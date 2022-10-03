@@ -23,7 +23,7 @@ LARGE_INTEGER IntToLargeInt(UINT nCount) {
 BOOL IsEmptyString(WCHAR* str)
 {
     if (wcslen(str) == 0) return true;
-    for (int i = 0; i < (int)wcslen(str); i++)
+    for (INT i = 0; i < (INT)wcslen(str); i++)
     {
         if (str[i] != ' ') return false;
     }
@@ -246,7 +246,7 @@ INT GetEdgeParams(WCHAR* pszEdgePath, WCHAR* pszCommandLine, DWORD dwCommandBufL
     ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(":%d"), dwRetVal);
 
     // device name
-    const int nInfoBufSize = MAX_COMPUTERNAME_LENGTH * 16;
+    const INT nInfoBufSize = MAX_COMPUTERNAME_LENGTH * 16;
     TCHAR  arrcHostName[nInfoBufSize];
     DWORD  dwBufCount = nInfoBufSize;
 
