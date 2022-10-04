@@ -39,7 +39,7 @@ static WCHAR* GetNssmLogPath(VOID)
 
 
 // nssm install <servicename> <program> [<arguments>]
-// nssm set <servicename> Description "Happynet is a light VPN software which makes it easy to create virtual networks bypassing intermediate firewalls. Powered by happyn.cn"
+// nssm set <servicename> Description "Happynet is a light VPN software which makes it easy to create virtual networks by passing intermediate firewalls. Powered by happyn.cn"
 VOID RegSystemService(VOID)
 {
     WCHAR szInstallPath[MAX_PATH] = { 0 };
