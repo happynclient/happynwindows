@@ -681,7 +681,7 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 		{
 
             if (GetServiceStatus() == STILL_ACTIVE) {
-                INT nRet = MessageBox(HWND_DESKTOP, TEXT("关闭程序后会终止网络服务，您确定退出吗?"), TEXT("终止服务"), MB_YESNO);
+                INT nRet = MessageBox(HWND_DESKTOP, TEXT("关闭程序后会终止网络服务，您确定退出吗?"), TEXT("终止服务"), MB_YESNO | MB_ICONWARNING);
                 if (nRet == IDYES) {
                         DestroyWindow(hwndDlg);
                 }
