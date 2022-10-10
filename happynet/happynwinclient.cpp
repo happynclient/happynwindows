@@ -717,6 +717,7 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
 	{
 	case WM_INITDIALOG:
 	{		
+        SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 		ReadAdOptions(hwndDlg);
 		break;
 	}
