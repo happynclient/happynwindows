@@ -5,6 +5,7 @@
 
 #define MAX_COMMAND_LINE_LEN 1024 * 8
 
+WCHAR *StripString(WCHAR *s);
 LARGE_INTEGER IntToLargeInt(UINT nCount);
 BOOL IsEmptyString(WCHAR* str);
 VOID LogEvent(WCHAR* format, ...);

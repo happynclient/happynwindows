@@ -505,7 +505,8 @@ VOID SaveOptions(HWND hwndDlg)
 	}
 	// Community
 	GetDlgItemText(hwndDlg, IDC_EDT_COMMUNITY, tmp_buf, buf_len);
-	SetRegString(hkey, TEXT("community"), tmp_buf);
+    WCHAR *strip_tmp_buf = StripString(tmp_buf);
+	SetRegString(hkey, TEXT("community"), strip_tmp_buf);
 
 	// Encryption key
 	if (IsItemChecked(hwndDlg, IDC_CHK_ENCKEY))
