@@ -14,6 +14,27 @@
 #include "process.h"
 #include "utils.h"
 
+WCHAR *StripString(WCHAR *s)
+{
+    size_t size;
+    WCHAR *end;
+
+    size = wcslen(s);
+
+    if (!size)
+        return s;
+
+    end = s + size - 1;
+    while (end >= s && isspace(*end))
+        end--;
+    *(end + 1) = '\0';
+
+    while (*s && isspace(*s))
+        s++;
+
+    return s;
+}
+
 LARGE_INTEGER IntToLargeInt(UINT nCount) {
     LARGE_INTEGER li;
     li.QuadPart = nCount;
