@@ -13,7 +13,7 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "1.0.7.0"
+!define PRODUCT_VERSION "1.0.8.0"
 !define PRODUCT_PUBLISHER "happyn.cn"
 
 InstallDir "$PROGRAMFILES\happynet"
@@ -255,8 +255,8 @@ UninstallText "This will uninstall happynet client.  Click 'Uninstall' to contin
 
 Section "Uninstall"
   nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
-  nsExec::ExecToLog '"$INSTDIR\happynssm.exe" stop Happynet
-  nsExec::ExecToLog '"$INSTDIR\happynssm.exe" remove Happynet
+  nsExec::ExecToLog '"$INSTDIR\happynssm.exe" stop Happynet'
+  nsExec::ExecToLog '"$INSTDIR\happynssm.exe" remove Happynet'
   Delete "$INSTDIR\drv\*.*"
   Delete "$INSTDIR\*.*"
   Delete "$SMPROGRAMS\happynet\*.*"
