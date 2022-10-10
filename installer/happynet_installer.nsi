@@ -255,6 +255,8 @@ UninstallText "This will uninstall happynet client.  Click 'Uninstall' to contin
 
 Section "Uninstall"
   nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
+  nsExec::ExecToLog '"$INSTDIR\happynssm.exe" stop Happynet
+  nsExec::ExecToLog '"$INSTDIR\happynssm.exe" remove Happynet
   Delete "$INSTDIR\drv\*.*"
   Delete "$INSTDIR\*.*"
   Delete "$SMPROGRAMS\happynet\*.*"
