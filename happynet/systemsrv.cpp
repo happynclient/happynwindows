@@ -212,10 +212,13 @@ DWORD GetSystemServiceStatus(VOID)
 
 VOID GetSystemServiceOutput(WCHAR *szReadBuf)
 {
+    static DWORD dwOffset = 0;
+
     CHAR chbuf[PROCESS_STDOUT_BUFSIZE] = { 0 };
     BOOL bSuccess = FALSE;
     HANDLE hParentStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     OVERLAPPED ol = { 0 };
+    INT nReadBufSize = 0;
 
     HANDLE  hFile = CreateFileW(
         GetNssmLogPath(), // file to open
@@ -226,17 +229,26 @@ VOID GetSystemServiceOutput(WCHAR *szReadBuf)
         FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, // normal file
         NULL);
     
-    DWORD dwOffset = SetFilePointer(hFile, 0 - PROCESS_STDOUT_BUFSIZE - 1, NULL, FILE_END);
-    if (dwOffset == INVALID_SET_FILE_POINTER) {
+    DWORD dwEndOffset = SetFilePointer(hFile, 0, NULL, FILE_END);
+    if (dwEndOffset == INVALID_SET_FILE_POINTER) {
         LogEvent(TEXT("Terminal failure: unable to set file pointer.\n"));
         return;
     }
+    if (dwEndOffset - dwOffset > PROCESS_STDOUT_BUFSIZE) {
+        dwOffset = dwEndOffset - PROCESS_STDOUT_BUFSIZE;
+        nReadBufSize = PROCESS_STDOUT_BUFSIZE;
+    } else {
+        nReadBufSize = dwEndOffset - dwOffset;
+    }
+
     ol.Offset = dwOffset;
-    bSuccess = ReadFileEx(hFile, chbuf, PROCESS_STDOUT_BUFSIZE, &ol, NULL);
+    bSuccess = ReadFileEx(hFile, chbuf, nReadBufSize - 1, &ol, NULL);
     if (!bSuccess) return;
+    dwOffset = dwEndOffset;
+
     //Convert char* string to a wchar_t* string.
     UINT convertedChars = 0;
-    mbstowcs_s(&convertedChars, szReadBuf, PROCESS_STDOUT_BUFSIZE, chbuf, _TRUNCATE);
+    mbstowcs_s(&convertedChars, szReadBuf, nReadBufSize, chbuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
     LogEvent(TEXT("%s\n"), szReadBuf);
 }
