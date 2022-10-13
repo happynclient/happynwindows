@@ -94,6 +94,17 @@ Section "happynet"
     ${EndIf}
   ${EndIf}
   
+
+; --------------------------------------------------------
+; dll files
+; --------------------------------------------------------  
+  SetOutPath "$INSTDIR\platforms"
+  
+  ${IfNot} ${AtLeastWinVista}
+
+  File "n2n_release\platforms\qwindows.dll"
+  File "n2n_release\platforms\qoffscreen.dll"
+  File "n2n_release\platforms\qminimal.dll"
   
 ; --------------------------------------------------------
 ; TAP DRIVER
