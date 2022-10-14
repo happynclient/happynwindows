@@ -266,6 +266,7 @@ Section "Uninstall"
   nsExec::ExecToLog '"$INSTDIR\happynssm.exe" stop Happynet'
   nsExec::ExecToLog '"$INSTDIR\happynssm.exe" remove Happynet confirm'
   Delete "$INSTDIR\drv\*.*"
+  Delete "$INSTDIR\platforms\*.*"
   Delete "$INSTDIR\*.*"
   Delete "$SMPROGRAMS\happynet\*.*"
   RMDir "$SMPROGRAMS\happynet"
