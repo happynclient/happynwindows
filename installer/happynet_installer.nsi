@@ -13,7 +13,7 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "1.0.8.0"
+!define PRODUCT_VERSION "1.0.9.0"
 !define PRODUCT_PUBLISHER "happyn.cn"
 
 InstallDir "$PROGRAMFILES\happynet"
@@ -59,7 +59,7 @@ Icon "..\happynet\happyn.ico"
 Section "happynet"
   SectionIn RO
   SetOutPath $INSTDIR
-  
+
   CreateDirectory "$SMPROGRAMS\happynet"
   File "..\happynet\happyn.ico"
 
@@ -72,11 +72,11 @@ Section "happynet"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "DisplayIcon" '"$INSTDIR\happyn.ico"'
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "Publisher" "${PRODUCT_PUBLISHER}"
-  
-  
+
+
 ; --------------------------------------------------------
 ; happynedge.exe
-; --------------------------------------------------------  
+; --------------------------------------------------------
   SetOutPath $INSTDIR
   ${If} ${RunningX64}
     File "n2n_release\x64\happynedge.exe"
@@ -86,32 +86,29 @@ Section "happynet"
   ${Else}
     ${If} ${IsWinXP}
       File "n2n_release\winxp\happynedge.exe"
-    ${Else}  
+    ${Else}
       File "n2n_release\x86\happynedge.exe"
       File "n2n_release\x86\happynssm.exe"
       File "n2n_release\happynmonitor.exe"
       File "n2n_release\happynet.ico"
     ${EndIf}
   ${EndIf}
-  
+
 
 ; --------------------------------------------------------
 ; dll files
-; --------------------------------------------------------  
+; --------------------------------------------------------
   SetOutPath "$INSTDIR\platforms"
-  
-  ${IfNot} ${AtLeastWinVista}
-
   File "n2n_release\platforms\qwindows.dll"
   File "n2n_release\platforms\qoffscreen.dll"
   File "n2n_release\platforms\qminimal.dll"
-  
+
 ; --------------------------------------------------------
 ; TAP DRIVER
 ; --------------------------------------------------------
 
   SetOutPath "$INSTDIR\drv"
-  
+
   ${IfNot} ${AtLeastWinVista}
 
     ${If} ${RunningX64}
@@ -119,7 +116,7 @@ Section "happynet"
       File "..\tap_driver\NDIS5_x64\OemWin2k.inf"
       File "..\tap_driver\NDIS5_x64\tap0901.cat"
       File "..\tap_driver\NDIS5_x64\tap0901.sys"
-      DetailPrint  "INSTALL NDIS5_x64"    
+      DetailPrint  "INSTALL NDIS5_x64"
       nsExec::ExecToStack '"$INSTDIR\drv\tapinstall" find TAP0901'
       Pop $1
         Pop $2
@@ -131,7 +128,7 @@ Section "happynet"
       File "..\tap_driver\NDIS5_x86\OemWin2k.inf"
       File "..\tap_driver\NDIS5_x86\tap0901.cat"
       File "..\tap_driver\NDIS5_x86\tap0901.sys"
-      DetailPrint  "INSTALL NDIS5_x86"      
+      DetailPrint  "INSTALL NDIS5_x86"
       nsExec::ExecToStack '"$INSTDIR\drv\tapinstall" find TAP0901'
       Pop $1
         Pop $2
@@ -139,7 +136,7 @@ Section "happynet"
         nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
         nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemWin2k.inf TAP0901'
     ${EndIf}
-  
+
   ${Else}
 
     ${If} ${RunningX64}
@@ -153,7 +150,7 @@ Section "happynet"
       Pop $2
       ${StrLoc} $0 $2 "No matching devices" 0
       nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
-      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemVista.inf TAP0901'  
+      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemVista.inf TAP0901'
     ${Else}
       File "..\tap_driver\NDIS6_x86\tapinstall.exe"
       File "..\tap_driver\NDIS6_x86\OemVista.inf"
@@ -165,7 +162,7 @@ Section "happynet"
       Pop $2
       ${StrLoc} $0 $2 "No matching devices" 0
       nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
-      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemVista.inf TAP0901'  
+      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemVista.inf TAP0901'
     ${EndIf}
 
   ${EndIf}
@@ -237,7 +234,7 @@ Section "happynet"
               DetailPrint  "adapter not found"
               WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "adapter" ""
           ${ENDIF}
-            
+
       ${ENDIF}
   ${EndIf}
 
@@ -278,7 +275,7 @@ Section "Uninstall"
   DeleteRegKey HKLM "SOFTWARE\Happynet"
   DeleteRegValue HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "Happynet"
   Delete "$DESKTOP\happynet.lnk"
-  
+
   ; MAKE SURE DELETE ALL REGITEMS INSTALLED BY OTHER USER
   ;IntOp $0 0 + 0
   ;EnumStart:
