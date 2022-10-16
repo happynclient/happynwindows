@@ -22,7 +22,7 @@ The configuration is compatible with [n2n edge params](https://github.com/ntop/n
 
 ## Download
 
-[happynet 1.0 download](https://github.com/happynclient/happynwindows/releases/tag/1.0-en-us)
+[happynet 1.1 download](https://github.com/happynclient/happynwindows/releases/tag/1.1-en-us)
 
 
 ## License:
