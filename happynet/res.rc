@@ -66,8 +66,7 @@ BEGIN
     CONTROL         "Enable Data Compress:",IDC_CHK_DATA_COMPRESS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,220,33,145,10
     CONTROL         "Accept Multicast MAC Addr",IDC_CHK_MULTICAST,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,220,65,145,10
     CONTROL         "Use Header Encryption",IDC_HEADER_ENCRY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,220,81,145,10
-    CONTROL         "Enable Packet Forward(required DHCP)",IDC_CHK_PKTFORWARD,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,220,98,145,10
+    CONTROL         "Enable Packet Forward",IDC_CHK_PKTFORWARD,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,220,98,145,10
     CONTROL         "Start Service Automatically",IDC_CHK_AUTO_START,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,225,163,10
     CONTROL         "Minimize Automatically Hide Into Tray",IDC_CHK_AUTO_TRAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,27,240,163,10
