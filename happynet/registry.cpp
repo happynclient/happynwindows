@@ -1,45 +1,90 @@
 #include <windows.h>
 #include "registry.h"
 
-int reg_get_dword(HKEY hkey, LPWSTR value_name, LPDWORD ret_dword)
+INT GetRegDword(HKEY hkey, LPWSTR pszValueName, LPDWORD lpdwRetValue)
 {
   // Fetch DWORD value from registry
   DWORD buf_size = sizeof(DWORD);
-  if (RegQueryValueEx(hkey, value_name, NULL, NULL, (LPBYTE)ret_dword, &buf_size) != ERROR_SUCCESS)
+  if (RegQueryValueEx(hkey, pszValueName, NULL, NULL, (LPBYTE)lpdwRetValue, &buf_size) != ERROR_SUCCESS)
   {
-    *ret_dword = 0;
+    *lpdwRetValue = 0;
     return 0;
   }
   return 1;
 }
 
-int reg_get_string(HKEY hkey, LPWSTR value_name, LPWSTR ret_str, DWORD buf_size)
+INT GetRegString(HKEY hkey, LPWSTR pszValueName, LPWSTR pszRetValue, DWORD dwBufSize)
 {
   // Fetch string value from registry
-  if (RegQueryValueEx(hkey, value_name, NULL, NULL, (LPBYTE)ret_str, &buf_size) != ERROR_SUCCESS)
+  if (RegQueryValueEx(hkey, pszValueName, NULL, NULL, (LPBYTE)pszRetValue, &dwBufSize) != ERROR_SUCCESS)
   {
     return 0;
   }
   return 1;
 }
 
-int reg_set_dword(HKEY hkey, LPWSTR value_name, DWORD dword_val)
+INT SetRegDword(HKEY hkey, LPWSTR pszValueName, DWORD dwValue)
 {
   // Set DWORD value in registry
-  if (RegSetValueEx(hkey, value_name, NULL, REG_DWORD, (LPBYTE)&dword_val, sizeof(DWORD)) != ERROR_SUCCESS)
+  if (RegSetValueEx(hkey, pszValueName, NULL, REG_DWORD, (LPBYTE)&dwValue, sizeof(DWORD)) != ERROR_SUCCESS)
   {
     return 0;
   }
   return 1;
 }
 
-int reg_set_string(HKEY hkey, LPWSTR value_name, LPWSTR str_val)
+INT SetRegString(HKEY hkey, LPWSTR pszValueName, LPWSTR pszValueString)
 {
-  DWORD data_len = (wcslen(str_val) + 1) * sizeof(WCHAR);
+  DWORD data_len = (wcslen(pszValueString) + 1) * sizeof(WCHAR);
   // Set string value in registry
-  if (RegSetValueEx(hkey, value_name, NULL, REG_SZ, (LPBYTE)str_val, data_len) != ERROR_SUCCESS)
+  if (RegSetValueEx(hkey, pszValueName, NULL, REG_SZ, (LPBYTE)pszValueString, data_len) != ERROR_SUCCESS)
   {
     return 0;
   }
   return 1;
+}
+
+BOOL IsSetSystemService(VOID)
+{
+    DWORD dword_buf;
+    HKEY hkey;
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"), NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+    {
+        return FALSE;
+    }
+    // system_service
+    GetRegDword(hkey, TEXT("system_service"), &dword_buf);
+    RegCloseKey(hkey);
+
+    return dword_buf != 0;
+}
+
+BOOL IsSetAutoStart(VOID)
+{
+    DWORD dword_buf;
+    HKEY hkey;
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"), NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+    {
+        return FALSE;
+    }
+    // auto_start
+    GetRegDword(hkey, TEXT("auto_start"), &dword_buf);
+    RegCloseKey(hkey);
+
+    return dword_buf != 0;
+}
+
+BOOL IsSetAutoTray(VOID)
+{
+    DWORD dword_buf;
+    HKEY hkey;
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\Happynet\\Parameters"), NULL, KEY_READ, &hkey) != ERROR_SUCCESS)
+    {
+        return FALSE;
+    }
+    // auto_tray
+    GetRegDword(hkey, TEXT("auto_tray"), &dword_buf);
+    RegCloseKey(hkey);
+
+    return dword_buf != 0;
 }
