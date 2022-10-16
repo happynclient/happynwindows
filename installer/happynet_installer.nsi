@@ -13,7 +13,7 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "1.0.0.0"
+!define PRODUCT_VERSION "1.1.0.0"
 !define PRODUCT_PUBLISHER "happyn.net"
 
 InstallDir "$PROGRAMFILES\happynet"
@@ -59,7 +59,7 @@ Icon "..\happynet\happyn.ico"
 Section "happynet"
   SectionIn RO
   SetOutPath $INSTDIR
-  
+
   CreateDirectory "$SMPROGRAMS\happynet"
   File "..\happynet\happyn.ico"
 
@@ -72,29 +72,43 @@ Section "happynet"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "DisplayIcon" '"$INSTDIR\happyn.ico"'
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Happynet" "Publisher" "${PRODUCT_PUBLISHER}"
-  
-  
+
+
 ; --------------------------------------------------------
 ; happynedge.exe
-; --------------------------------------------------------  
+; --------------------------------------------------------
   SetOutPath $INSTDIR
   ${If} ${RunningX64}
     File "n2n_release\x64\happynedge.exe"
+    File "n2n_release\x64\happynssm.exe"
+    File "n2n_release\happynmonitor.exe"
+    File "n2n_release\happynet.ico"
   ${Else}
     ${If} ${IsWinXP}
       File "n2n_release\winxp\happynedge.exe"
-    ${Else}  
+    ${Else}
       File "n2n_release\x86\happynedge.exe"
+      File "n2n_release\x86\happynssm.exe"
+      File "n2n_release\happynmonitor.exe"
+      File "n2n_release\happynet.ico"
     ${EndIf}
   ${EndIf}
-  
-  
+
+
+; --------------------------------------------------------
+; dll files
+; --------------------------------------------------------
+  SetOutPath "$INSTDIR\platforms"
+  File "n2n_release\platforms\qwindows.dll"
+  File "n2n_release\platforms\qoffscreen.dll"
+  File "n2n_release\platforms\qminimal.dll"
+
 ; --------------------------------------------------------
 ; TAP DRIVER
 ; --------------------------------------------------------
 
   SetOutPath "$INSTDIR\drv"
-  
+
   ${IfNot} ${AtLeastWinVista}
 
     ${If} ${RunningX64}
@@ -102,7 +116,7 @@ Section "happynet"
       File "..\tap_driver\NDIS5_x64\OemWin2k.inf"
       File "..\tap_driver\NDIS5_x64\tap0901.cat"
       File "..\tap_driver\NDIS5_x64\tap0901.sys"
-      DetailPrint  "INSTALL NDIS5_x64"    
+      DetailPrint  "INSTALL NDIS5_x64"
       nsExec::ExecToStack '"$INSTDIR\drv\tapinstall" find TAP0901'
       Pop $1
         Pop $2
@@ -114,7 +128,7 @@ Section "happynet"
       File "..\tap_driver\NDIS5_x86\OemWin2k.inf"
       File "..\tap_driver\NDIS5_x86\tap0901.cat"
       File "..\tap_driver\NDIS5_x86\tap0901.sys"
-      DetailPrint  "INSTALL NDIS5_x86"      
+      DetailPrint  "INSTALL NDIS5_x86"
       nsExec::ExecToStack '"$INSTDIR\drv\tapinstall" find TAP0901'
       Pop $1
         Pop $2
@@ -122,7 +136,7 @@ Section "happynet"
         nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
         nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemWin2k.inf TAP0901'
     ${EndIf}
-  
+
   ${Else}
 
     ${If} ${RunningX64}
@@ -136,7 +150,7 @@ Section "happynet"
       Pop $2
       ${StrLoc} $0 $2 "No matching devices" 0
       nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
-      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemVista.inf TAP0901'  
+      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemVista.inf TAP0901'
     ${Else}
       File "..\tap_driver\NDIS6_x86\tapinstall.exe"
       File "..\tap_driver\NDIS6_x86\OemVista.inf"
@@ -148,7 +162,7 @@ Section "happynet"
       Pop $2
       ${StrLoc} $0 $2 "No matching devices" 0
       nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
-      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemVista.inf TAP0901'  
+      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemVista.inf TAP0901'
     ${EndIf}
 
   ${EndIf}
@@ -173,10 +187,13 @@ Section "happynet"
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "header_encry" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "data_compress" 0x00000001
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "select_rtt" 0x00000001
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
+    WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "adapter" ""
     WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" ""
+    WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "system_service" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
     WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
   ${Else}
@@ -193,16 +210,34 @@ Section "happynet"
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "packet_forwarding" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "header_encry" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "data_compress" 0x00000001
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "select_rtt" 0x00000001
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "subnet_mask" "255.255.255.0"
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "supernode_addr" "vip00.happyn.cc"
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "supernode_port" 0x00007530
+          WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "adapter" ""
           WriteRegStr HKLM "SOFTWARE\Happynet\Parameters" "custom_param" ""
+          WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "system_service" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_start" 0x00000000
           WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "auto_tray" 0x00000000
       ${ELSE}
           DetailPrint   "Value isn't empty"
+          ;--------------------------------
+          ;add new option
+          EnumRegKey $0 HKLM "SOFTWARE\Happynet\Parameters\select_rtt" 0
+          ${If} ${Errors}
+              DetailPrint  "select_rtt not found"
+              WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "select_rtt" 0x00000001
+          ${ENDIF}
+
+          EnumRegKey $0 HKLM "SOFTWARE\Happynet\Parameters\adapter" 0
+          ${If} ${Errors}
+              DetailPrint  "adapter not found"
+              WriteRegDWORD HKLM "SOFTWARE\Happynet\Parameters" "adapter" ""
+          ${ENDIF}
+
       ${ENDIF}
   ${EndIf}
+
 
 ; --------------------------------------------------------
 ; GUI TOOL
@@ -228,7 +263,13 @@ UninstallText "This will uninstall happynet client.  Click 'Uninstall' to contin
 
 Section "Uninstall"
   nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
+  ;nsExec::ExecToLog '"$INSTDIR\happynssm.exe" stop Happynet'
+  ;nsExec::ExecToLog '"$INSTDIR\happynssm.exe" remove Happynet confirm'
+  SimpleSC::StopService "Happynet" 1 30
+  SimpleSC::RemoveService "Happynet"
   Delete "$INSTDIR\drv\*.*"
+  Delete "$INSTDIR\platforms\*.*"
+  RMDIR "$INSTDIR\platforms"
   Delete "$INSTDIR\*.*"
   Delete "$SMPROGRAMS\happynet\*.*"
   RMDir "$SMPROGRAMS\happynet"
@@ -238,7 +279,7 @@ Section "Uninstall"
   DeleteRegKey HKLM "SOFTWARE\Happynet"
   DeleteRegValue HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Run" "Happynet"
   Delete "$DESKTOP\happynet.lnk"
-  
+
   ; MAKE SURE DELETE ALL REGITEMS INSTALLED BY OTHER USER
   ;IntOp $0 0 + 0
   ;EnumStart:

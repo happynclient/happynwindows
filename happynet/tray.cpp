@@ -1,6 +1,6 @@
 #include "tray.h"
 
-void hide_to_tray(HWND hWnd)
+VOID HideToTray(HWND hWnd)
 {
 	NOTIFYICONDATA nid;
 	nid.cbSize = (DWORD)sizeof(NOTIFYICONDATA);
@@ -9,12 +9,12 @@ void hide_to_tray(HWND hWnd)
 	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 	nid.uCallbackMessage = WM_USER_SHELLICON;
 	nid.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON32));
-	wcscpy_s(nid.szTip,  L"happynet");
+	wcscpy_s(nid.szTip,  TEXT("happynet"));
 	Shell_NotifyIcon(NIM_ADD, &nid);
 }
 
 
-void destroy_tray(HWND hWnd)
+VOID DestroyTray(HWND hWnd)
 {
 	NOTIFYICONDATA nid;
 	nid.cbSize = (DWORD)sizeof(NOTIFYICONDATA);
@@ -23,7 +23,7 @@ void destroy_tray(HWND hWnd)
 	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 	nid.uCallbackMessage = WM_USER_SHELLICON;
 	nid.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON32));
-	wcscpy_s(nid.szTip, L"happynet");
+	wcscpy_s(nid.szTip, TEXT("happynet"));
 	//delete tray icon show
 	Shell_NotifyIcon(NIM_DELETE, &nid);
 }
