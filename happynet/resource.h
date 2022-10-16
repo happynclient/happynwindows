@@ -43,8 +43,6 @@
 #define _USE_ATTRIBUTES_FOR_SAL         0
 #define __drv_typeConst                 0
 #define PSAPI_VERSION                   1
-#define CREATEPROCESS_MANIFEST_RESOURCE_ID 1
-#define MINIMUM_RESERVED_MANIFEST_RESOURCE_ID 1
 #define SW_SHOWNORMAL                   1
 #define SW_NORMAL                       1
 #define SHOW_OPENWINDOW                 1
@@ -217,7 +215,6 @@
 #define VFFF_ISSHAREDFILE               0x0001
 #define VFF_CURNEDEST                   0x0001
 #define VIFF_FORCEINSTALL               0x0001
-#define ISOLATIONAWARE_MANIFEST_RESOURCE_ID 2
 #define SW_SHOWMINIMIZED                2
 #define SHOW_ICONWINDOW                 2
 #define SW_OTHERZOOM                    2
@@ -296,7 +293,6 @@
 #define __drv_typeBitset                2
 #define VFF_FILEINUSE                   0x0002
 #define VIFF_DONTDELETEOLD              0x0002
-#define ISOLATIONAWARE_NOSTATICIMPORT_MANIFEST_RESOURCE_ID 3
 #define SW_SHOWMAXIMIZED                3
 #define SW_MAXIMIZE                     3
 #define SHOW_FULLSCREEN                 3
@@ -520,7 +516,6 @@
 #define LANG_ICELANDIC                  0x0f
 #define SUBLANG_ARABIC_BAHRAIN          0x0f
 #define SUBLANG_SPANISH_PARAGUAY        0x0f
-#define MAXIMUM_RESERVED_MANIFEST_RESOURCE_ID 16
 #define VK_SHIFT                        0x10
 #define WM_CLOSE                        0x0010
 #define HTBOTTOMLEFT                    16
@@ -583,7 +578,6 @@
 #define LANG_PORTUGUESE                 0x16
 #define VK_JUNJA                        0x17
 #define LANG_ROMANSH                    0x17
-#define RT_MANIFEST                     24
 #define VK_FINAL                        0x18
 #define WM_SHOWWINDOW                   0x0018
 #define LANG_ROMANIAN                   0x18
@@ -1172,12 +1166,15 @@
 #define IDC_BTN_SAVE                    1003
 #define IDC_BTN_START                   1004
 #define IDC_BTN_STOP                    1005
-#define IDC_EDIT4                       1008
+#define IDC_EDIT4                       1007
 #define IDC_EDT_EDGE_OUTPUT             1008
+#define IDC_BTN_MONITOR                 1009
 #define IDC_CHK_ENCKEY                  1021
 #define IDC_CHK_IPADDRESS               1022
 #define CF_GDIOBJLAST                   0x03FF
 #define IDC_CHK_KEYFILE                 1023
+#define IDC_COMBO_ADAPTERS              1071
+#define IDC_CHK_ADAPTERS                1072
 #define _WIN32_WINNT_NT4                0x0400
 #define _WIN32_IE_IE40                  0x0400
 #define WM_USER                         0x0400
@@ -1220,7 +1217,9 @@
 #define psh13                           0x040c
 #define IDC_CHK_DATA_COMPRESS           1036
 #define psh14                           0x040d
+#define IDC_CHK_SELECT_RTT              1037
 #define psh15                           0x040e
+#define IDC_CHK_SYSTEM_SERVICE          1038
 #define psh16                           0x040f
 #define _WIN32_WINDOWS                  0x0410
 #define chx1                            0x0410
@@ -1463,23 +1462,16 @@
 #define IDTIMEOUT                       32000
 #define OCR_NORMAL                      32512
 #define OIC_SAMPLE                      32512
-#define IDI_APPLICATION                 32512
 #define OCR_IBEAM                       32513
 #define OIC_HAND                        32513
-#define IDI_HAND                        32513
 #define OCR_WAIT                        32514
 #define OIC_QUES                        32514
-#define IDI_QUESTION                    32514
 #define OCR_CROSS                       32515
 #define OIC_BANG                        32515
-#define IDI_EXCLAMATION                 32515
 #define OCR_UP                          32516
 #define OIC_NOTE                        32516
-#define IDI_ASTERISK                    32516
 #define OIC_WINLOGO                     32517
-#define IDI_WINLOGO                     32517
 #define OIC_SHIELD                      32518
-#define IDI_SHIELD                      32518
 #define OCR_SIZE                        32640
 #define OCR_ICON                        32641
 #define OCR_SIZENWSE                    32642
@@ -1558,10 +1550,10 @@
 #define UNICODE_NOCHAR                  0xFFFF
 //#define PWR_FAIL                        -1
 //#define HTTRANSPARENT                   -1
-#define IDC_STATIC                      -1
+#define IDC_STATIC                        -1
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        103
