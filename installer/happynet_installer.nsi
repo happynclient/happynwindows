@@ -81,7 +81,7 @@ Section "happynet"
   ${If} ${RunningX64}
     File "n2n_release\x64\happynedge.exe"
     File "n2n_release\x64\happynssm.exe"
-    File "n2n_release\happynmonitor.exe"
+    File "n2n_release\x64\happynmonitor.exe"
     File "n2n_release\happynet.ico"
   ${Else}
     ${If} ${IsWinXP}
@@ -89,7 +89,7 @@ Section "happynet"
     ${Else}
       File "n2n_release\x86\happynedge.exe"
       File "n2n_release\x86\happynssm.exe"
-      File "n2n_release\happynmonitor.exe"
+      File "n2n_release\x86\happynmonitor.exe"
       File "n2n_release\happynet.ico"
     ${EndIf}
   ${EndIf}
