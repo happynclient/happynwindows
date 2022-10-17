@@ -20,6 +20,14 @@ Happynet Client is compatible with [N2N3.0](https://github.com/ntop/n2n/releases
 The configuration is compatible with [n2n edge params](https://github.com/ntop/n2n/blob/dev/doc/ConfigurationFiles.md)
 
 
+## ScreenShots
+
+![Main GUI](screenshots/happyn01.png)
+
+![Monitor](screenshots/happyn02.png)
+
+![Ad Settings](screenshots/happyn03.png)
+
 ## Download
 
 [happynet 1.1 download](https://github.com/happynclient/happynwindows/releases/tag/1.1-en-us)
