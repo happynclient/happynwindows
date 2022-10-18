@@ -479,6 +479,9 @@ VOID  ReadOptions(HWND hwndDlg)
 	SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_IPADDRESS, BM_SETCHECK, (IsEmptyString(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), !IsEmptyString(tmp_buf));
+    if (IsEmptyString(tmp_buf)) {
+        SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, TEXT("DHCP"));
+    }
 
 	// Supernode address
 	GetRegString(hkey, TEXT("supernode_addr"), tmp_buf, buf_len);
@@ -589,6 +592,9 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			bool checked = IsItemChecked(hwndDlg, IDC_CHK_IPADDRESS);
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), checked);
+            if (!checked) {
+                SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, TEXT("DHCP"));
+            }
 			// SendDlgItemMessage(hwndDlg, IDC_CHK_PKTFORWARD, BM_SETCHECK, (checked ? BST_UNCHECKED : BST_CHECKED), 0);
 			break;
 		}
