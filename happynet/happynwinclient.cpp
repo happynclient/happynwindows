@@ -480,7 +480,7 @@ VOID  ReadOptions(HWND hwndDlg)
 	SendDlgItemMessage(hwndDlg, IDC_CHK_IPADDRESS, BM_SETCHECK, (IsEmptyString(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), !IsEmptyString(tmp_buf));
     if (IsEmptyString(tmp_buf)) {
-        SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, TEXT("DHCP"));
+        SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, TEXT(AUTOIP_TEXT));
     }
 
 	// Supernode address
@@ -593,7 +593,7 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			bool checked = IsItemChecked(hwndDlg, IDC_CHK_IPADDRESS);
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), checked);
             if (!checked) {
-                SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, TEXT("DHCP"));
+                SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, TEXT(AUTOIP_TEXT));
             }
 			// SendDlgItemMessage(hwndDlg, IDC_CHK_PKTFORWARD, BM_SETCHECK, (checked ? BST_UNCHECKED : BST_CHECKED), 0);
 			break;
