@@ -18,7 +18,7 @@
 #pragma comment(lib, "comctl32.lib")
 
 static WCHAR m_szClassName[] = TEXT("HappynetClient");
-static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.1.0-en");
+static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.1.1-en");
 static HICON m_hIcon;
 static HICON m_hIconSm;
 static HANDLE m_hUpdateMainStatusThread;
@@ -479,6 +479,9 @@ VOID  ReadOptions(HWND hwndDlg)
 	SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, tmp_buf);
 	SendDlgItemMessage(hwndDlg, IDC_CHK_IPADDRESS, BM_SETCHECK, (IsEmptyString(tmp_buf) ? BST_UNCHECKED : BST_CHECKED), 0);
 	EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), !IsEmptyString(tmp_buf));
+    if (IsEmptyString(tmp_buf)) {
+        SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, TEXT(AUTOIP_TEXT));
+    }
 
 	// Supernode address
 	GetRegString(hkey, TEXT("supernode_addr"), tmp_buf, buf_len);
@@ -491,9 +494,11 @@ VOID  ReadOptions(HWND hwndDlg)
 }
 
 
-VOID SaveOptions(HWND hwndDlg)
+BOOL SaveOptions(HWND hwndDlg)
 {
-	if (!ValidateOptions(hwndDlg)) return;
+    if (!ValidateOptions(hwndDlg)) {
+        return FALSE;
+    }
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	HKEY hkey;
@@ -501,7 +506,7 @@ VOID SaveOptions(HWND hwndDlg)
                         NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
 	{
 		MessageBox(hwndDlg, TEXT("The registry key could not be opened."), TEXT("Error"), MB_OK | MB_ICONSTOP);
-		return;
+		return FALSE;
 	}
 	// Community
 	GetDlgItemText(hwndDlg, IDC_EDT_COMMUNITY, tmp_buf, buf_len);
@@ -541,6 +546,8 @@ VOID SaveOptions(HWND hwndDlg)
 
 	// Finished
 	RegCloseKey(hkey);
+
+    return TRUE;
 }
 
 
@@ -558,10 +565,11 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DialogBox(hInstance, MAKEINTRESOURCE(IDD_AD_SETTINGS), hwndDlg, AdSettingsDialogProc);
 		break;
 	case IDC_BTN_START:
-		SaveOptions(hwndDlg);
-		StartService();
-		UpdateServiceStatus(hwndDlg);
-		UpdateAddressesInfo(hwndDlg);
+        if (SaveOptions(hwndDlg)) {
+            StartService();
+            UpdateServiceStatus(hwndDlg);
+            UpdateAddressesInfo(hwndDlg);
+        }
 		break;
 	case IDC_BTN_STOP:
 		StopService();
@@ -589,6 +597,9 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			bool checked = IsItemChecked(hwndDlg, IDC_CHK_IPADDRESS);
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_IPADDRESS), checked);
+            if (!checked) {
+                SetDlgItemText(hwndDlg, IDC_EDT_IPADDRESS, TEXT(AUTOIP_TEXT));
+            }
 			// SendDlgItemMessage(hwndDlg, IDC_CHK_PKTFORWARD, BM_SETCHECK, (checked ? BST_UNCHECKED : BST_CHECKED), 0);
 			break;
 		}
@@ -717,7 +728,7 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
 	switch (uMsg)
 	{
 	case WM_INITDIALOG:
-	{		
+	{
         SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 		ReadAdOptions(hwndDlg);
 		break;
@@ -749,7 +760,7 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
             // set adapters info
             DWORD	dwErr = 0;
             ULONG	ulNeeded = 0;
-            UINT	nCount = 0;           
+            UINT	nCount = 0;
 
             dwErr = EnumNetworkAdapters(m_pAdapters, 0, &ulNeeded);
             if (dwErr == ERROR_INSUFFICIENT_BUFFER) {
@@ -766,20 +777,20 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
                 break;
             }
 
-            // set to IDC_COMBO_ADAPTERS            
+            // set to IDC_COMBO_ADAPTERS
             SendMessage(hwndCombo, CB_RESETCONTENT, 0, 0);
             for (UINT nDisplay = 0; nDisplay < nCount; nDisplay++) {
-                CNetworkAdapter* pAdapt = &m_pAdapters[nDisplay];   
+                CNetworkAdapter* pAdapt = &m_pAdapters[nDisplay];
 
                 if (pAdapt->GetAdapterDescription().rfind(TEXT("TAP"), 0) != 0) {
                     continue;
                 }
                 else {
-                    TCHAR szAdapterName[512] = { 0 };                    
+                    TCHAR szAdapterName[512] = { 0 };
                     swprintf_s(szAdapterName, TEXT("%s_%s"), pAdapt->GetAdapterDescription().c_str(), pAdapt->GetAdapterName().c_str());
                     SendMessage(hwndCombo, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)szAdapterName);
                 }
-            }            
+            }
             SendMessage(hwndCombo, CB_SETCURSEL, (WPARAM)0, (LPARAM)0);
             break;
         }
@@ -787,7 +798,7 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MTU), IsItemChecked(hwndDlg, IDC_CHK_MTU));
 			break;
 		case IDC_CHK_CUSTOM_PARAM:
-			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), IsItemChecked(hwndDlg, IDC_CHK_CUSTOM_PARAM));            
+			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_CUSTOM_PARAM), IsItemChecked(hwndDlg, IDC_CHK_CUSTOM_PARAM));
 			break;
 		case IDC_CHK_LOCALPORT:
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_LOCALPORT), IsItemChecked(hwndDlg, IDC_CHK_LOCALPORT));
@@ -795,7 +806,7 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
 		case IDC_CHK_MACADDRESS:
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS), IsItemChecked(hwndDlg, IDC_CHK_MACADDRESS));
 			break;
-		
+
 		case IDOK:
 			SaveAdOptions(hwndDlg);
 			EndDialog(hwndDlg, 0);

@@ -166,15 +166,9 @@ INT GetEdgeParams(WCHAR* pszEdgePath, WCHAR* pszCommandLine, DWORD dwCommandBufL
 
     // IP address
     if (!GetRegString(hkey, TEXT("ip_address"), arrcRetVal, 512)) return 0;
-    if (!GetRegDword(hkey, TEXT("packet_forwarding"), &dwRetVal)) return 0;
-    if (wcslen(arrcRetVal) != 0 && dwRetVal == 0)
+    if (wcslen(arrcRetVal) != 0)
     {
         ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -a %s"), arrcRetVal);
-    }
-
-    if (wcslen(arrcRetVal) == 0 && dwRetVal == 0)
-    {
-        ptr += swprintf_s(ptr, dwCommandBufLen - (ptr - pszCommandLine), TEXT(" -r -a dhcp:0.0.0.0"));
     }
 
     // Encryption key file
