@@ -18,7 +18,7 @@
 #pragma comment(lib, "comctl32.lib")
 
 static WCHAR m_szClassName[] = TEXT("HappynetClient");
-static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.1.0");
+static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.1.1");
 static HICON m_hIcon;
 static HICON m_hIconSm;
 static HANDLE m_hUpdateMainStatusThread;
@@ -494,9 +494,11 @@ VOID  ReadOptions(HWND hwndDlg)
 }
 
 
-VOID SaveOptions(HWND hwndDlg)
+BOOL SaveOptions(HWND hwndDlg)
 {
-	if (!ValidateOptions(hwndDlg)) return;
+    if (!ValidateOptions(hwndDlg)) {
+        return FALSE;
+    }
 	WCHAR tmp_buf[MAX_COMMAND_LINE_LEN];
 	DWORD buf_len = MAX_COMMAND_LINE_LEN;
 	HKEY hkey;
@@ -504,7 +506,7 @@ VOID SaveOptions(HWND hwndDlg)
                         NULL, KEY_READ | KEY_WRITE, &hkey) != ERROR_SUCCESS)
 	{
 		MessageBox(hwndDlg, TEXT("The registry key could not be opened."), TEXT("Error"), MB_OK | MB_ICONSTOP);
-		return;
+		return FALSE;
 	}
 	// Community
 	GetDlgItemText(hwndDlg, IDC_EDT_COMMUNITY, tmp_buf, buf_len);
@@ -544,6 +546,8 @@ VOID SaveOptions(HWND hwndDlg)
 
 	// Finished
 	RegCloseKey(hkey);
+
+    return TRUE;
 }
 
 
@@ -561,10 +565,11 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		DialogBox(hInstance, MAKEINTRESOURCE(IDD_AD_SETTINGS), hwndDlg, AdSettingsDialogProc);
 		break;
 	case IDC_BTN_START:
-		SaveOptions(hwndDlg);
-		StartService();
-		UpdateServiceStatus(hwndDlg);
-		UpdateAddressesInfo(hwndDlg);
+        if (SaveOptions(hwndDlg)) {
+            StartService();
+            UpdateServiceStatus(hwndDlg);
+            UpdateAddressesInfo(hwndDlg);
+        }
 		break;
 	case IDC_BTN_STOP:
 		StopService();
