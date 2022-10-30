@@ -41,7 +41,7 @@ By default, we currently only support N2N 3.0; If you are using an older version
 
 1. Prepare your N2N `edge.exe`
 
-2. Rename your `edge.exe` to `happyneddge.exe` to replace happynet's default installation file: `C:\Program Files (x86)\happynet\happynedge.exe`
+2. Rename your `edge.exe` to `happynedge.exe` to replace happynet's default installation file: `C:\Program Files (x86)\happynet\happynedge.exe`
 
 3. Most parameters of N2N V2 and V3 are compatible. If there are special parameters that are not compatible, you can go to "Custom Parameters" in `Advanced Settings` to set your own parameters
 
