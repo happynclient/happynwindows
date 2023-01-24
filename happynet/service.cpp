@@ -26,6 +26,9 @@ DWORD GetServiceStatus(VOID)
 VOID StartService(VOID)
 {
     if (IsSetSystemService()) {
+        // re reg system service args
+        UnregSystemService();
+        RegSystemService();
         StartSystemService();
         return;
     }
