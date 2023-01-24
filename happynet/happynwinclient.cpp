@@ -321,13 +321,15 @@ static VOID SaveAdOptions(HWND hwndDlg)
     }
 
     // set system service
-    SetRegDword(hkey, TEXT("system_service"), (IsItemChecked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
     if (IsItemChecked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
+        // if running at normal mode
+        StopService();
         RegSystemService();
     }
     else {
         UnregSystemService();
     }
+    SetRegDword(hkey, TEXT("system_service"), (IsItemChecked(hwndDlg, IDC_CHK_SYSTEM_SERVICE) ? 1 : 0));
 
     // auto start
     SetRegDword(hkey, TEXT("auto_start"), (IsItemChecked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
