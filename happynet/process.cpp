@@ -194,7 +194,9 @@ void GetProcessServiceOutput(WCHAR *pszReadBuf)
 	HANDLE hparent_stdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	bsuccess = ReadFile( m_hChildStdoutRead, chbuf, PROCESS_STDOUT_BUFSIZE-1, &dwRead, NULL);
-	if( ! bsuccess || dwRead == 0 ) return; 
+    if (!bsuccess || dwRead == 0) {
+        return;
+    }
 	//Convert char* string to a wchar_t* string.
 	UINT convertedChars = 0;
 	UINT newsize = strlen(chbuf) + 1;
