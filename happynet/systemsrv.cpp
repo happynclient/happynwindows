@@ -255,7 +255,10 @@ VOID GetSystemServiceOutput(WCHAR *szReadBuf)
 
     ol.Offset = dwOffset;
     bSuccess = ReadFileEx(hFile, chbuf, nReadBufSize - 1, &ol, NULL);
-    if (!bSuccess) return;
+    if (!bSuccess) {
+        CloseHandle(hFile);
+        return;
+    }
     dwOffset = dwEndOffset;
 
     //Convert char* string to a wchar_t* string.
@@ -263,6 +266,7 @@ VOID GetSystemServiceOutput(WCHAR *szReadBuf)
     mbstowcs_s(&convertedChars, szReadBuf, nReadBufSize, chbuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
     LogEvent(TEXT("%s\n"), szReadBuf);
+    CloseHandle(hFile);
 }
 
 VOID TerminalSystemService(VOID)
