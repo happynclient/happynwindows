@@ -30,8 +30,20 @@ The configuration is compatible with [n2n edge params](https://github.com/ntop/n
 
 ## Download
 
-[happynet 1.1 download](https://github.com/happynclient/happynwindows/releases/tag/1.1-en-us)
+[happynet download](https://github.com/happynclient/happynwindows/releases)
 
+
+## FAQ
+
+#### Are there any plans for support previous version of n2n like v2.4 ?
+
+By default, we currently only support N2N 3.0; If you are using an older version of N2N (such as N2N V2); You can also change the file a little by yourself to support, it's easy:
+
+1. Prepare your N2N `edge.exe`
+
+2. Rename your `edge.exe` to `happynedge.exe` to replace happynet's default installation file: `C:\Program Files (x86)\happynet\happynedge.exe`
+
+3. Most parameters of N2N V2 and V3 are compatible. If there are special parameters that are not compatible, you can go to "Custom Parameters" in `Advanced Settings` to set your own parameters
 
 ## License:
 
