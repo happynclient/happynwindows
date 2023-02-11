@@ -29,11 +29,14 @@ static WCHAR* GetNssmLogPath(VOID)
     static WCHAR szNssmLogPath[MAX_PATH] = { 0 };
     WCHAR szAppDataPath[MAX_PATH] = { 0 };
 
-    // Build path and command line parameters
-    GetAppDatapath(szAppDataPath);
-    swprintf_s(szNssmLogPath, MAX_PATH, L"%s\\happynet.log", szAppDataPath);
-    LogEvent(TEXT("%s:%d (%s) - building log path:%s \n"),
-        __FILEW__, __LINE__, __FUNCTIONW__, szNssmLogPath);
+    if (wcsstr(szNssmLogPath, TEXT("happynet")) == 0) {
+        // Build path and command line parameters
+        GetAppDatapath(szAppDataPath);
+        swprintf_s(szNssmLogPath, MAX_PATH, L"%s\\happynet.log", szAppDataPath);
+
+        // LogEvent(TEXT("%s:%d (%s) - building log path:%s \n"),
+        //    __FILEW__, __LINE__, __FUNCTIONW__, szNssmLogPath);
+    }
     return szNssmLogPath;
 }
 
@@ -173,9 +176,12 @@ DWORD GetSystemServiceStatus(VOID)
     swprintf_s(szNssmCommandLine, MAX_COMMAND_LINE_LEN,
         TEXT("%s status %s"),
         GetNssmExePath(), SYSTEMSRV_NAME);
+
     PROCESS_INFORMATION pi;
     if (!CreateProcessW(NULL, szNssmCommandLine, NULL, NULL, TRUE, NULL, NULL, NULL, &si, &pi))
     {
+        CloseHandle(hRead);
+        CloseHandle(hWrite);
         return EXCEPTION_BREAKPOINT;
     }
 
@@ -183,22 +189,28 @@ DWORD GetSystemServiceStatus(VOID)
     CloseHandle(hWrite);
 
     DWORD dwRead;
-    CHAR arrcStdoutBuf[PROCESS_STDOUT_BUFSIZE] = { 0 };
+    static CHAR arrcStdoutBuf[PROCESS_STDOUT_BUFSIZE] = { 0 };
+    SecureZeroMemory(arrcStdoutBuf, PROCESS_STDOUT_BUFSIZE);
     BOOL bSuccess = FALSE;
     HANDLE hParentStdout = GetStdHandle(STD_OUTPUT_HANDLE);
 
+
     bSuccess = ReadFile(hRead, arrcStdoutBuf, PROCESS_STDOUT_BUFSIZE, &dwRead, NULL);
-    if (!bSuccess || dwRead == 0) return EXCEPTION_BREAKPOINT;
-    LogEvent(TEXT("%s\n"), arrcStdoutBuf);
+    if (!bSuccess || dwRead == 0) {
+        CloseHandle(hRead);
+        return EXCEPTION_BREAKPOINT;
+    }
+    //LogEvent(TEXT("%s\n"), arrcStdoutBuf);
     CloseHandle(hRead);
     
     //Convert char* string to a wchar_t* string.
     UINT nConvertedChars = 0;
     UINT nNewsize = strlen(arrcStdoutBuf) + 1;
-    WCHAR arrcReadBuf[PROCESS_STDOUT_BUFSIZE] = { 0 };
+    static WCHAR arrcReadBuf[PROCESS_STDOUT_BUFSIZE] = { 0 };
+    SecureZeroMemory(arrcReadBuf, PROCESS_STDOUT_BUFSIZE);
     mbstowcs_s(&nConvertedChars, arrcReadBuf, nNewsize, arrcStdoutBuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
-    LogEvent(TEXT("%s\n"), arrcReadBuf);
+    //LogEvent(TEXT("%s\n"), arrcReadBuf);
 
     if (wcsstr(arrcReadBuf, TEXT("SERVICE_STOPPED"))) {
         return PROCESS_EXIT_CODE;
@@ -243,7 +255,10 @@ VOID GetSystemServiceOutput(WCHAR *szReadBuf)
 
     ol.Offset = dwOffset;
     bSuccess = ReadFileEx(hFile, chbuf, nReadBufSize - 1, &ol, NULL);
-    if (!bSuccess) return;
+    if (!bSuccess) {
+        CloseHandle(hFile);
+        return;
+    }
     dwOffset = dwEndOffset;
 
     //Convert char* string to a wchar_t* string.
@@ -251,6 +266,7 @@ VOID GetSystemServiceOutput(WCHAR *szReadBuf)
     mbstowcs_s(&convertedChars, szReadBuf, nReadBufSize, chbuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
     LogEvent(TEXT("%s\n"), szReadBuf);
+    CloseHandle(hFile);
 }
 
 VOID TerminalSystemService(VOID)

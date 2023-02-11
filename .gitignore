@@ -60,3 +60,5 @@ happynet/Debug
 happynetService/Release
 happynetService/Debug
 ipch
+hooks
+lfs
