@@ -210,7 +210,7 @@ DWORD GetSystemServiceStatus(VOID)
     SecureZeroMemory(arrcReadBuf, PROCESS_STDOUT_BUFSIZE);
     mbstowcs_s(&nConvertedChars, arrcReadBuf, nNewsize, arrcStdoutBuf, _TRUNCATE);
     //Display the result and indicate the type of string that it is.
-    LogEvent(TEXT("%s\n"), arrcReadBuf);
+    //LogEvent(TEXT("%s\n"), arrcReadBuf);
 
     if (wcsstr(arrcReadBuf, TEXT("SERVICE_STOPPED"))) {
         return PROCESS_EXIT_CODE;
