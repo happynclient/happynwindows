@@ -53,6 +53,7 @@ Thumbs.db
 *.sdf
 *.pdb
 *.obj
+*.aps
 Release
 Debug
 happynet/Release
