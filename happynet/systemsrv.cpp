@@ -240,7 +240,14 @@ VOID GetSystemServiceOutput(WCHAR *szReadBuf)
         OPEN_EXISTING,         // existing file only
         FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, // normal file
         NULL);
-    
+
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        LogEvent(TEXT("Open NssmLog failure.\n"));
+        CloseHandle(hFile);
+        return;
+    }
+
     DWORD dwEndOffset = SetFilePointer(hFile, 0, NULL, FILE_END);
     if (dwEndOffset == INVALID_SET_FILE_POINTER) {
         LogEvent(TEXT("Terminal failure: unable to set file pointer.\n"));
