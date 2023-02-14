@@ -1,10 +1,10 @@
 #ifndef _H_SERVICE
 #define _H_SERVICE
 
-DWORD GetServiceStatus(VOID);
-VOID StartService(VOID);
-VOID StopService(VOID);
-VOID SetServiceAutoStart(VOID);
-VOID UnsetServiceAutoStart(VOID);
+DWORD GetHappynetServiceStatus(VOID);
+VOID StartHappynetService(VOID);
+VOID StopHappynetService(VOID);
+VOID SetHappynetServiceAutoStart(VOID);
+VOID UnsetHappynetServiceAutoStart(VOID);
 
 #endif

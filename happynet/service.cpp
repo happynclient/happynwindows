@@ -13,7 +13,7 @@
 
 HANDLE m_pid;
 
-DWORD GetServiceStatus(VOID)
+DWORD GetHappynetServiceStatus(VOID)
 {
 	//if( STILL_ACTIVE == dwMark) //running
 	//if( PROCESS_EXIT_CODE == dwMark) //stopped
@@ -23,19 +23,19 @@ DWORD GetServiceStatus(VOID)
 	return GetProcessServiceStatus();
 }
 
-VOID StartService(VOID)
+VOID StartHappynetService(VOID)
 {
     if (IsSetSystemService()) {
         // re reg system service args
-        UnregSystemService();
         RegSystemService();
+        SetArgsSystemService();
         StartSystemService();
         return;
     }
 
     WCHAR dir_path[MAX_PATH] = { 0 };
     WCHAR command_line[MAX_COMMAND_LINE_LEN] = { 0 };
-	if (GetServiceStatus() == STILL_ACTIVE) {
+	if (GetHappynetServiceStatus() == STILL_ACTIVE) {
 		return;
 	}
 
@@ -58,7 +58,7 @@ VOID StartService(VOID)
 	CreateProcessService(command_line); 
 }
 
-VOID StopService(VOID)
+VOID StopHappynetService(VOID)
 {
     if (IsSetSystemService()) {
         StopSystemService();
@@ -72,7 +72,7 @@ VOID StopService(VOID)
 }
 
 // auto start exe when system startup
-VOID SetServiceAutoStart(VOID)
+VOID SetHappynetServiceAutoStart(VOID)
 {
     if (IsSetSystemService()) {
         SetSystemServiceAutoStart();
@@ -97,7 +97,7 @@ VOID SetServiceAutoStart(VOID)
 		if (!GetRegString(hkey, L"Happynet", ret_val, 512) || _tcscmp(str_exe_fulldir, str_dir) != 0)
 		{
 			//append child Key and set value:"happynet" is exe name
-			RegSetValueEx(hkey, TEXT("Happynet"), 0, REG_SZ, (LPBYTE)str_exe_fulldir, (lstrlen(str_exe_fulldir) + 1)*sizeof(TCHAR));
+			RegSetValueEx(hkey, TEXT("Happynet"), 0, REG_SZ, (LPBYTE)str_exe_fulldir, (lstrlen(str_exe_fulldir)+1)*sizeof(TCHAR));
 
 			//close regedit
 			RegCloseKey(hkey);
@@ -107,7 +107,7 @@ VOID SetServiceAutoStart(VOID)
 
 
 //cancle auto start
-VOID UnsetServiceAutoStart(VOID)
+VOID UnsetHappynetServiceAutoStart(VOID)
 {
     if (IsSetSystemService()) {
         UnsetSystemServiceAutoStart();

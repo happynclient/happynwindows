@@ -6,11 +6,13 @@
 VOID RegSystemService(VOID);
 VOID UnregSystemService(VOID);
 VOID SetSystemServiceAutoStart(VOID);
+VOID SetArgsSystemService(VOID);
 VOID UnsetSystemServiceAutoStart(VOID);
 VOID StartSystemService(VOID);
 VOID StopSystemService(VOID);
 VOID TerminalSystemService(VOID);
 VOID GetSystemServiceOutput(WCHAR *read_buf);
 DWORD GetSystemServiceStatus(VOID);
+DWORD GetSystemServiceStatusByNssm(VOID);
 
 #endif

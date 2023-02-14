@@ -58,7 +58,6 @@ VOID RegSystemService(VOID)
         return;
     }
     swprintf_s(szEdgePath, MAX_PATH, TEXT("\"%s\\happynedge.exe\""), szInstallPath);
-    INT ret = 0;
 
     GetEdgeParams(TEXT(" "), szParamsLine, MAX_COMMAND_LINE_LEN);
     
@@ -87,6 +86,33 @@ VOID RegSystemService(VOID)
         GetNssmExePath(), SYSTEMSRV_NAME, GetNssmLogPath());
     WinExecW(szNssmComandLine, SW_HIDE);
 }
+
+
+// nssm.exe set <servicename> AppParameters <arguments>
+VOID SetArgsSystemService(VOID)
+{
+    WCHAR szInstallPath[MAX_PATH] = { 0 };
+    WCHAR szParamsLine[MAX_COMMAND_LINE_LEN] = { 0 };
+    WCHAR szNssmComandLine[MAX_COMMAND_LINE_LEN] = { 0 };
+
+    // Build path and command line parameters
+    if (!GetInstallDirPath(szInstallPath, MAX_PATH))
+    {
+        LogEvent(TEXT("%s:%d (%s) - Error building executable path.\n"),
+            __FILEW__, __LINE__, __FUNCTIONW__);
+        return;
+    }
+
+    GetEdgeParams(TEXT(" "), szParamsLine, MAX_COMMAND_LINE_LEN);
+
+    //  nssm.exe set <servicename> AppParameters <arguments>
+    swprintf_s(szNssmComandLine, MAX_COMMAND_LINE_LEN,
+        TEXT("%s set %s AppParameters \"%s\""),
+        GetNssmExePath(), SYSTEMSRV_NAME,szParamsLine);
+
+    WinExecW(szNssmComandLine, SW_HIDE);
+}
+
 
 // nssm remove <servicename>
 VOID UnregSystemService(VOID)
@@ -148,12 +174,51 @@ VOID StopSystemService(VOID)
     return;
 }
 
+
+DWORD GetSystemServiceStatus(VOID)
+{
+    WCHAR *serviceName = SYSTEMSRV_NAME;
+
+    SC_HANDLE sch = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+    if (sch == NULL) {
+        LogEvent(TEXT("OpenSCManager failed\n"));
+        return GetSystemServiceStatusByNssm();
+    }
+
+    SC_HANDLE svc = OpenServiceW(sch, serviceName, SC_MANAGER_ALL_ACCESS);
+    if (svc == NULL) {
+        LogEvent(TEXT("OpenService failed\n"));
+        return GetSystemServiceStatusByNssm();
+    }
+
+    SERVICE_STATUS_PROCESS stat;
+    DWORD needed = 0;
+    BOOL ret = QueryServiceStatusEx(svc, SC_STATUS_PROCESS_INFO,
+        (BYTE*)&stat, sizeof stat, &needed);
+    if (ret == 0) {
+        LogEvent(TEXT("QueryServiceStatusEx failed\n"));
+        return GetSystemServiceStatusByNssm();
+    }
+
+    if (stat.dwCurrentState == SERVICE_RUNNING) {
+        return STILL_ACTIVE;
+    }
+    else {
+        return PROCESS_EXIT_CODE;
+    }
+
+    CloseServiceHandle(svc);
+    CloseServiceHandle(sch);
+
+    return GetSystemServiceStatusByNssm();
+}
+
 // nssm status <servicename>
 // result:
 // Can't open service!
 // SERVICE_STOPPED
 // SERVICE_RUNNING
-DWORD GetSystemServiceStatus(VOID)
+DWORD GetSystemServiceStatusByNssm(VOID)
 {
     //create pipe
     SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
@@ -240,7 +305,14 @@ VOID GetSystemServiceOutput(WCHAR *szReadBuf)
         OPEN_EXISTING,         // existing file only
         FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, // normal file
         NULL);
-    
+
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        LogEvent(TEXT("Open NssmLog failure.\n"));
+        CloseHandle(hFile);
+        return;
+    }
+
     DWORD dwEndOffset = SetFilePointer(hFile, 0, NULL, FILE_END);
     if (dwEndOffset == INVALID_SET_FILE_POINTER) {
         LogEvent(TEXT("Terminal failure: unable to set file pointer.\n"));
