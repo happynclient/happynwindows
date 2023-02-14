@@ -19,7 +19,7 @@
 #pragma comment(lib, "comctl32.lib")
 
 static WCHAR m_szClassName[] = TEXT("HappynetClient");
-static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.2.1");
+static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.3.0");
 static HICON m_hIcon;
 static HICON m_hIconSm;
 static HANDLE m_hUpdateMainStatusThread;
