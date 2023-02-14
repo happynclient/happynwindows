@@ -58,7 +58,6 @@ VOID RegSystemService(VOID)
         return;
     }
     swprintf_s(szEdgePath, MAX_PATH, TEXT("\"%s\\happynedge.exe\""), szInstallPath);
-    INT ret = 0;
 
     GetEdgeParams(TEXT(" "), szParamsLine, MAX_COMMAND_LINE_LEN);
     
@@ -87,6 +86,33 @@ VOID RegSystemService(VOID)
         GetNssmExePath(), SYSTEMSRV_NAME, GetNssmLogPath());
     WinExecW(szNssmComandLine, SW_HIDE);
 }
+
+
+// nssm.exe set <servicename> AppParameters <arguments>
+VOID SetArgsSystemService(VOID)
+{
+    WCHAR szInstallPath[MAX_PATH] = { 0 };
+    WCHAR szParamsLine[MAX_COMMAND_LINE_LEN] = { 0 };
+    WCHAR szNssmComandLine[MAX_COMMAND_LINE_LEN] = { 0 };
+
+    // Build path and command line parameters
+    if (!GetInstallDirPath(szInstallPath, MAX_PATH))
+    {
+        LogEvent(TEXT("%s:%d (%s) - Error building executable path.\n"),
+            __FILEW__, __LINE__, __FUNCTIONW__);
+        return;
+    }
+
+    GetEdgeParams(TEXT(" "), szParamsLine, MAX_COMMAND_LINE_LEN);
+
+    //  nssm.exe set <servicename> AppParameters <arguments>
+    swprintf_s(szNssmComandLine, MAX_COMMAND_LINE_LEN,
+        TEXT("%s set %s AppParameters \"%s\""),
+        GetNssmExePath(), SYSTEMSRV_NAME,szParamsLine);
+
+    WinExecW(szNssmComandLine, SW_HIDE);
+}
+
 
 // nssm remove <servicename>
 VOID UnregSystemService(VOID)

@@ -27,8 +27,8 @@ VOID StartHappynetService(VOID)
 {
     if (IsSetSystemService()) {
         // re reg system service args
-        //UnregSystemService();
         RegSystemService();
+        SetArgsSystemService();
         StartSystemService();
         return;
     }

@@ -6,6 +6,7 @@
 VOID RegSystemService(VOID);
 VOID UnregSystemService(VOID);
 VOID SetSystemServiceAutoStart(VOID);
+VOID SetArgsSystemService(VOID);
 VOID UnsetSystemServiceAutoStart(VOID);
 VOID StartSystemService(VOID);
 VOID StopSystemService(VOID);
