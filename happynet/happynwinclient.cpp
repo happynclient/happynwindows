@@ -18,7 +18,7 @@
 #pragma comment(lib, "comctl32.lib")
 
 static WCHAR m_szClassName[] = TEXT("HappynetClient");
-static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.2.0");
+static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.2.1");
 static HICON m_hIcon;
 static HICON m_hIconSm;
 static HANDLE m_hUpdateMainStatusThread;
@@ -323,7 +323,7 @@ static VOID SaveAdOptions(HWND hwndDlg)
     // set system service
     if (IsItemChecked(hwndDlg, IDC_CHK_SYSTEM_SERVICE)) {
         // if running at normal mode
-        StopService();
+        StopHappynetService();
         RegSystemService();
     }
     else {
@@ -334,10 +334,10 @@ static VOID SaveAdOptions(HWND hwndDlg)
     // auto start
     SetRegDword(hkey, TEXT("auto_start"), (IsItemChecked(hwndDlg, IDC_CHK_AUTO_START) ? 1 : 0));
     if (IsItemChecked(hwndDlg, IDC_CHK_AUTO_START)) {
-        SetServiceAutoStart();
+        SetHappynetServiceAutoStart();
     }
     else {
-        UnsetServiceAutoStart();
+        UnsetHappynetServiceAutoStart();
     }
     // auto tray
     SetRegDword(hkey, TEXT("auto_tray"), (IsItemChecked(hwndDlg, IDC_CHK_AUTO_TRAY) ? 1 : 0));
@@ -402,7 +402,7 @@ BOOL ValidateOptions(HWND hwndDlg)
 
 VOID UpdateAddressesInfo(HWND hwndDlg)
 {
-	if (GetServiceStatus() == STILL_ACTIVE)
+	if (GetHappynetServiceStatus() == STILL_ACTIVE)
 	{
 		WCHAR ip_address[16];
 		WCHAR mac_address[18];
@@ -426,7 +426,7 @@ VOID UpdateServiceStatus(HWND hwndDlg)
 	HWND hBtnStop = GetDlgItem(hwndDlg, IDC_BTN_STOP);
     HWND hBtnMonitor = GetDlgItem(hwndDlg, IDC_BTN_MONITOR);
 	HWND hBtnAdSettings = GetDlgItem(hwndDlg, IDC_BTN_AD_SETTINGS);
-	DWORD dwServiceStatus = GetServiceStatus();
+	DWORD dwServiceStatus = GetHappynetServiceStatus();
 	switch (dwServiceStatus)
 	{
 	case PROCESS_EXIT_CODE:
@@ -568,13 +568,13 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 	case IDC_BTN_START:
         if (SaveOptions(hwndDlg)) {
-            StartService();
+            StartHappynetService();
             UpdateServiceStatus(hwndDlg);
             UpdateAddressesInfo(hwndDlg);
         }
 		break;
 	case IDC_BTN_STOP:
-		StopService();
+		StopHappynetService();
 		UpdateServiceStatus(hwndDlg);
 		UpdateAddressesInfo(hwndDlg);
         SyncServiceOutputText(hwndDlg);
@@ -591,7 +591,7 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	*/
 
 	case IDC_BTN_EXIT:
-		StopService();
+		StopHappynetService();
 		EndDialog(hwndDlg, NULL);
 		break;
 
@@ -694,7 +694,7 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 	case WM_CLOSE:
 		{
 
-            if (GetServiceStatus() == STILL_ACTIVE) {
+            if (GetHappynetServiceStatus() == STILL_ACTIVE) {
                 INT nRet = MessageBox(HWND_DESKTOP, TEXT("关闭程序后会终止网络服务，您确定退出吗?"), TEXT("终止服务"), MB_YESNO | MB_ICONWARNING);
                 if (nRet == IDYES) {
                         DestroyWindow(hwndDlg);
@@ -708,7 +708,7 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 
 	case WM_DESTROY:
 		{
-			StopService();
+			StopHappynetService();
 
 			// stop thread
 			CloseHandle(m_hMutex);
