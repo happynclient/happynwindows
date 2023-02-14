@@ -12,6 +12,7 @@
 #include "resource.h"
 #include "service.h"
 #include "systemsrv.h"
+#include "sinstance.h"
 #include "tray.h"
 #include "utils.h"
 
@@ -24,6 +25,7 @@ static HICON m_hIconSm;
 static HANDLE m_hUpdateMainStatusThread;
 static HANDLE m_hMutex = NULL;
 static CNetworkAdapter *m_pAdapters = NULL;
+static CInstanceChecker m_InstanceChecker{ _T("{H84F50BD-59DF-43F4-A8F9-6C83EDB9CAE5}") };
 
 
 static DWORD CALLBACK UpdateMainStatusThread(PVOID pvoid)
@@ -621,6 +623,8 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 	{
 	case WM_INITDIALOG:
 		{
+            m_InstanceChecker.TrackFirstInstanceRunning(hwndDlg);
+
 			SetupSystemMenu(hwndDlg);
 			LOGFONT lfont;
 			HWND hwndIp, hwndMac;
@@ -829,7 +833,6 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
 }
 
 
-
 INT WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	// Initialize
@@ -840,7 +843,13 @@ INT WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	m_hIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON32), IMAGE_ICON, 32, 32, 0);
 	m_hIconSm = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICON32), IMAGE_ICON, 16, 16, 0);
 
-	// Run GUI window
+    //Check for the previous instance as soon as possible
+    if (m_InstanceChecker.PreviousInstanceRunning())
+    {
+        m_InstanceChecker.ActivatePreviousInstance();
+        return FALSE;
+    }
+    // Run GUI window
 	INT_PTR res = DialogBox(hInstance, MAKEINTRESOURCE(IDD_MAIN), NULL, MainDialogProc);
 
 	return 0;
