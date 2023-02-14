@@ -13,13 +13,8 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-<<<<<<< HEAD
-!define PRODUCT_VERSION "1.2.0.0"
-!define PRODUCT_PUBLISHER "happyn.net"
-=======
 !define PRODUCT_VERSION "1.3.0.0"
-!define PRODUCT_PUBLISHER "happyn.cn"
->>>>>>> main
+!define PRODUCT_PUBLISHER "happyn.net"
 
 InstallDir "$PROGRAMFILES\happynet"
 InstallDirRegKey HKLM "Software\Happynet" "Path"

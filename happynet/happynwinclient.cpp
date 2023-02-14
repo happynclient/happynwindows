@@ -697,14 +697,8 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 
 	case WM_CLOSE:
 		{
-
-<<<<<<< HEAD
-            if (GetServiceStatus() == STILL_ACTIVE) {
-                INT nRet = MessageBox(HWND_DESKTOP, TEXT("Closing the program will terminate the network service. Are you sure you want to quit?"), TEXT("Terminate Services"), MB_YESNO | MB_ICONWARNING);
-=======
             if (GetHappynetServiceStatus() == STILL_ACTIVE) {
-                INT nRet = MessageBox(HWND_DESKTOP, TEXT("关闭程序后会终止网络服务，您确定退出吗?"), TEXT("终止服务"), MB_YESNO | MB_ICONWARNING);
->>>>>>> main
+                INT nRet = MessageBox(HWND_DESKTOP, TEXT("Closing the program will terminate the network service. Are you sure you want to quit?"), TEXT("Terminate Services"), MB_YESNO | MB_ICONWARNING);
                 if (nRet == IDYES) {
                         DestroyWindow(hwndDlg);
                 }
