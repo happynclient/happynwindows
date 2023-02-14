@@ -148,12 +148,51 @@ VOID StopSystemService(VOID)
     return;
 }
 
+
+DWORD GetSystemServiceStatus(VOID)
+{
+    WCHAR *serviceName = SYSTEMSRV_NAME;
+
+    SC_HANDLE sch = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+    if (sch == NULL) {
+        LogEvent(TEXT("OpenSCManager failed\n"));
+        return GetSystemServiceStatusByNssm();
+    }
+
+    SC_HANDLE svc = OpenServiceW(sch, serviceName, SC_MANAGER_ALL_ACCESS);
+    if (svc == NULL) {
+        LogEvent(TEXT("OpenService failed\n"));
+        return GetSystemServiceStatusByNssm();
+    }
+
+    SERVICE_STATUS_PROCESS stat;
+    DWORD needed = 0;
+    BOOL ret = QueryServiceStatusEx(svc, SC_STATUS_PROCESS_INFO,
+        (BYTE*)&stat, sizeof stat, &needed);
+    if (ret == 0) {
+        LogEvent(TEXT("QueryServiceStatusEx failed\n"));
+        return GetSystemServiceStatusByNssm();
+    }
+
+    if (stat.dwCurrentState == SERVICE_RUNNING) {
+        return STILL_ACTIVE;
+    }
+    else {
+        return PROCESS_EXIT_CODE;
+    }
+
+    CloseServiceHandle(svc);
+    CloseServiceHandle(sch);
+
+    return GetSystemServiceStatusByNssm();
+}
+
 // nssm status <servicename>
 // result:
 // Can't open service!
 // SERVICE_STOPPED
 // SERVICE_RUNNING
-DWORD GetSystemServiceStatus(VOID)
+DWORD GetSystemServiceStatusByNssm(VOID)
 {
     //create pipe
     SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
