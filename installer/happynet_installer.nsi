@@ -13,7 +13,7 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "1.3.0.0"
+!define PRODUCT_VERSION "1.4.0.0"
 !define PRODUCT_PUBLISHER "happyn.cn"
 
 InstallDir "$PROGRAMFILES\happynet"
@@ -81,6 +81,8 @@ Section "happynet"
   ${If} ${RunningX64}
     File "n2n_release\x64\happynedge.exe"
     File "n2n_release\x64\happynssm.exe"
+    File "n2n_release\x64\happynportfwd.exe"
+    File "n2n_release\x64\happynroute.exe"
     File "n2n_release\x64\happynmonitor.exe"
     File "n2n_release\happynet.ico"
   ${Else}
@@ -89,6 +91,8 @@ Section "happynet"
     ${Else}
       File "n2n_release\x86\happynedge.exe"
       File "n2n_release\x86\happynssm.exe"
+      File "n2n_release\x86\happynportfwd.exe"
+      File "n2n_release\x86\happynroute.exe"
       File "n2n_release\x86\happynmonitor.exe"
       File "n2n_release\happynet.ico"
     ${EndIf}
