@@ -182,13 +182,13 @@ DWORD GetSystemServiceStatus(VOID)
     SC_HANDLE sch = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
     if (sch == NULL) {
         LogEvent(TEXT("OpenSCManager failed\n"));
-        return GetSystemServiceStatusByNssm();
+        return EXCEPTION_BREAKPOINT;
     }
 
     SC_HANDLE svc = OpenServiceW(sch, serviceName, SC_MANAGER_ALL_ACCESS);
     if (svc == NULL) {
         LogEvent(TEXT("OpenService failed\n"));
-        return GetSystemServiceStatusByNssm();
+        return EXCEPTION_BREAKPOINT;
     }
 
     SERVICE_STATUS_PROCESS stat;
@@ -197,7 +197,7 @@ DWORD GetSystemServiceStatus(VOID)
         (BYTE*)&stat, sizeof stat, &needed);
     if (ret == 0) {
         LogEvent(TEXT("QueryServiceStatusEx failed\n"));
-        return GetSystemServiceStatusByNssm();
+        return EXCEPTION_BREAKPOINT;
     }
 
     if (stat.dwCurrentState == SERVICE_RUNNING) {
@@ -210,7 +210,7 @@ DWORD GetSystemServiceStatus(VOID)
     CloseServiceHandle(svc);
     CloseServiceHandle(sch);
 
-    return GetSystemServiceStatusByNssm();
+    return EXCEPTION_BREAKPOINT;
 }
 
 // nssm status <servicename>

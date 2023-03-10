@@ -13,7 +13,7 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "1.3.0.0"
+!define PRODUCT_VERSION "1.4.0.0"
 !define PRODUCT_PUBLISHER "happyn.net"
 
 InstallDir "$PROGRAMFILES\happynet"
@@ -81,6 +81,8 @@ Section "happynet"
   ${If} ${RunningX64}
     File "n2n_release\x64\happynedge.exe"
     File "n2n_release\x64\happynssm.exe"
+    File "n2n_release\x64\happynportfwd.exe"
+    File "n2n_release\x64\happynroute.exe"
     File "n2n_release\x64\happynmonitor.exe"
     File "n2n_release\happynet.ico"
   ${Else}
@@ -89,6 +91,8 @@ Section "happynet"
     ${Else}
       File "n2n_release\x86\happynedge.exe"
       File "n2n_release\x86\happynssm.exe"
+      File "n2n_release\x86\happynportfwd.exe"
+      File "n2n_release\x86\happynroute.exe"
       File "n2n_release\x86\happynmonitor.exe"
       File "n2n_release\happynet.ico"
     ${EndIf}
@@ -139,12 +143,24 @@ Section "happynet"
 
   ${Else}
 
-    ${If} ${RunningX64}
+    ${If} ${IsNativeAMD64}
       File "..\tap_driver\NDIS6_x64\tapinstall.exe"
       File "..\tap_driver\NDIS6_x64\OemVista.inf"
       File "..\tap_driver\NDIS6_x64\tap0901.cat"
       File "..\tap_driver\NDIS6_x64\tap0901.sys"
       DetailPrint  "INSTALL NDIS6_x64"
+      nsExec::ExecToStack '"$INSTDIR\drv\tapinstall" find TAP0901'
+      Pop $1
+      Pop $2
+      ${StrLoc} $0 $2 "No matching devices" 0
+      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" remove TAP0901'
+      nsExec::ExecToLog '"$INSTDIR\drv\tapinstall" install OemVista.inf TAP0901'
+    ${ElseIf} ${IsNativeARM64}
+      File "..\tap_driver\NDIS6_arm\tapinstall.exe"
+      File "..\tap_driver\NDIS6_arm\OemVista.inf"
+      File "..\tap_driver\NDIS6_arm\tap0901.cat"
+      File "..\tap_driver\NDIS6_arm\tap0901.sys"
+      DetailPrint  "INSTALL NDIS6_arm"
       nsExec::ExecToStack '"$INSTDIR\drv\tapinstall" find TAP0901'
       Pop $1
       Pop $2

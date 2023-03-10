@@ -29,7 +29,10 @@ https://windows.happyn.cn
 
 #### 客户端支持哪些平台?
 
-目前支持Vista，Win7，Win10的32位及64位系统；Winxp的支持可能有兼容性问题，我们正尽力开发中
+* Windows Vista (X86/X64)
+* Windows 7 (X86/X64)
+* Windows 10 (X86/X64/ARM64)
+* Windows 11 (X86/X64/ARM64)
 
 #### 我所有设备上的程序已经显示运行成功，但是我Ping不通对方，为什么？
 
