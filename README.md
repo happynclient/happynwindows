@@ -9,6 +9,13 @@ Happynet Windows Client is a GUI program for N2N Client packaging, for N2N users
 
 Happynet Client is compatible with [N2N3.0](https://github.com/ntop/n2n/releases/tag/3.0)
 
+## support
+
+* Windows Vista (X86/X64)
+* Windows 7 (X86/X64)
+* Windows 10 (X86/X64/ARM64)
+* Windows 11 (X86/X64/ARM64)
+
 
 ## User Guide
 
