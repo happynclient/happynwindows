@@ -195,6 +195,10 @@ DWORD GetSystemServiceStatus(VOID)
     DWORD needed = 0;
     BOOL ret = QueryServiceStatusEx(svc, SC_STATUS_PROCESS_INFO,
         (BYTE*)&stat, sizeof stat, &needed);
+
+    CloseServiceHandle(svc);
+    CloseServiceHandle(sch);
+
     if (ret == 0) {
         LogEvent(TEXT("QueryServiceStatusEx failed\n"));
         return EXCEPTION_BREAKPOINT;
@@ -206,9 +210,6 @@ DWORD GetSystemServiceStatus(VOID)
     else {
         return PROCESS_EXIT_CODE;
     }
-
-    CloseServiceHandle(svc);
-    CloseServiceHandle(sch);
 
     return EXCEPTION_BREAKPOINT;
 }

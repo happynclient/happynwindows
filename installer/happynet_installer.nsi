@@ -13,7 +13,7 @@ OutFile "happynet_install.exe"
 RequestExecutionLevel admin
 
 BrandingText "Happynet Installer"
-!define PRODUCT_VERSION "1.4.0.0"
+!define PRODUCT_VERSION "1.5.0.0"
 !define PRODUCT_PUBLISHER "happyn.net"
 
 InstallDir "$PROGRAMFILES\happynet"
