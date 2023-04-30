@@ -19,7 +19,7 @@
 #pragma comment(lib, "comctl32.lib")
 
 static WCHAR m_szClassName[] = TEXT("HappynetClient");
-static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.6.0-en");
+static WCHAR m_szHappynVersion[] = TEXT("Happynet Version 1.7.0-en");
 static HICON m_hIcon;
 static HICON m_hIconSm;
 static HANDLE m_hUpdateMainStatusThread;
@@ -559,6 +559,8 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (HIWORD(wParam != BN_CLICKED)) return;
 	static HINSTANCE hInstance;
+    HINSTANCE hInstShellExec;
+
 	switch (LOWORD(wParam))
 	{
 	case WM_CREATE:
@@ -583,8 +585,12 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
     case IDC_BTN_MONITOR:
-        //WinExec("happynmonitor.exe", SW_SHOW);
-        ShellExecute(NULL, TEXT("open"), TEXT("happynmonitor.exe"), NULL, NULL, SW_SHOW);
+        // Build path and command line parameters
+        hInstShellExec = ShellExecute(NULL, TEXT("open"), TEXT("happynmonitor.exe"), NULL, NULL, SW_SHOW);
+        if (hInstShellExec <= (HINSTANCE)32)
+        {
+            WinExec("happynmonitor.exe", SW_SHOW);
+        }
         break;
 	/*
 	case IDC_BTN_SAVE:
