@@ -569,6 +569,7 @@ VOID HandleCommandEvent(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	case IDC_BTN_AD_SETTINGS:
 		DialogBox(hInstance, MAKEINTRESOURCE(IDD_AD_SETTINGS), hwndDlg, AdSettingsDialogProc);
+		//CreateDialogParam(hInstance, MAKEINTRESOURCE(IDD_AD_SETTINGS), hwndDlg, AdSettingsDialogProc, (LPARAM)hwndDlg);
 		break;
 	case IDC_BTN_START:
         if (SaveOptions(hwndDlg)) {
@@ -629,93 +630,118 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 	switch (uMsg)
 	{
 	case WM_INITDIALOG:
-		{
-            m_InstanceChecker.TrackFirstInstanceRunning(hwndDlg);
+	{
+		m_InstanceChecker.TrackFirstInstanceRunning(hwndDlg);
 
-			SetupSystemMenu(hwndDlg);
-			LOGFONT lfont;
-			HWND hwndIp, hwndMac;
-			hwndIp = GetDlgItem(hwndDlg, IDC_EDT_CUR_IP);
-			hwndMac = GetDlgItem(hwndDlg, IDC_EDT_CUR_MAC);
-			HFONT hfont = (HFONT)SendMessage(hwndIp, WM_GETFONT, 0, 0);
-			GetObject(hfont, sizeof(lfont), &lfont);
-			lfont.lfWeight = FW_BOLD;
-			hfont = CreateFontIndirect(&lfont);
-			SendMessage(hwndIp, WM_SETFONT, (WPARAM)hfont, 0);
-			SendMessage(hwndMac, WM_SETFONT, (WPARAM)hfont, 0);
-			SendMessage(hwndDlg, WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
-			SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
+		SetupSystemMenu(hwndDlg);
+		LOGFONT lfont;
+		HWND hwndIp, hwndMac;
+		hwndIp = GetDlgItem(hwndDlg, IDC_EDT_CUR_IP);
+		hwndMac = GetDlgItem(hwndDlg, IDC_EDT_CUR_MAC);
+		HFONT hfont = (HFONT)SendMessage(hwndIp, WM_GETFONT, 0, 0);
+		GetObject(hfont, sizeof(lfont), &lfont);
+		lfont.lfWeight = FW_BOLD;
+		hfont = CreateFontIndirect(&lfont);
+		SendMessage(hwndIp, WM_SETFONT, (WPARAM)hfont, 0);
+		SendMessage(hwndMac, WM_SETFONT, (WPARAM)hfont, 0);
+		SendMessage(hwndDlg, WM_SETICON, ICON_BIG, (LPARAM)m_hIcon);
+		SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 
-			m_hMutex = CreateMutex(NULL, FALSE, NULL);
+		m_hMutex = CreateMutex(NULL, FALSE, NULL);
 
-			m_hUpdateMainStatusThread = CreateThread(NULL, 0, UpdateMainStatusThread, hwndDlg, 0, NULL);
-			UpdateServiceStatus(hwndDlg);
-			UpdateAddressesInfo(hwndDlg);
-			ReadOptions(hwndDlg);
+		m_hUpdateMainStatusThread = CreateThread(NULL, 0, UpdateMainStatusThread, hwndDlg, 0, NULL);
+		UpdateServiceStatus(hwndDlg);
+		UpdateAddressesInfo(hwndDlg);
+		ReadOptions(hwndDlg);
 
-			if (IsSetAutoStart()) {
-				HWND hbtn_start = GetDlgItem(hwndDlg, IDC_BTN_START);
-				SendMessage(hbtn_start, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(0, 0));
-				SendMessage(hbtn_start, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(0, 0));
-			}
-
-			if (IsSetAutoTray()) {
-				PostMessage(hwndDlg, WM_SYSCOMMAND, SC_MINIMIZE, 0);
-				ShowWindow(hwndDlg, SW_HIDE);
-			}
-			break;
+		if (IsSetAutoStart()) {
+			HWND hbtn_start = GetDlgItem(hwndDlg, IDC_BTN_START);
+			SendMessage(hbtn_start, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(0, 0));
+			SendMessage(hbtn_start, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(0, 0));
 		}
+
+		if (IsSetAutoTray()) {
+			PostMessage(hwndDlg, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+			ShowWindow(hwndDlg, SW_HIDE);
+		}
+		break;
+	}
 
 	case WM_COMMAND:
-		{
-			HandleCommandEvent(hwndDlg, uMsg, wParam, lParam);
-			break;
-		}
+	{
+		HandleCommandEvent(hwndDlg, uMsg, wParam, lParam);
+		break;
+	}
 
 	case WM_SYSCOMMAND:
+	{
+		if (wParam == IDM_ABOUT)
 		{
-			if (wParam == IDM_ABOUT)
-			{
-				MessageBox(hwndDlg, m_szHappynVersion, TEXT("About HappynetClient"),
-                                MB_OK | MB_ICONINFORMATION);
-				break;
-			}
-			return FALSE;
+			MessageBox(hwndDlg, m_szHappynVersion, TEXT("About HappynetClient"),
+				MB_OK | MB_ICONINFORMATION);
 			break;
 		}
+		return FALSE;
+		break;
+	}
 
 	case WM_SIZE:
-		{
-			if (wParam == SIZE_MINIMIZED && IsSetAutoTray()) {
-				HideToTray(hwndDlg);
-				ShowWindow(hwndDlg, SW_HIDE);
-				break;
-			}
+	{
+		if (wParam == SIZE_MINIMIZED && IsSetAutoTray()) {
+			HideToTray(hwndDlg);
+			ShowWindow(hwndDlg, SW_HIDE);
+			break;
 		}
+	}
 
 	case WM_USER_SHELLICON:
-		{
-			if (lParam == WM_LBUTTONDOWN) {
-				SetForegroundWindow(hwndDlg);
-				ShowWindow(hwndDlg, SW_SHOWNORMAL);
-			}
-			break;
+	{
+		if (lParam == WM_LBUTTONDOWN) {
+			SetForegroundWindow(hwndDlg);
+			ShowWindow(hwndDlg, SW_SHOWNORMAL);
 		}
+		break;
+	}
 
 	case WM_CLOSE:
-		{
+	{
 
-            if (GetHappynetServiceStatus() == STILL_ACTIVE) {
-                INT nRet = MessageBox(HWND_DESKTOP, TEXT("关闭程序后会终止网络服务，您确定退出吗?"), TEXT("终止服务"), MB_YESNO | MB_ICONWARNING);
-                if (nRet == IDYES) {
-                        DestroyWindow(hwndDlg);
-                }
-            }
-            else {
-                DestroyWindow(hwndDlg);
-            }
+		if (GetHappynetServiceStatus() == STILL_ACTIVE) {
+			INT nRet = MessageBox(HWND_DESKTOP, TEXT("关闭程序后会终止网络服务，您确定退出吗?"), TEXT("终止服务"), MB_YESNO | MB_ICONWARNING);
+			if (nRet == IDYES) {
+				DestroyWindow(hwndDlg);
+			}
+		}
+		else {
+			DestroyWindow(hwndDlg);
+		}
+		break;
+	}
+
+	case WM_SAVE_RESTART:
+	{
+		//MessageBox(hwndDlg, L"Received WM_SAVE_RESTART", L"Debug", MB_OK);
+		DWORD dwServiceStatus = GetHappynetServiceStatus();
+		switch (dwServiceStatus)
+		{
+		case STILL_ACTIVE:
+			StopHappynetService();
+			UpdateServiceStatus(hwndDlg);
+			UpdateAddressesInfo(hwndDlg);
+			SyncServiceOutputText(hwndDlg);
+			break;
+		default:
 			break;
 		}
+
+		if (SaveOptions(hwndDlg)) {
+			StartHappynetService();
+			UpdateServiceStatus(hwndDlg);
+			UpdateAddressesInfo(hwndDlg);
+		}
+		SyncServiceOutputText(hwndDlg);
+		break;
+	}
 
 	case WM_DESTROY:
 		{
@@ -738,10 +764,12 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 
 INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	static HWND hwndMainDlg;
 	switch (uMsg)
 	{
 	case WM_INITDIALOG:
 	{		
+		hwndMainDlg = (HWND)lParam;
         SendMessage(hwndDlg, WM_SETICON, ICON_SMALL, (LPARAM)m_hIconSm);
 		ReadAdOptions(hwndDlg);
 		break;
@@ -819,7 +847,15 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
 		case IDC_CHK_MACADDRESS:
 			EnableWindow(GetDlgItem(hwndDlg, IDC_EDT_MACADDRESS), IsItemChecked(hwndDlg, IDC_CHK_MACADDRESS));
 			break;
-		
+
+		case IDC_BTN_SAVE_RESTART:
+			SaveAdOptions(hwndDlg);
+			HWND parentDlg;
+			parentDlg = (HWND)GetParent(hwndDlg);
+			EndDialog(hwndDlg, 0);
+			SendMessage(parentDlg, WM_SAVE_RESTART, 0, 0);
+			return TRUE;
+
 		case IDOK:
 			SaveAdOptions(hwndDlg);
 			EndDialog(hwndDlg, 0);

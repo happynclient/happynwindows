@@ -1165,6 +1165,7 @@
 #define IDC_BTN_READ                    1002
 #define IDC_BTN_SAVE                    1003
 #define IDC_BTN_START                   1004
+#define IDC_BTN_SAVE_RESTART                   2004
 #define IDC_BTN_STOP                    1005
 #define IDC_EDIT4                       1007
 #define IDC_EDT_EDGE_OUTPUT             1008
@@ -1551,6 +1552,9 @@
 //#define PWR_FAIL                        -1
 //#define HTTRANSPARENT                   -1
 #define IDC_STATIC                        -1
+
+
+#define WM_SAVE_RESTART                 (WM_USER + 1000) 
 
 // Next default values for new objects
 //
