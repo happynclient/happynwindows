@@ -32,15 +32,29 @@ static INT SendStopSig(UINT nEdgeManagerPort)
 		WSACleanup( ); 
 		return -1; 
 	}
-	SOCKET sockClient = socket(AF_INET , SOCK_DGRAM , 0) ;
+	SOCKET sockClient = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sockClient == INVALID_SOCKET) {
+		// 处理套接字创建失败
+		WSACleanup();
+		return 1;
+	}
+
 	SOCKADDR_IN sockServerAddr;
 	sockServerAddr.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
 	sockServerAddr.sin_family = AF_INET;
 	sockServerAddr.sin_port = htons(nEdgeManagerPort);
 	CHAR szSendBuf[8] = "stop";
 	INT nLen = sizeof(SOCKADDR);
-	sendto(sockClient, szSendBuf, strlen(szSendBuf), 0, (SOCKADDR*)&sockServerAddr, nLen);
-	closesocket(sockClient) ;
+	int result = sendto(sockClient, szSendBuf, nLen, 0, (SOCKADDR*)&sockServerAddr, sizeof(sockServerAddr));
+	if (result == SOCKET_ERROR) {
+		// 处理发送失败
+		closesocket(sockClient);
+		WSACleanup();
+		return 1;
+	}
+
+	// 关闭套接字
+	closesocket(sockClient);
 	WSACleanup();
 	return 0;
 }

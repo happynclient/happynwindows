@@ -60,14 +60,15 @@ VOID StartHappynetService(VOID)
 
 VOID StopHappynetService(VOID)
 {
-    if (IsSetSystemService()) {
-        StopSystemService();
-        Sleep(1500);
+	GraceStopProcessService();
+
+	if (IsSetSystemService()) {
+		Sleep(1000);
+		StopSystemService();
         return;
     }
 
-	GraceStopProcessService();
-	Sleep(1500);
+	Sleep(1000);
 	TerminalProcessService();
 }
 
