@@ -727,19 +727,18 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 		case STILL_ACTIVE:
 			StopHappynetService();
 			UpdateServiceStatus(hwndDlg);
-			UpdateAddressesInfo(hwndDlg);
-			SyncServiceOutputText(hwndDlg);
 			break;
 		default:
 			break;
 		}
-
+		//waiting for all process stopped
+		Sleep(3000);
 		if (SaveOptions(hwndDlg)) {
 			StartHappynetService();
 			UpdateServiceStatus(hwndDlg);
 			UpdateAddressesInfo(hwndDlg);
 		}
-		SyncServiceOutputText(hwndDlg);
+		//SyncServiceOutputText(hwndDlg);
 		break;
 	}
 
