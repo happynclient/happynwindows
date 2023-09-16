@@ -731,8 +731,7 @@ INT_PTR CALLBACK MainDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM l
 		default:
 			break;
 		}
-		//waiting for all process stopped
-		Sleep(3000);
+
 		if (SaveOptions(hwndDlg)) {
 			StartHappynetService();
 			UpdateServiceStatus(hwndDlg);
@@ -851,6 +850,8 @@ INT_PTR CALLBACK AdSettingsDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LP
 			SaveAdOptions(hwndDlg);
 			HWND parentDlg;
 			parentDlg = (HWND)GetParent(hwndDlg);
+			//waiting for all process stopped
+			Sleep(3000);
 			EndDialog(hwndDlg, 0);
 			SendMessage(parentDlg, WM_SAVE_RESTART, 0, 0);
 			return TRUE;
