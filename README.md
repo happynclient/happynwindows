@@ -17,6 +17,11 @@ Happynet Client is compatible with [N2N3.0](https://github.com/ntop/n2n/releases
 * Windows 11 (X86/X64/ARM64)
 
 
+## other platform support
+
+* [Android](https://github.com/happynclient/happynandroid)
+* [IOS & MacOS](https://github.com/happynclient/happynios)
+
 ## User Guide
 
 1. download and install package, the package will auto set tuntap driver
